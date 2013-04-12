@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>console-department-Daily Report</title>
+    <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/css/jquery-ui-1.10.2.custom.min.css' />
+    <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
+    <script type="text/javascript" src='/js/jquery-ui-1.10.2.custom.min.js'></script>
+    <script type="text/javascript" src='/js/bootstrap.min.js'></script>
+    <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
+</head>
+<body class="admin">
+<header class="navbar">
+    <a class="brand" href="/" title="home page">Daily Report</a>
+    <ul class="nav">
+        <li class="active"><a href="#">department</a></li>
+        <li><a href="#">user</a></li>
+    </ul>
+</header>
+<section id="department" class="container">
+
+    <div id="newDepartment"><label for="departmentName">Department Name:</label>
+        <input type="text" required="required" id="departmentName" />
+        <br />
+        <label for="parentDepartment">parent department:</label>
+        <select id="parentDepartment"
+                data-bind="options: departments, optionsText:'name',value:selectedParentDepartment, optionsCaption: 'Choose...'"></select>
+        <div><input id="submitBtn" type="button" value="submit" class="btn btn-primary" /></div>
+    </div>
+    <div id="departmentTree">
+        <input id="showTreeBtn" type="button" value="Show Department Tree" class="btn btn-info" />
+    </div>
+</section>
+<script type="text/javascript" src='/js/admin/departmentVM.js'></script>
+ <script type="text/javascript">
+     var vm = new DepartmentViewModel();
+     ko.applyBindings(vm);
+     $("#parentDepartment").change(function(event){
+         alert(vm.selectedParentDepartment()["id"]);
+     })
+ </script>
+</body>
+</html>
