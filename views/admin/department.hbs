@@ -10,12 +10,12 @@
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
     <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 </head>
-<body class="admin">
+<body class="admin-department">
 <header class="navbar">
     <a class="brand" href="/" title="home page">Daily Report</a>
     <ul class="nav">
         <li class="active"><a href="#">department</a></li>
-        <li><a href="#">user</a></li>
+        <li><a href="/admin/users">user</a></li>
     </ul>
 </header>
 <section id="department" class="container">
@@ -33,12 +33,6 @@
     </div>
 </section>
 <script type="text/javascript" src='/js/admin/departmentVM.js'></script>
- <script type="text/javascript">
-     var vm = new DepartmentViewModel();
-     ko.applyBindings(vm);
-     $("#parentDepartment").change(function(event){
-         alert(vm.selectedParentDepartment()["id"]);
-     })
- </script>
+<script type="text/javascript" src='/js/admin/department.js'></script>
 </body>
 </html>

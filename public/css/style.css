@@ -76,10 +76,6 @@ header {
   padding: 1px;
   background-color: #f00;
 }
-.test {
-  padding: 2px;
-  background-color: #ff0;
-}
 body.login #loginDiv {
   margin-top: 20px;
   background-color: #fbeed5;
@@ -90,5 +86,17 @@ body.login #loginDiv {
   width: 220px;
 }
 body.login #loginDiv .submitBtn {
+  margin-top: 20px;
+}
+body.admin-users #users {
+  margin-top: 20px;
+  background-color: #fbeed5;
+  border: 1px solid #E5E5E5;
+  border-radius: 5px 5px 5px 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 18px;
+  width: 220px;
+}
+body.admin-users #users .submitBtn {
   margin-top: 20px;
 }
