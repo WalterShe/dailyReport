@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>console-users-Daily Report</title>
+    <title>用户管理-日报后台管理</title>
     <link rel='stylesheet' href='/css/style.css' />
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/jquery-ui-1.10.2.custom.min.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
     <script type="text/javascript" src='/js/jquery-ui-1.10.2.custom.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
-    <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 </head>
 <body class="admin-users">
 <header class="navbar">
     <a class="brand" href="/" title="home page">Daily Report</a>
     <ul class="nav">
-        <li><a href="/admin">department</a></li>
+        <li><a href="/admin">部门</a></li>
         <li class="active"><a href="#">user</a></li>
     </ul>
 </header>
 <section id="users" class="container">
-    <label for="userName">User Name:</label>
-    <input type="text" required="required" name="userName" id="userName" />
+    <form id='newUserForm'>
+    <label for="userName">用户名:<span data-bind="css:{errorTip: !validUserName()}, visible: !validUserName()">至少6个，最多25个字符</span></label>
+    <input id="userName" type="text" required="required" name="userName"
+           data-bind="value: userName" />
     <br />
-    <label for="password">Password:</label>
-    <input type="password" required="required" name="password" id="password" />
-    <label for="userDepartment">department:</label>
-    <select id="userDepartment" name="userDepartment">
-        <option value=""></option>
-        {{#each departments}}
-        <option value="{{_id}}">{{name}}</option>
-        {{/each}}
-    </select>
-    <label for="superior">Superior:</label>
-    <select id="superior" name="superior">
-        <option value=""></option>
-        {{#each users}}
-        <option value="{{_id}}">{{username}}</option>
-        {{/each}}
-    </select>
-    <div><input id="submitBtn" type="button" value="submit" class="btn btn-primary" /></div>
+    <label for="password">密码:<span data-bind="css:{errorTip: !validPassword()}, visible: !validPassword()">至少7个，最多25个字符</span></label>
+    <input type="password" required="required" name="password" id="password"
+           data-bind="value:password"/>
+    <label for="password">重复输入密码:</label>
+    <input type="password" required="required" name="repassword" id="repassword"
+           data-bind="value:repassword"/>
+    <br/><span data-bind="css:{errorTip: !validRePassword()}, visible: !validRePassword()">两次输入的密码不一致</span>
+        <!--<label for="userDepartment">department:</label>
+         <select id="userDepartment" name="userDepartment">
+            <option value=""></option>
+            {{#each departments}}
+            <option value="{{_id}}">{{name}}</option>
+            {{/each}}
+        </select>
+        <label for="superior">Superior:</label>
+        <select id="superior" name="superior">
+            <option value=""></option>
+            {{#each users}}
+            <option value="{{_id}}">{{username}}</option>
+            {{/each}}
+        </select> -->
+    <div><input id="submitBtn" type="submit" value="submit" class="btn btn-primary"
+                data-bind="click:submit, enable: valid()"  /></div>
+    </form>
 </section>
-<script type="text/javascript" src='/js/admin/departmentVM.js'></script>
+<script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 <script type="text/javascript" src='/js/admin/users.js'></script>
 </body>
 </html>

@@ -100,3 +100,9 @@ body.admin-users #users {
 body.admin-users #users .submitBtn {
   margin-top: 20px;
 }
+.errorTip {
+  color: red;
+}
+.errorForm {
+  border: 1px solid #ff0000;
+}
