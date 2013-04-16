@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>console-department-Daily Report</title>
+    <title>部门信息-日报后台管理系统</title>
     <link rel='stylesheet' href='/css/style.css' />
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/jquery-ui-1.10.2.custom.min.css' />
@@ -14,25 +14,26 @@
 <header class="navbar">
     <a class="brand" href="/" title="home page">Daily Report</a>
     <ul class="nav">
-        <li class="active"><a href="#">department</a></li>
-        <li><a href="/admin/users">user</a></li>
+        <li class="active"><a href="#">部门</a></li>
+        <li><a href="/admin/users">用户</a></li>
     </ul>
 </header>
 <section id="department" class="container">
 
-    <div id="newDepartment"><label for="departmentName">Department Name:</label>
-        <input type="text" required="required" id="departmentName" />
+    <div id="newDepartment">
+        <label for="departmentName">部门名称:<span data-bind="css:{errorTip: !validDepartmentName()}, visible: !validDepartmentName()">不能为空</span></label>
+        <input type="text" required="required" id="departmentName" data-bind="value:departmentName"/>
         <br />
         <label for="parentDepartment">parent department:</label>
         <select id="parentDepartment"
                 data-bind="options: departments, optionsText:'name',value:selectedParentDepartment, optionsCaption: 'Choose...'"></select>
-        <div><input id="submitBtn" type="button" value="submit" class="btn btn-primary" /></div>
+        <div><input id="submitBtn" type="button" value="submit" class="btn btn-primary"
+                    data-bind="click:submit, enable: validDepartmentName()"/></div>
     </div>
     <div id="departmentTree">
         <input id="showTreeBtn" type="button" value="Show Department Tree" class="btn btn-info" />
     </div>
 </section>
-<script type="text/javascript" src='/js/admin/departmentVM.js'></script>
 <script type="text/javascript" src='/js/admin/department.js'></script>
 </body>
 </html>

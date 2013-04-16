@@ -32,7 +32,7 @@
       }
     };
     self.createNewUser = function(userName, password) {
-      return $.post("/admin/users", {
+      return $.post("/admin/createUsers", {
         userName: userName,
         password: password
       }, function(data) {

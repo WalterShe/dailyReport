@@ -4,9 +4,7 @@
     <title>用户管理-日报后台管理</title>
     <link rel='stylesheet' href='/css/style.css' />
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
-    <link rel='stylesheet' href='/css/jquery-ui-1.10.2.custom.min.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
-    <script type="text/javascript" src='/js/jquery-ui-1.10.2.custom.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
 </head>
 <body class="admin-users">
@@ -18,7 +16,7 @@
     </ul>
 </header>
 <section id="users" class="container">
-    <form id='newUserForm'>
+
     <label for="userName">用户名:<span data-bind="css:{errorTip: !validUserName()}, visible: !validUserName()">至少6个，最多25个字符</span></label>
     <input id="userName" type="text" required="required" name="userName"
            data-bind="value: userName" />
@@ -45,8 +43,8 @@
             {{/each}}
         </select> -->
     <div><input id="submitBtn" type="submit" value="submit" class="btn btn-primary"
-                data-bind="click:submit, enable: valid()"  /></div>
-    </form>
+                data-bind="click:submit, enable: valid()" /></div>
+
 </section>
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 <script type="text/javascript" src='/js/admin/users.js'></script>

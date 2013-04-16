@@ -25,7 +25,7 @@ userViewModel = ->
       alert("uname:#{self.userName()}, validun:#{self.validUserName()}")
 
   self.createNewUser = (userName, password)->
-    $.post("/admin/users", { userName: userName, password:password },
+    $.post("/admin/createUsers", { userName: userName, password:password },
         (data)->
           alert(data.message)
         , "json")
