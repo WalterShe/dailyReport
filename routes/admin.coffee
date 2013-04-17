@@ -17,8 +17,10 @@ exports.createUser = (req, res) ->
 exports.createDepartment = (req, res) ->
   departmentName = req.body.departmentName
   parentId = req.body.pid
-  res.send({message:"departmentName:#{departmentName}, pid:#{parentId}"})
-  ###
+  #res.send({message:"departmentName:#{departmentName}, pid:#{parentId}"})
   departmentModel.createDepartment(departmentName, parentId, (response)->
     res.send(response))
-   ###
+
+exports.getAllDepartments = (req, res) ->
+  departmentModel.getAllDepartments((response)->
+    res.send(response))

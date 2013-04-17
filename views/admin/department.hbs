@@ -24,11 +24,11 @@
         <label for="departmentName">部门名称:<span data-bind="css:{errorTip: !validDepartmentName()}, visible: !validDepartmentName()">不能为空</span></label>
         <input type="text" required="required" id="departmentName" data-bind="value:departmentName"/>
         <br />
-        <label for="parentDepartment">parent department:</label>
+        <label for="parentDepartment">上级部门:<span style="padding-left:10px; font-size:12px">"无"表示没有上级部门</span></label>
         <select id="parentDepartment"
-                data-bind="options: departments, optionsText:'name',value:selectedParentDepartment, optionsCaption: 'Choose...'"></select>
+                data-bind="options: departments, optionsText:'name',value:selectedParentDepartment, optionsCaption: '选择一个上级部门...'"></select>
         <div><input id="submitBtn" type="button" value="submit" class="btn btn-primary"
-                    data-bind="click:submit, enable: validDepartmentName()"/></div>
+                    data-bind="click:submit, enable: validDepartmentName()" required="false"/></div>
     </div>
     <div id="departmentTree">
         <input id="showTreeBtn" type="button" value="Show Department Tree" class="btn btn-info" />

@@ -6,20 +6,45 @@
 
   exports.createDepartment = function(departmentName, parentId, callback) {
     var client;
-    return client = redis.createClient();
-    /*
-    client.incr("next_user_id", (err, reply)->
-      client.hset("users", "#{reply}:user_name", userName)
-      client.hset("users", "#{reply}:password", password)
-      client.hset("users", "#{userName}:user_id", reply)
-      client.quit()
-      response = {
-        state: 1
-        message: 'success'
+    client = redis.createClient();
+    console.log("departmentName:" + departmentName + ", parentId:" + parentId);
+    return client.incr("next_department_id", function(err, reply) {
+      var response, result;
+      client.hset("departments", "" + reply + ":name", departmentName);
+      result = {
+        name: departmentName
+      };
+      if (parentId) {
+        client.hset("departments", "" + reply + ":pid", parentId);
+        result["pid"] = parentId;
       }
-      callback(response) if callback )
-    */
+      client.quit();
+      response = {
+        state: 1,
+        message: 'success',
+        data: reply
+      };
+      if (callback) {
+        return callback(response);
+      }
+    });
+  };
 
+  exports.getAllDepartments = function(callback) {
+    var client;
+    client = redis.createClient();
+    return client.hgetall("departments", function(err, reply) {
+      var response;
+      client.quit();
+      response = {
+        state: 1,
+        message: 'success',
+        data: reply
+      };
+      if (callback) {
+        return callback(response);
+      }
+    });
   };
 
 }).call(this);

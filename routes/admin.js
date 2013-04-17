@@ -27,14 +27,15 @@
     var departmentName, parentId;
     departmentName = req.body.departmentName;
     parentId = req.body.pid;
-    return res.send({
-      message: "departmentName:" + departmentName + ", pid:" + parentId
+    return departmentModel.createDepartment(departmentName, parentId, function(response) {
+      return res.send(response);
     });
-    /*
-    departmentModel.createDepartment(departmentName, parentId, (response)->
-      res.send(response))
-    */
+  };
 
+  exports.getAllDepartments = function(req, res) {
+    return departmentModel.getAllDepartments(function(response) {
+      return res.send(response);
+    });
   };
 
 }).call(this);
