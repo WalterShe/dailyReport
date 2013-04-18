@@ -9,20 +9,24 @@
   exports.createDepartment = function(departmentName, parentId, callback) {
     var client;
     client = redis.createClient();
-    console.log("departmentName:" + departmentName + ", parentId:" + parentId);
     return client.incr("next_department_id", function(err, reply) {
-      var result;
+      var department, result;
       client.hset("departments", "" + reply + ":name", departmentName);
       result = {
         name: departmentName
       };
+      department = {
+        name: departmentName,
+        id: reply
+      };
       if (parentId) {
         client.hset("departments", "" + reply + ":pid", parentId);
         result["pid"] = parentId;
+        department["pid"] = parentId;
       }
       client.quit();
       if (callback) {
-        return callback(new Response(1, 'success', reply));
+        return callback(new Response(1, 'success', department));
       }
     });
   };

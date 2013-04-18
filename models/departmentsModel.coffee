@@ -3,18 +3,20 @@ redis = require("redis")
 
 exports.createDepartment = (departmentName, parentId, callback) ->
   client = redis.createClient();
-  console.log "departmentName:#{departmentName}, parentId:#{parentId}"
+  #console.log "departmentName:#{departmentName}, parentId:#{parentId}"
 
   client.incr("next_department_id", (err, reply)->
     client.hset("departments", "#{reply}:name", departmentName)
     result = {name:departmentName}
+    department = {name:departmentName, id:reply}
     if parentId
       client.hset("departments", "#{reply}:pid", parentId)
       result["pid"] = parentId
+      department["pid"] = parentId
 
     client.quit()
 
-    callback(new Response(1,'success',reply)) if callback  )
+    callback(new Response(1,'success',department)) if callback  )
 
 
 exports.getAllDepartments = (callback) ->

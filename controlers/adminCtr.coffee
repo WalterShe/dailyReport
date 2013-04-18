@@ -36,11 +36,10 @@ exports.createUser = (req, res) ->
   else
     res.send(new Response(0,errorMessage))
 
-
+#创建一个新部门
 exports.createDepartment = (req, res) ->
   departmentName = sanitize(req.body.departmentName).trim()
   parentId = sanitize(req.body.pid).trim()
-  #res.send({message:"departmentName:#{departmentName}, pid:#{parentId}"})
   errorMessage = ""
   try
     check(departmentName, "部门名称不能为空").notEmpty().notContains(":")
@@ -51,7 +50,8 @@ exports.createDepartment = (req, res) ->
     consol.log errorMessage
     res.send(new Response(0,errorMessage))
 
-
+ #获取所有部门
 exports.getAllDepartments = (req, res) ->
   departmentModel.getAllDepartments((response)->
+    console.log response
     res.send(response))

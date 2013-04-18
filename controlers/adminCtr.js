@@ -59,13 +59,14 @@
       });
     } catch (error) {
       errorMessage = error.message;
-      console.log(errorMessage);
+      consol.log(errorMessage);
       return res.send(new Response(0, errorMessage));
     }
   };
 
   exports.getAllDepartments = function(req, res) {
     return departmentModel.getAllDepartments(function(response) {
+      console.log(response);
       return res.send(response);
     });
   };
