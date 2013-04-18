@@ -1,54 +1,16 @@
 
+# model层，处理数据调用和解析 ---------------------------------------------------------------
+class DepartmemtModel
 
-
-
-departmentViewModel = ->
-  self = @
-  self.departmentName = ko.observable('')
-  self.validDepartmentName = ko.computed(->
-    dname = $.trim(self.departmentName())
-    dname.length >= 1 and dname.indexOf(":") == -1)
-
-  #self.departments = ko.observableArray([{name:'无', id:null},{name:'PHP', id:1},{name:'Tec Center', id:2, pid:1},{name:'ios',id:3,pid:1},{name:'Product', id:4}])
-  self.departments = ko.observableArray(null);
-
-  self.selectedParentDepartment = ko.observable(null)
-  self.submit = ->
-    if self.validDepartmentName()
-      data = {departmentName: self.departmentName(), pid: self.selectedParentDepartment()?["id"]}
-      $.post("/admin/createDepartment", data,
-          (data)->
-            console.log data
-            self.departments.push(data.data)
-            TreeList.showTree("#departmentTree")
-          , "json")
-
-  self
-
-departmentvm = new departmentViewModel();
-ko.applyBindings(departmentvm)
-
-
-
-
-init = ->
-  $.get("/admin/alldepartments",
-        (data)->
-          departments = departmemtModel.getAllDepartments(data.data)
-          console.log departments
-          departmentvm.departments(departments)
-          TreeList.showTree("#departmentTree")
-          null
-        , "json")
-
-  null
-
-init()
-
-class departmemtModel
+  @getAllDepartments: (callback)->
+    $.get("/admin/alldepartments",
+         (response)->
+           departments = DepartmemtModel.parseDepartments(response.data)
+           callback(departments)
+         , "json")
   # data 后台返回数据  	Object { 1:name="PHP", 2:name="IOS", 3:name="p2", 3:pid="1"}
   # 输出数据 Object { 1:{id:1, name:"PHP"}, 2:{id:2, name:"ios"},3:{id:3, name:"p2", pid:"1"}}
-  @getAllDepartments: (data)->
+  @parseDepartments: (data)->
     resultObj = {}
     for key, value of data
       childOfKey = key.split(":")
@@ -66,9 +28,49 @@ class departmemtModel
     # h该函数输出数据 [{id:1, name:"PHP"}, {id:2, name:"ios"},{id:3, name:"p2", pid:"1"}]
     result
 
+#ViewModel---------------------------------------------------------------
+DepartmentViewModel = ->
+  self = @
+  self.departmentName = ko.observable('')
+  self.validDepartmentName = ko.computed(->
+    dname = $.trim(self.departmentName())
+    dname.length >= 1 and dname.indexOf(":") == -1)
+
+  #self.departments = ko.observableArray([{name:'无', id:null},{name:'PHP', id:1},{name:'Tec Center', id:2, pid:1},{name:'ios',id:3,pid:1},{name:'Product', id:4}])
+  self.departments = ko.observableArray(null);
+
+  self.selectedParentDepartment = ko.observable(null)
+  self.submit = ->
+    if self.validDepartmentName()
+      data = {departmentName: self.departmentName(), pid: self.selectedParentDepartment()?["id"]}
+      $.post("/admin/createDepartment", data,
+            (data)->
+              console.log data
+              self.departments.push(data.data)
+              TreeList.showTree("#departmentTree", self.departments())
+            , "json")
+
+  self
+
+
+
+# 初始化 ----------------------------------------------------------------------------
+init = ->
+  departmentvm = new DepartmentViewModel();
+  ko.applyBindings(departmentvm)
+
+  DepartmemtModel.getAllDepartments((departments)->
+    departmentvm.departments(departments)
+    TreeList.showTree("#departmentTree", departmentvm.departments()))
+
+init()
+
+
+
 #树形列表----------------------------------------------------------------------------------
 class TreeList
-  @showTree: (nodeName)->
+  @showTree: (nodeName, data)->
+    @data = data
     $(nodeName).empty()
     @renderTree(nodeName, @getDepartTreeData())
 
@@ -89,7 +91,7 @@ class TreeList
 
   # render a department tree
   @getDepartTreeData: ->
-    departs = departmentvm.departments()
+    departs = @data
     treeData = []
     for value in departs
       rootnode = {label:value.name, id:value.id};
