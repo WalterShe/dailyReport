@@ -3,7 +3,8 @@ departmentViewModel = ->
   self = @
   self.departmentName = ko.observable('')
   self.validDepartmentName = ko.computed(->
-      $.trim(self.departmentName()).length >= 1)
+    dname = $.trim(self.departmentName())
+    dname.length >= 1 and dname.indexOf(":") == -1)
 
   #self.departments = ko.observableArray([{name:'无', id:null},{name:'PHP', id:1},{name:'Tec Center', id:2, pid:1},{name:'ios',id:3,pid:1},{name:'Product', id:4}])
   self.departments = ko.observableArray(null);

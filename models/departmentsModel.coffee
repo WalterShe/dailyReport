@@ -1,4 +1,5 @@
 redis = require("redis")
+{Response} = require('../vo/response')
 
 exports.createDepartment = (departmentName, parentId, callback) ->
   client = redis.createClient();
@@ -12,21 +13,12 @@ exports.createDepartment = (departmentName, parentId, callback) ->
       result["pid"] = parentId
 
     client.quit()
-    response = {
-      state: 1
-      message: 'success'
-      data: reply}
 
-    callback(response) if callback  )
+    callback(new Response(1,'success',reply)) if callback  )
 
 
 exports.getAllDepartments = (callback) ->
   client = redis.createClient();
   client.hgetall("departments", (err, reply)->
     client.quit()
-    response = {
-    state: 1
-    message: 'success'
-    data: reply
-    }
-    callback(response) if callback  )
+    callback(new Response(1,'success',reply)) if callback  )

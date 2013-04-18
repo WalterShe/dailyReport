@@ -7,7 +7,9 @@
     self = this;
     self.departmentName = ko.observable('');
     self.validDepartmentName = ko.computed(function() {
-      return $.trim(self.departmentName()).length >= 1;
+      var dname;
+      dname = $.trim(self.departmentName());
+      return dname.length >= 1 && dname.indexOf(":") === -1;
     });
     self.departments = ko.observableArray(null);
     self.selectedParentDepartment = ko.observable(null);
