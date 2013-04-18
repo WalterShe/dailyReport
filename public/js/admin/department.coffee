@@ -1,4 +1,7 @@
 
+
+
+
 departmentViewModel = ->
   self = @
   self.departmentName = ko.observable('')
@@ -17,7 +20,7 @@ departmentViewModel = ->
           (data)->
             console.log data
             self.departments.push(data.data)
-            showTree()
+            TreeList.showTree("#departmentTree")
           , "json")
 
   self
@@ -25,48 +28,6 @@ departmentViewModel = ->
 departmentvm = new departmentViewModel();
 ko.applyBindings(departmentvm)
 
-
-showTree = ->
-  $("#departmentTree").empty()
-  renderTree("#departmentTree", getDepartTreeData())
-
-# render a tree
-renderTree = (node, data)->
-  $(node).append("<ul></ul>")
-  newnode = "#{node} ul:first"
-  for value in data
-    linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><i class='delete icon-remove' /></div></li>"
-    if value.children
-      linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-minus' /><span class='nodename'>#{value.label}</span><i class='delete icon-remove' /></div></li>"
-
-    $(newnode).append(linode)
-    newnode2 = "#{newnode} ##{value.id}node"
-    if value.children
-      renderTree(newnode2, value.children)
-  null
-
-# render a department tree
-getDepartTreeData = ->
-  departs = departmentvm.departments()
-  #departsObj = {}
-  treeData = []
-  for value in departs
-    rootnode = {label:value.name, id:value.id};
-    treeData.push(rootnode) unless value.pid
-
-  findChidren = (node, departs)->
-    for value in departs
-      if value.pid == node.id
-        node.children = [] unless node.children
-        childNode = {label:value.name, id:value.id}
-        node.children.push(childNode)
-        findChidren(childNode, departs)
-    ""
-
-  for node in treeData
-    findChidren(node, departs)
-  console.log treeData
-  treeData
 
 
 
@@ -76,17 +37,13 @@ init = ->
           departments = departmemtModel.getAllDepartments(data.data)
           console.log departments
           departmentvm.departments(departments)
-          showTree()
+          TreeList.showTree("#departmentTree")
           null
         , "json")
 
   null
 
 init()
-
-
-
-
 
 class departmemtModel
   # data 后台返回数据  	Object { 1:name="PHP", 2:name="IOS", 3:name="p2", 3:pid="1"}
@@ -108,3 +65,46 @@ class departmemtModel
 
     # h该函数输出数据 [{id:1, name:"PHP"}, {id:2, name:"ios"},{id:3, name:"p2", pid:"1"}]
     result
+
+#树形列表----------------------------------------------------------------------------------
+class TreeList
+  @showTree: (nodeName)->
+    $(nodeName).empty()
+    @renderTree(nodeName, @getDepartTreeData())
+
+  # render a tree
+  @renderTree: (node, data)->
+    $(node).append("<ul></ul>")
+    newnode = "#{node} ul:first"
+    for value in data
+      linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><i class='delete icon-remove' /></div></li>"
+      if value.children
+        linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-minus' /><span class='nodename'>#{value.label}</span><i class='delete icon-remove' /></div></li>"
+
+      $(newnode).append(linode)
+      newnode2 = "#{newnode} ##{value.id}node"
+      if value.children
+        @renderTree(newnode2, value.children)
+    null
+
+  # render a department tree
+  @getDepartTreeData: ->
+    departs = departmentvm.departments()
+    treeData = []
+    for value in departs
+      rootnode = {label:value.name, id:value.id};
+      treeData.push(rootnode) unless value.pid
+
+    findChidren = (node, departs)->
+      for value in departs
+        if value.pid == node.id
+          node.children = [] unless node.children
+          childNode = {label:value.name, id:value.id}
+          node.children.push(childNode)
+          findChidren(childNode, departs)
+      ""
+
+    for node in treeData
+      findChidren(node, departs)
+    console.log treeData
+    treeData
