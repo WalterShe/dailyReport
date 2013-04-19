@@ -66,15 +66,31 @@ header {
   margin-top: 20px;
 }
 #department #departmentTree li div {
-  background-color: #eeeeee;
-  border: 1px solid #E5E5E5;
+  padding: 6px 0 10px 5px;
+}
+#department #departmentTree li div.on {
+  background-color: #78b608;
   border-radius: 5px 5px 5px 5px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  padding: 8px;
+  color: white;
 }
 #department #departmentTree li div i {
   padding: 1px;
-  background-color: #f00;
+}
+#department #departmentTree li div i.icon-minus,
+#department #departmentTree li div i.icon-plus {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #444444;
+  margin-right: 5px;
+  cursor: pointer;
+}
+#department #departmentTree li div span.delete,
+#department #departmentTree li div span.edite {
+  margin-right: 8px;
+  font-size: 12px;
+  height: 16px;
+  padding: 2px 8px 4px 8px;
+  float: right;
 }
 body.login #loginDiv {
   margin-top: 20px;

@@ -78,15 +78,34 @@ header {
 
   #departmentTree {
     li div {
-      background-color: #eeeeee;
-      border: 1px solid #E5E5E5;
-      border-radius: 5px 5px 5px 5px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      padding: 8px;
+      &.on {
+        background-color: #78b608;
+        //border: 1px solid #165fe5;
+        border-radius: 5px 5px 5px 5px;
+        color:white;
+      }
+
+
+      padding: 6px 0 10px 5px;
 
       i{
         padding:1px;
-        background-color: #f00;
+        //background-color: #f00;
+        &.icon-minus, &.icon-plus {
+          width:12px;
+          height:12px;
+          border: 1px solid #444444;
+          margin-right: 5px;
+          cursor: pointer;
+        }
+      }
+
+      span.delete, span.edite {
+        margin-right:8px;
+        font-size: 12px;
+        height:16px;
+        padding: 2px 8px 4px 8px;
+        float:right;
       }
     }
   }

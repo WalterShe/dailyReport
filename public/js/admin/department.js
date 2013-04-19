@@ -91,7 +91,13 @@
     var departmentvm;
     departmentvm = new DepartmentViewModel();
     ko.applyBindings(departmentvm);
-    $("#departmentTree").on("click", "i.delete", function(event) {
+    $("#departmentTree").on("mouseover", "li div", function(event) {
+      return $(this).addClass('on');
+    });
+    $("#departmentTree").on("mouseout", "li div", function(event) {
+      return $(this).removeClass('on');
+    });
+    $("#departmentTree").on("click", "span.delete", function(event) {
       var departmentId, t;
       t = $(event.target);
       departmentId = t.parent().attr('id');
@@ -138,9 +144,9 @@
       newnode = "" + node + " ul:first";
       for (_i = 0, _len = data.length; _i < _len; _i++) {
         value = data[_i];
-        linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><span class='nodename'>" + value.label + "</span><i class='delete icon-remove' /></div></li>";
+        linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='edite btn btn-warning'>编辑</span></div></li>";
         if (value.children) {
-          linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><i class='icon-minus' /><span class='nodename'>" + value.label + "</span><i class='delete icon-remove' /></div></li>";
+          linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><i class='icon-minus' /><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='edite btn btn-warning'>编辑</span></div></li>";
         }
         $(newnode).append(linode);
         newnode2 = "" + newnode + " #" + value.id + "node";

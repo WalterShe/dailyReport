@@ -22,7 +22,7 @@
 
     <div id="newDepartment">
         <label for="departmentName">部门名称:<span data-bind="css:{errorTip: !validDepartmentName()}, visible: !validDepartmentName()">不能为空</span></label>
-        <input type="text" required="required" id="departmentName" data-bind="value:departmentName"/>
+        <input type="text" required="required" id="departmentName" data-bind="value:departmentName, valueUpdate:'keyup'"/>
         <br />
         <label for="parentDepartment">上级部门:</label>
         <select id="parentDepartment"
