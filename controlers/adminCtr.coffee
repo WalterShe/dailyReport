@@ -50,8 +50,13 @@ exports.createDepartment = (req, res) ->
     consol.log errorMessage
     res.send(new Response(0,errorMessage))
 
+#删除部门
+exports.removeDepartment = (req, res) ->
+  departmentId = sanitize(req.body.departmentId).trim()
+  departmentModel.removeDepartment(departmentId, (response)->
+    res.send(response))
+
  #获取所有部门
 exports.getAllDepartments = (req, res) ->
   departmentModel.getAllDepartments((response)->
-    console.log response
     res.send(response))

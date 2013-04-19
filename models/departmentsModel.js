@@ -31,6 +31,28 @@
     });
   };
 
+  exports.removeDepartment = function(departmentId, callback) {
+    var client;
+    client = redis.createClient();
+    console.log("delete id " + departmentId);
+    return client.hdel("departments", "" + departmentId + ":name", "" + departmentId + ":pid", function(err, reply) {
+      return client.hgetall("departments", function(err, reply) {
+        var childOfKey, key, newDepartments, value;
+        newDepartments = {};
+        for (key in reply) {
+          value = reply[key];
+          childOfKey = key.split(":");
+          if (childOfKey[1] === "pid" && value === departmentId) {
+            client.hdel("departments", key);
+          } else {
+            newDepartments[key] = value;
+          }
+        }
+        return callback(new Response(1, 'success', newDepartments));
+      });
+    });
+  };
+
   exports.getAllDepartments = function(callback) {
     var client;
     client = redis.createClient();

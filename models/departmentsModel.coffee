@@ -18,6 +18,22 @@ exports.createDepartment = (departmentName, parentId, callback) ->
 
     callback(new Response(1,'success',department)) if callback  )
 
+#删除部门
+exports.removeDepartment = (departmentId, callback) ->
+  client = redis.createClient();
+  console.log "delete id #{departmentId}"
+  client.hdel("departments", "#{departmentId}:name", "#{departmentId}:pid", (err, reply)->
+    client.hgetall("departments", (err, reply)->
+      newDepartments = {}
+      for key, value of reply
+        childOfKey = key.split(":")
+        if childOfKey[1] == "pid" and value == departmentId
+          client.hdel("departments", key)
+        else
+          newDepartments[key] = value
+
+      callback(new Response(1,'success',newDepartments))))
+
 
 exports.getAllDepartments = (callback) ->
   client = redis.createClient();

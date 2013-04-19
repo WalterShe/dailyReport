@@ -6,7 +6,8 @@ class DepartmemtModel
     $.get("/admin/alldepartments",
          (response)->
            departments = DepartmemtModel.parseDepartments(response.data)
-           callback(departments)
+           response['data'] = departments
+           callback(response)
          , "json")
   # data 后台返回数据  	Object { 1:name="PHP", 2:name="IOS", 3:name="p2", 3:pid="1"}
   # 输出数据 Object { 1:{id:1, name:"PHP"}, 2:{id:2, name:"ios"},3:{id:3, name:"p2", pid:"1"}}
@@ -28,6 +29,20 @@ class DepartmemtModel
     # h该函数输出数据 [{id:1, name:"PHP"}, {id:2, name:"ios"},{id:3, name:"p2", pid:"1"}]
     result
 
+  @createNewDepartment: (data, callback)->
+    $.post("/admin/createDepartment", data,
+        (response)->
+          callback(response)
+        , "json")
+
+  @removeDepartment: (data, callback)->
+    $.post("/admin/removedepartment", data,
+         (response)->
+           departments = DepartmemtModel.parseDepartments(response.data)
+           response.data = departments
+           callback(response)
+         , "json")
+
 #ViewModel---------------------------------------------------------------
 DepartmentViewModel = ->
   self = @
@@ -43,15 +58,11 @@ DepartmentViewModel = ->
   self.submit = ->
     if self.validDepartmentName()
       data = {departmentName: self.departmentName(), pid: self.selectedParentDepartment()?["id"]}
-      $.post("/admin/createDepartment", data,
-            (data)->
-              console.log data
-              self.departments.push(data.data)
-              TreeList.showTree("#departmentTree", self.departments())
-            , "json")
+      DepartmemtModel.createNewDepartment(data, (response)->
+        self.departments.push(response.data)
+        TreeList.showTree("#departmentTree", self.departments()))
 
   self
-
 
 
 # 初始化 ----------------------------------------------------------------------------
@@ -59,12 +70,30 @@ init = ->
   departmentvm = new DepartmentViewModel();
   ko.applyBindings(departmentvm)
 
-  DepartmemtModel.getAllDepartments((departments)->
-    departmentvm.departments(departments)
+
+  $("#departmentTree").on("click", "i.delete", (event)->
+    t = $(event.target)
+    departmentId = t.parent().attr('id')
+    DepartmemtModel.removeDepartment({departmentId:departmentId}, (response)->
+      departmentvm.departments(response.data)
+      TreeList.showTree("#departmentTree", response.data))
+    )
+
+  $("#departmentTree").on("click", "li i.icon-plus", (event)->
+    t = $(event.target)
+    event.stopImmediatePropagation()
+    t.addClass('icon-minus').removeClass('icon-plus'))
+
+  $("#departmentTree").on("click", "li i.icon-minus", (event)->
+    t = $(event.target)
+    event.stopImmediatePropagation()
+    t.addClass('icon-plus').removeClass('icon-minus'))
+
+  DepartmemtModel.getAllDepartments((response)->
+    departmentvm.departments(response.data)
     TreeList.showTree("#departmentTree", departmentvm.departments()))
 
 init()
-
 
 
 #树形列表----------------------------------------------------------------------------------
@@ -108,5 +137,5 @@ class TreeList
 
     for node in treeData
       findChidren(node, departs)
-    console.log treeData
+
     treeData

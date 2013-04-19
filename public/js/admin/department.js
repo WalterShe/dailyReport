@@ -10,7 +10,8 @@
       return $.get("/admin/alldepartments", function(response) {
         var departments;
         departments = DepartmemtModel.parseDepartments(response.data);
-        return callback(departments);
+        response['data'] = departments;
+        return callback(response);
       }, "json");
     };
 
@@ -40,6 +41,21 @@
       return result;
     };
 
+    DepartmemtModel.createNewDepartment = function(data, callback) {
+      return $.post("/admin/createDepartment", data, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
+    DepartmemtModel.removeDepartment = function(data, callback) {
+      return $.post("/admin/removedepartment", data, function(response) {
+        var departments;
+        departments = DepartmemtModel.parseDepartments(response.data);
+        response.data = departments;
+        return callback(response);
+      }, "json");
+    };
+
     return DepartmemtModel;
 
   })();
@@ -62,11 +78,10 @@
           departmentName: self.departmentName(),
           pid: (_ref = self.selectedParentDepartment()) != null ? _ref["id"] : void 0
         };
-        return $.post("/admin/createDepartment", data, function(data) {
-          console.log(data);
-          self.departments.push(data.data);
+        return DepartmemtModel.createNewDepartment(data, function(response) {
+          self.departments.push(response.data);
           return TreeList.showTree("#departmentTree", self.departments());
-        }, "json");
+        });
       }
     };
     return self;
@@ -76,8 +91,31 @@
     var departmentvm;
     departmentvm = new DepartmentViewModel();
     ko.applyBindings(departmentvm);
-    return DepartmemtModel.getAllDepartments(function(departments) {
-      departmentvm.departments(departments);
+    $("#departmentTree").on("click", "i.delete", function(event) {
+      var departmentId, t;
+      t = $(event.target);
+      departmentId = t.parent().attr('id');
+      return DepartmemtModel.removeDepartment({
+        departmentId: departmentId
+      }, function(response) {
+        departmentvm.departments(response.data);
+        return TreeList.showTree("#departmentTree", response.data);
+      });
+    });
+    $("#departmentTree").on("click", "li i.icon-plus", function(event) {
+      var t;
+      t = $(event.target);
+      event.stopImmediatePropagation();
+      return t.addClass('icon-minus').removeClass('icon-plus');
+    });
+    $("#departmentTree").on("click", "li i.icon-minus", function(event) {
+      var t;
+      t = $(event.target);
+      event.stopImmediatePropagation();
+      return t.addClass('icon-plus').removeClass('icon-minus');
+    });
+    return DepartmemtModel.getAllDepartments(function(response) {
+      departmentvm.departments(response.data);
       return TreeList.showTree("#departmentTree", departmentvm.departments());
     });
   };
@@ -149,7 +187,6 @@
         node = treeData[_j];
         findChidren(node, departs);
       }
-      console.log(treeData);
       return treeData;
     };
 

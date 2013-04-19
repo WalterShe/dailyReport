@@ -64,9 +64,16 @@
     }
   };
 
+  exports.removeDepartment = function(req, res) {
+    var departmentId;
+    departmentId = sanitize(req.body.departmentId).trim();
+    return departmentModel.removeDepartment(departmentId, function(response) {
+      return res.send(response);
+    });
+  };
+
   exports.getAllDepartments = function(req, res) {
     return departmentModel.getAllDepartments(function(response) {
-      console.log(response);
       return res.send(response);
     });
   };
