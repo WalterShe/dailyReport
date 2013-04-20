@@ -65,11 +65,20 @@ header {
 #department #newDepartment .submitBtn {
   margin-top: 20px;
 }
+#department #newDepartment.update {
+  background-color: #FAA732;
+  border: 1px solid #c58433;
+}
 #department #departmentTree li div {
   padding: 6px 0 10px 5px;
 }
 #department #departmentTree li div.on {
   background-color: #78b608;
+  border-radius: 5px 5px 5px 5px;
+  color: white;
+}
+#department #departmentTree li div.selected {
+  background-color: #FAA732;
   border-radius: 5px 5px 5px 5px;
   color: white;
 }
@@ -85,7 +94,7 @@ header {
   cursor: pointer;
 }
 #department #departmentTree li div span.delete,
-#department #departmentTree li div span.edite {
+#department #departmentTree li div span.update {
   margin-right: 8px;
   font-size: 12px;
   height: 16px;

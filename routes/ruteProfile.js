@@ -14,7 +14,8 @@
     app.get('/admin/users', admin.usersIndex);
     app.post('/admin/createusers', admin.createUser);
     app.get('/admin/alldepartments', admin.getAllDepartments);
-    return app.post('/admin/removedepartment', admin.removeDepartment);
+    app.post('/admin/removedepartment', admin.removeDepartment);
+    return app.post('/admin/updatedepartment', admin.updateDepartment);
   };
 
 }).call(this);

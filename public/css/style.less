@@ -74,6 +74,11 @@ header {
     .submitBtn {
       margin-top: 20px;
     }
+
+    &.update {
+      background-color: #FAA732;
+      border: 1px solid #c58433;
+    }
   }
 
   #departmentTree {
@@ -81,6 +86,12 @@ header {
       &.on {
         background-color: #78b608;
         //border: 1px solid #165fe5;
+        border-radius: 5px 5px 5px 5px;
+        color:white;
+      }
+
+      &.selected {
+        background-color: #FAA732;
         border-radius: 5px 5px 5px 5px;
         color:white;
       }
@@ -100,7 +111,7 @@ header {
         }
       }
 
-      span.delete, span.edite {
+      span.delete, span.update {
         margin-right:8px;
         font-size: 12px;
         height:16px;

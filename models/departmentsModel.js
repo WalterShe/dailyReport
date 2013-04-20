@@ -53,6 +53,22 @@
     });
   };
 
+  exports.updateDepartment = function(departmentId, departmentName, parentId, callback) {
+    var client, replycallback;
+    client = redis.createClient();
+    replycallback = function(err, reply) {
+      return client.hgetall("departments", function(err, reply) {
+        client.quit();
+        return callback(new Response(1, 'success', reply));
+      });
+    };
+    if (parentId) {
+      return client.hmset("departments", "" + departmentId + ":name", departmentName, "" + departmentId + ":pid", parentId, replycallback);
+    } else {
+      return client.hset("departments", "" + departmentId + ":name", departmentName, replycallback);
+    }
+  };
+
   exports.getAllDepartments = function(callback) {
     var client;
     client = redis.createClient();

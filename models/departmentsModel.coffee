@@ -34,6 +34,19 @@ exports.removeDepartment = (departmentId, callback) ->
 
       callback(new Response(1,'success',newDepartments))))
 
+#更新部门
+exports.updateDepartment = (departmentId, departmentName, parentId, callback) ->
+  client = redis.createClient();
+
+  replycallback =  (err, reply)->
+    client.hgetall("departments", (err, reply)->
+       client.quit()
+       callback(new Response(1,'success',reply)))
+
+  if parentId
+    client.hmset("departments", "#{departmentId}:name", departmentName, "#{departmentId}:pid", parentId, replycallback)
+  else
+    client.hset("departments", "#{departmentId}:name", departmentName, replycallback)
 
 exports.getAllDepartments = (callback) ->
   client = redis.createClient();

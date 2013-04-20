@@ -59,7 +59,6 @@
       });
     } catch (error) {
       errorMessage = error.message;
-      consol.log(errorMessage);
       return res.send(new Response(0, errorMessage));
     }
   };
@@ -70,6 +69,22 @@
     return departmentModel.removeDepartment(departmentId, function(response) {
       return res.send(response);
     });
+  };
+
+  exports.updateDepartment = function(req, res) {
+    var departmentId, departmentName, errorMessage, parentId;
+    departmentId = sanitize(req.body.departmentId).trim();
+    departmentName = sanitize(req.body.departmentName).trim();
+    parentId = sanitize(req.body.pid).trim();
+    try {
+      check(departmentName, "部门名称不能为空").notEmpty().notContains(":");
+      return departmentModel.updateDepartment(departmentId, departmentName, parentId, function(response) {
+        return res.send(response);
+      });
+    } catch (error) {
+      errorMessage = error.message;
+      return res.send(new Response(0, errorMessage));
+    }
   };
 
   exports.getAllDepartments = function(req, res) {

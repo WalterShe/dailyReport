@@ -47,6 +47,15 @@
       }, "json");
     };
 
+    DepartmemtModel.updateDepartment = function(data, callback) {
+      return $.post("/admin/updatedepartment", data, function(response) {
+        var departments;
+        departments = DepartmemtModel.parseDepartments(response.data);
+        response['data'] = departments;
+        return callback(response);
+      }, "json");
+    };
+
     DepartmemtModel.removeDepartment = function(data, callback) {
       return $.post("/admin/removedepartment", data, function(response) {
         var departments;
@@ -64,11 +73,18 @@
     var self;
     self = this;
     self.departmentName = ko.observable('');
+    self.updateDepartmentName = ko.observable('');
     self.validDepartmentName = ko.computed(function() {
       var dname;
       dname = $.trim(self.departmentName());
       return dname.length >= 1 && dname.indexOf(":") === -1;
     });
+    self.validUpdateDepartmentName = ko.computed(function() {
+      var dname;
+      dname = $.trim(self.updateDepartmentName());
+      return dname.length >= 1 && dname.indexOf(":") === -1;
+    });
+    self.updateDepartment = ko.observable(null);
     self.departments = ko.observableArray(null);
     self.selectedParentDepartment = ko.observable(null);
     self.submit = function() {
@@ -88,14 +104,84 @@
   };
 
   init = function() {
-    var departmentvm;
+    var cancelUpdateDepartment, departmentvm, editingDepartment, findDepartment, findParentDepartment;
     departmentvm = new DepartmentViewModel();
     ko.applyBindings(departmentvm);
-    $("#departmentTree").on("mouseover", "li div", function(event) {
-      return $(this).addClass('on');
+    editingDepartment = null;
+    $("#departmentTree").on("mouseenter", "li div", function(event) {
+      if ($(this) !== editingDepartment) {
+        return $(this).addClass('on');
+      }
     });
-    $("#departmentTree").on("mouseout", "li div", function(event) {
-      return $(this).removeClass('on');
+    $("#departmentTree").on("mouseleave", "li div", function(event) {
+      if ($(this) !== editingDepartment) {
+        return $(this).removeClass('on');
+      }
+    });
+    findDepartment = function(departmentId) {
+      var department, departments, _i, _len;
+      departments = departmentvm.departments();
+      for (_i = 0, _len = departments.length; _i < _len; _i++) {
+        department = departments[_i];
+        if (department['id'] === departmentId) {
+          return department;
+        }
+      }
+    };
+    findParentDepartment = function(department) {
+      var departments, pid, _i, _len;
+      pid = department["pid"];
+      if (pid) {
+        departments = departmentvm.departments();
+        for (_i = 0, _len = departments.length; _i < _len; _i++) {
+          department = departments[_i];
+          if (department['id'] === pid) {
+            return department;
+          }
+        }
+      }
+      return null;
+    };
+    $("#departmentTree").on("click", "span.update", function() {
+      var department, departmentId, t;
+      t = $(this);
+      t.parent().removeClass('on').addClass('selected');
+      t.hide();
+      if (editingDepartment) {
+        editingDepartment.parent().removeClass('selected');
+        editingDepartment.show();
+      }
+      editingDepartment = t;
+      departmentId = t.parent().attr('id');
+      department = findDepartment(departmentId);
+      departmentvm.updateDepartment(department);
+      departmentvm.updateDepartmentName(department['name']);
+      return departmentvm.selectedParentDepartment(findParentDepartment(department));
+    });
+    $("#cancelUpdateBtn").click(function() {
+      return cancelUpdateDepartment();
+    });
+    cancelUpdateDepartment = function() {
+      editingDepartment.parent().removeClass('selected');
+      editingDepartment.show();
+      editingDepartment = null;
+      return departmentvm.updateDepartment(null);
+    };
+    $("#updateBtn").click(function() {
+      var data, departmentId, _ref;
+      departmentId = editingDepartment.parent().attr('id');
+      data = {
+        departmentId: departmentId,
+        departmentName: departmentvm.updateDepartmentName(),
+        pid: (_ref = departmentvm.selectedParentDepartment()) != null ? _ref["id"] : void 0
+      };
+      return DepartmemtModel.updateDepartment(data, function(response) {
+        cancelUpdateDepartment();
+        console.log(response);
+        departmentvm.departments(response["data"]);
+        console.log(departmentvm.departments());
+        return TreeList.showTree("#departmentTree", response["data"]);
+      });
     });
     $("#departmentTree").on("click", "span.delete", function(event) {
       var departmentId, t;
@@ -144,9 +230,9 @@
       newnode = "" + node + " ul:first";
       for (_i = 0, _len = data.length; _i < _len; _i++) {
         value = data[_i];
-        linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='edite btn btn-warning'>编辑</span></div></li>";
+        linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>";
         if (value.children) {
-          linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><i class='icon-minus' /><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='edite btn btn-warning'>编辑</span></div></li>";
+          linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><i class='icon-minus' /><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>";
         }
         $(newnode).append(linode);
         newnode2 = "" + newnode + " #" + value.id + "node";
@@ -172,7 +258,8 @@
         }
       }
       findChidren = function(node, departs) {
-        var childNode, _j, _len1;
+        var childNode, _j, _len1, _results;
+        _results = [];
         for (_j = 0, _len1 = departs.length; _j < _len1; _j++) {
           value = departs[_j];
           if (value.pid === node.id) {
@@ -184,10 +271,12 @@
               id: value.id
             };
             node.children.push(childNode);
-            findChidren(childNode, departs);
+            _results.push(findChidren(childNode, departs));
+          } else {
+            _results.push(void 0);
           }
         }
-        return "";
+        return _results;
       };
       for (_j = 0, _len1 = treeData.length; _j < _len1; _j++) {
         node = treeData[_j];
