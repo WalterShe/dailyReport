@@ -30,11 +30,11 @@
     <input type="password" required="required" name="repassword" id="repassword"
            data-bind="value:repassword, valueUpdate:'keyup'"/>
     <br/>
-        <label for="userDepartment">所属部门:</label>
-         <select id="userDepartment" name="userDepartment" required="required"
+        <label for="userDepartment">所属部门:<span data-bind="css:{errorTip: !selectedDepartment()}, visible: !selectedDepartment()">必须选择一个部门</span></label>
+         <select id="userDepartment" name="userDepartment"
                  data-bind="options: departments, optionsText:'name', value:selectedDepartment, optionsCaption: '选择所属部门...'"></select>
         <label for="superior">直接上级:</label>
-        <select id="superior" name="superior" required="required"
+        <select id="superior" name="superior"
                 data-bind="options: superiors, optionsText:'name', value:selectedSuperior, optionsCaption: '选择直接上级...'"></select>
     <div><input id="submitBtn" type="submit" value="提交" class="btn btn-primary"
                 data-bind="click:submit, enable: valid()" /></div>

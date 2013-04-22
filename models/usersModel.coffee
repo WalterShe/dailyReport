@@ -1,15 +1,27 @@
 redis = require("redis")
+{Response} = require('../vo/response')
 
-
-exports.createUser = (userName, password, callback) ->
+exports.createUser = (userName, password, departmentId, superiorId, callback) ->
   client = redis.createClient();
   client.incr("next_user_id", (err, reply)->
-    client.hset("users", "#{reply}:user_name", userName)
-    client.hset("users", "#{reply}:password", password)
-    client.hset("users", "#{userName}:user_id", reply)
+    userId = reply
+    replycallback =  (err, reply)->
+      client.quit()
+      if superiorId
+        data = {id: userId, userName:userName, departmentId:departmentId, superiorId:superiorId}
+      else
+        data = {id: userId, userName:userName, departmentId:departmentId}
+
+      callback(new Response(1,'success',data))
+
+    if superiorId
+      client.hmset("users", "#{reply}:user_name", userName, "#{reply}:password", password, "#{reply}:department_id", departmentId, "#{reply}:superior_id", superiorId, replycallback)
+    else
+      client.hmset("users", "#{reply}:user_name", userName, "#{reply}:password", password, "#{reply}:department_id", departmentId, replycallback)
+  )
+
+exports.getAllUsers = (callback) ->
+  client = redis.createClient();
+  client.hgetall("users", (err, reply)->
     client.quit()
-    response = {
-      state: 1
-      message: 'success'
-    }
-    callback(response) if callback )
+    callback(new Response(1, "success",reply)))

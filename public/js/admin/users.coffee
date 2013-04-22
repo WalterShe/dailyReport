@@ -1,9 +1,46 @@
+# department model层，处理数据调用和解析 ---------------------------------------------------------------
+class UserModel
 
+  @getAllUsers: (callback)->
+    $.post("/admin/getallusers",(response)->
+        response["data"] = UserModel.parseUsers(response.data)
+        callback(response)
+    , "json")
+
+  @createUser: (data, callback)->
+    $.post("/admin/createUsers", data,
+          (response)->
+            callback(response)
+          , "json")
+
+  # data 后台返回数据  	Object { 1:user_name="walter", 1:department_id="7", 1:superior_id:"3"}
+
+  @parseUsers: (data)->
+
+    resultObj = {} #Object { 1:{id:1, name:"walter",pid:"3", departmentId:"7"}}
+    for key, value of data
+      childOfKey = key.split(":")
+      userId = childOfKey[0]
+      resultObj[userId] ?= {id: userId}
+      if childOfKey[1] == "user_name"
+        resultObj[userId]["name"] = value
+      else if childOfKey[1] == "department_id"
+        resultObj[userId]["departmentId"] = value
+      else if childOfKey[1] == "superior_id"
+        resultObj[userId]["pid"] = value
+
+    result = []
+    for key2, value2 of resultObj
+      result.push(value2)
+
+    # h该函数输出数据 [{id:1, name:"walter",pid:"3", departmentId:"7"}]
+    result
+#  -----------------------------------------------------------------------------------------------
 UserViewModel = ->
   self = @
-  self.userName = ko.observable('')
-  self.password = ko.observable('')
-  self.repassword = ko.observable('')
+  self.userName = ko.observable('walter')
+  self.password = ko.observable('flexbenq')
+  self.repassword = ko.observable('flexbenq')
   self.validUserName = ko.computed(->
     un = $.trim(self.userName())
     un.length >= 6 and un.length<=25)
@@ -15,26 +52,25 @@ UserViewModel = ->
   self.validRePassword = ko.computed(->
     $.trim(self.password()) ==  $.trim(self.repassword()))
 
-  self.valid = ko.computed(->
-    self.selectedDepartment and self.selectedSuperior and self.validUserName() and self.validPassword() and self.validRePassword())
-
   self.departments = ko.observableArray([])
   self.selectedDepartment = ko.observable(null)
 
   self.superiors = ko.observableArray([])
   self.selectedSuperior = ko.observable(null)
 
+  self.valid = ko.computed(->
+    self.selectedDepartment()? and self.validUserName() and self.validPassword() and self.validRePassword())
+
   self.submit = ->
     if self.valid()
-      self.createNewUser(self.userName(), self.password())
+      data = {userName: $.trim(self.userName()), password:$.trim(self.password()),
+      departmentId:self.selectedDepartment()?["id"], superiorId:self.selectedSuperior()?["id"]}
+      UserModel.createUser(data, (response)->
+        console.log response["data"])
     else
-      alert("uname:#{self.userName()}, validun:#{self.validUserName()}")
+      alert("creation fail.")
 
   self.createNewUser = (userName, password)->
-    $.post("/admin/createUsers", { userName: userName, password:password },
-        (data)->
-          alert(data.message)
-        , "json")
 
   self
 
@@ -43,5 +79,40 @@ UserViewModel = ->
 init = ->
   uservm = new UserViewModel();
   ko.applyBindings(uservm)
+
+  DepartmemtModel.getAllDepartments((response)->
+    uservm.departments(response.data))
+
+
+  #根据部门Id获取该部门和上级部门所有成员
+  getUsersAndSuperiosByDepartmentId = (departmentId, allUsers, allDepartments)->
+    result = getUsersByDepartmentId(departmentId, allUsers)
+    for department in allDepartments
+      if departmentId == department["id"]
+        pid =  department["pid"]
+        pusers = getUsersByDepartmentId(pid, allUsers)
+        return result.concat(pusers)
+
+  #根据部门Id获取该部门所有成员
+  getUsersByDepartmentId = (departmentId, allUsers)->
+    result = []
+    return result unless departmentId
+
+    for user in allUsers
+      result.push(user) if departmentId == user["departmentId"]
+    result
+
+  $("#userDepartment").change( ->
+    departmentId = uservm.selectedDepartment()?['id']
+    if departmentId
+      UserModel.getAllUsers((response)->
+        users = response.data
+        superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments())
+        uservm.superiors(superiors))
+    else
+      uservm.superiors([])
+    )
+
+
 
 init()

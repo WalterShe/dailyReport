@@ -34,7 +34,6 @@
   exports.removeDepartment = function(departmentId, callback) {
     var client;
     client = redis.createClient();
-    console.log("delete id " + departmentId);
     return client.hdel("departments", "" + departmentId + ":name", "" + departmentId + ":pid", function(err, reply) {
       return client.hgetall("departments", function(err, reply) {
         var childOfKey, key, newDepartments, value;

@@ -20,7 +20,7 @@ DepartmentViewModel = ->
   self.selectedParentDepartment = ko.observable(null)
   self.submit = ->
     if self.validDepartmentName()
-      data = {departmentName: self.departmentName(), pid: self.selectedParentDepartment()?["id"]}
+      data = {departmentName: $.trim(self.departmentName()), pid: self.selectedParentDepartment()?["id"]}
       DepartmemtModel.createNewDepartment(data, (response)->
         self.departments.push(response.data)
         TreeList.showTree("#departmentTree", self.departments()))

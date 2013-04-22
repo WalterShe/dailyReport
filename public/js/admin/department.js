@@ -24,7 +24,7 @@
       var data, _ref;
       if (self.validDepartmentName()) {
         data = {
-          departmentName: self.departmentName(),
+          departmentName: $.trim(self.departmentName()),
           pid: (_ref = self.selectedParentDepartment()) != null ? _ref["id"] : void 0
         };
         return DepartmemtModel.createNewDepartment(data, function(response) {

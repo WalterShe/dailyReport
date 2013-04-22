@@ -3,7 +3,6 @@ crypto = require('crypto');
 check = require('validator').check
 sanitize = require('validator').sanitize
 
-userModel = require('../models/usersModel')
 departmentModel = require('../models/departmentsModel')
 {Response} = require('../vo/Response')
 
