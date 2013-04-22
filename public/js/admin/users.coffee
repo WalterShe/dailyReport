@@ -1,7 +1,7 @@
 
-userViewModel = ->
+UserViewModel = ->
   self = @
-  self.userName = ko.observable('testUser:walter')
+  self.userName = ko.observable('')
   self.password = ko.observable('')
   self.repassword = ko.observable('')
   self.validUserName = ko.computed(->
@@ -16,7 +16,13 @@ userViewModel = ->
     $.trim(self.password()) ==  $.trim(self.repassword()))
 
   self.valid = ko.computed(->
-    self.validUserName() and self.validPassword() and self.validRePassword())
+    self.selectedDepartment and self.selectedSuperior and self.validUserName() and self.validPassword() and self.validRePassword())
+
+  self.departments = ko.observableArray([])
+  self.selectedDepartment = ko.observable(null)
+
+  self.superiors = ko.observableArray([])
+  self.selectedSuperior = ko.observable(null)
 
   self.submit = ->
     if self.valid()
@@ -30,7 +36,12 @@ userViewModel = ->
           alert(data.message)
         , "json")
 
-  # return self
   self
 
-ko.applyBindings(new userViewModel())
+
+# 初始化 ----------------------------------------------------------------------------
+init = ->
+  uservm = new UserViewModel();
+  ko.applyBindings(uservm)
+
+init()

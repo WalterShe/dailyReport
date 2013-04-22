@@ -17,7 +17,7 @@
       };
       department = {
         name: departmentName,
-        id: reply
+        id: "" + reply
       };
       if (parentId) {
         client.hset("departments", "" + reply + ":pid", parentId);

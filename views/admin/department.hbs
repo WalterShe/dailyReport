@@ -8,7 +8,6 @@
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
     <script type="text/javascript" src='/js/jquery-ui-1.10.2.custom.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
-    <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 </head>
 <body class="admin-department">
 <header class="navbar">
@@ -20,6 +19,8 @@
 </header>
 <section id="department" class="container">
     <div id="newDepartment" data-bind="css:{update: updateDepartment()}">
+        <div class="title"  data-bind="visible: !updateDepartment()"><i class="icon-plus-sign"></i><h2>创建新部门</h2> </div>
+        <div class="title"  data-bind="visible: updateDepartment()"><i class=" icon-edit"></i><h2>编辑部门</h2> </div>
         <div data-bind="visible: !updateDepartment()">
         <label for="departmentName">部门名称:<span data-bind="css:{errorTip: !validDepartmentName()}, visible: !validDepartmentName()">不能为空</span></label>
         <input type="text" required="required" id="departmentName" data-bind="value:departmentName, valueUpdate:'keyup'"/></div>
@@ -44,7 +45,8 @@
         <p>部门列表:</p>
     </div>
 </section>
-<script type="text/javascript" src='/js/validator-min.js'></script>
+<script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
+<script type="text/javascript" src='/js/admin/departmentModel.js'></script>
 <script type="text/javascript" src='/js/admin/department.js'></script>
 </body>
 </html>

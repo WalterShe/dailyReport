@@ -8,7 +8,8 @@ exports.createDepartment = (departmentName, parentId, callback) ->
   client.incr("next_department_id", (err, reply)->
     client.hset("departments", "#{reply}:name", departmentName)
     result = {name:departmentName}
-    department = {name:departmentName, id:reply}
+    #id 以字符串形式返回
+    department = {name:departmentName, id:"#{reply}"}
     if parentId
       client.hset("departments", "#{reply}:pid", parentId)
       result["pid"] = parentId

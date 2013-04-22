@@ -64,10 +64,11 @@ header {
     border: 1px solid #E5E5E5;
     border-radius: 5px 5px 5px 5px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    padding: 18px;
+    padding: 10px 16px;
     width: 300px;
     height:350px;
     overflow: auto;
+    color: #555;
   }
 
   #newDepartment {
@@ -78,6 +79,17 @@ header {
     &.update {
       background-color: #FAA732;
       border: 1px solid #c58433;
+    }
+
+    div.title {
+      margin:0 0 10px 0;
+      padding:0;
+
+      h2 {
+        display: inline;
+        font-size: 16px;
+        padding-left: 5px;
+      }
     }
   }
 
@@ -122,6 +134,11 @@ header {
   }
 }
 
+.errorTip {
+  color: red;
+  padding-left:5px;
+}
+
 body.login {
   #loginDiv {
     margin-top: 20px;
@@ -154,11 +171,5 @@ body.admin-users {
   }
 }
 
-.errorTip {
-  color: red;
-}
 
-.errorForm {
-  border: 1px solid #ff0000;
-}
 
