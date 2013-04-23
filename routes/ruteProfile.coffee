@@ -7,7 +7,8 @@ exports.createRutes = (app)->
   #app.get('/', routes.index);
   app.get('/login', user.loginIndex);
   app.post('/login', user.login);
-  app.post('/admin/createusers', user.createUser);
+  app.post('/admin/createuser', user.createUser);
+  app.post('/admin/removeuser', user.removeUser);
   app.post('/admin/getallusers', user.getAllUsers);
 
   app.get('/admin', admin.index);

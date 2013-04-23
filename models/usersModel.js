@@ -11,7 +11,7 @@
     client = redis.createClient();
     return client.incr("next_user_id", function(err, reply) {
       var replycallback, userId;
-      userId = reply;
+      userId = "" + reply;
       replycallback = function(err, reply) {
         var data;
         client.quit();
@@ -45,6 +45,28 @@
     return client.hgetall("users", function(err, reply) {
       client.quit();
       return callback(new Response(1, "success", reply));
+    });
+  };
+
+  exports.removeUser = function(userId, callback) {
+    var client;
+    client = redis.createClient();
+    return client.hdel("users", "" + userId + ":user_name", "" + userId + ":password", "" + userId + ":department_id", "" + userId + ":superior_id", function(err, reply) {
+      return client.hgetall("users", function(err, reply) {
+        var childOfKey, key, newUsers, value;
+        newUsers = {};
+        for (key in reply) {
+          value = reply[key];
+          childOfKey = key.split(":");
+          if (childOfKey[1] === "superior_id" && value === userId) {
+            client.hdel("users", key);
+          } else {
+            newUsers[key] = value;
+          }
+        }
+        client.quit();
+        return callback(new Response(1, "success", newUsers));
+      });
     });
   };
 

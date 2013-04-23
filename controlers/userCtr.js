@@ -50,6 +50,14 @@
     }
   };
 
+  exports.removeUser = function(req, res) {
+    var userId;
+    userId = sanitize(req.body.userId).trim();
+    return userModel.removeUser(userId, function(response) {
+      return res.send(response);
+    });
+  };
+
   exports.getAllUsers = function(req, res) {
     return userModel.getAllUsers(function(response) {
       return res.send(response);

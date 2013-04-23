@@ -39,7 +39,7 @@ class TreeList
       event.stopImmediatePropagation()
       $(@).addClass('icon-plus').removeClass('icon-minus'))
 
-  show: ->
+  show: (@dataSource)->
     $(@containerNode).empty()
     @renderTree(@containerNode, @getDepartTreeData())
 

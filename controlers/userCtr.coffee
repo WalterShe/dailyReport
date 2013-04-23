@@ -40,6 +40,12 @@ exports.createUser = (req, res) ->
   else
     res.send(new Response(0,errorMessage))
 
+exports.removeUser = (req, res) ->
+  userId = sanitize(req.body.userId).trim()
+  userModel.removeUser(userId, (response)->
+      res.send(response))
+
+
 
 exports.getAllUsers = (req, res) ->
   userModel.getAllUsers((response)->

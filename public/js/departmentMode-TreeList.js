@@ -51,7 +51,8 @@
       });
     }
 
-    TreeList.prototype.show = function() {
+    TreeList.prototype.show = function(dataSource) {
+      this.dataSource = dataSource;
       $(this.containerNode).empty();
       return this.renderTree(this.containerNode, this.getDepartTreeData());
     };

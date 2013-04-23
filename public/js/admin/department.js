@@ -31,8 +31,7 @@
         };
         return DepartmemtModel.createNewDepartment(data, function(response) {
           self.departments.push(response.data);
-          treeList.dataSource = self.departments();
-          return treeList.show();
+          return treeList.show(self.departments());
         });
       }
     };
@@ -93,8 +92,7 @@
       return DepartmemtModel.updateDepartment(data, function(response) {
         cancelUpdateDepartment();
         departmentvm.departments(response["data"]);
-        treeList.dataSource = response["data"];
-        return treeList.show();
+        return treeList.show(response["data"]);
       });
     });
     $("#departmentTree").on("delete", function(event) {
@@ -102,14 +100,12 @@
         departmentId: event["itemId"]
       }, function(response) {
         departmentvm.departments(response.data);
-        treeList.dataSource = response["data"];
-        return treeList.show();
+        return treeList.show(response["data"]);
       });
     });
     return DepartmemtModel.getAllDepartments(function(response) {
       departmentvm.departments(response.data);
-      treeList.dataSource = response["data"];
-      return treeList.show();
+      return treeList.show(response["data"]);
     });
   };
 

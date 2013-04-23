@@ -1,20 +1,47 @@
-# department model层，处理数据调用和解析 ---------------------------------------------------------------
+treeList = new TreeList("#usersTree")
+
+# user model层，处理数据调用和解析 ---------------------------------------------------------------
 class UserModel
 
-  @getAllUsers: (callback)->
-    $.post("/admin/getallusers",(response)->
-        response["data"] = UserModel.parseUsers(response.data)
+  @createUser: (data, callback)->
+    $.post("/admin/createuser", data,
+      (response)->
+        user = response.data
+        console.log user
+        user["name"] = user["userName"]
+        delete user["userName"]
+        if user["superiorId"]
+          user["pid"] = user["superiorId"]
+          delete user["superiorId"]
+        response.data = user
+        UserModel.allUsers.push(user)
         callback(response)
     , "json")
 
-  @createUser: (data, callback)->
-    $.post("/admin/createUsers", data,
-          (response)->
-            callback(response)
-          , "json")
+  @removeUser: (data, callback)->
+    $.post("/admin/removeuser", data,
+      (response)->
+        users = UserModel.parseUsers(response.data)
+        response.data = users
+        UserModel.allUsers = users
+        callback(response)
+    , "json")
+
+  @getAllUsers: (callback)->
+    $.post("/admin/getallusers",(response)->
+      users = UserModel.parseUsers(response.data)
+      response.data = users
+      UserModel.allUsers = users
+      callback(response)
+    , "json")
+
+  @allUsers: []
+
+  @getLocalAllUsers: ->
+    @allUsers
+
 
   # data 后台返回数据  	Object { 1:user_name="walter", 1:department_id="7", 1:superior_id:"3"}
-
   @parseUsers: (data)->
 
     resultObj = {} #Object { 1:{id:1, name:"walter",pid:"3", departmentId:"7"}}
@@ -35,12 +62,13 @@ class UserModel
 
     # h该函数输出数据 [{id:1, name:"walter",pid:"3", departmentId:"7"}]
     result
+
 #  -----------------------------------------------------------------------------------------------
 UserViewModel = ->
   self = @
-  self.userName = ko.observable('walter')
-  self.password = ko.observable('flexbenq')
-  self.repassword = ko.observable('flexbenq')
+  self.userName = ko.observable('')
+  self.password = ko.observable('1234567')
+  self.repassword = ko.observable('1234567')
   self.validUserName = ko.computed(->
     un = $.trim(self.userName())
     un.length >= 6 and un.length<=25)
@@ -66,7 +94,9 @@ UserViewModel = ->
       data = {userName: $.trim(self.userName()), password:$.trim(self.password()),
       departmentId:self.selectedDepartment()?["id"], superiorId:self.selectedSuperior()?["id"]}
       UserModel.createUser(data, (response)->
-        console.log response["data"])
+        newUser = response.data
+        self.superiors.push(newUser)
+        treeList.show(UserModel.getLocalAllUsers()))
     else
       alert("creation fail.")
 
@@ -83,6 +113,24 @@ init = ->
   DepartmemtModel.getAllDepartments((response)->
     uservm.departments(response.data))
 
+  UserModel.getAllUsers((response)->
+    users = response.data
+    treeList.show(users))
+
+  $("#usersTree").on("delete", (event)->
+    UserModel.removeUser({userId:event["itemId"]}, (response)->
+      treeList.show(response["data"])))
+
+  $("#userDepartment").change( ->
+    departmentId = uservm.selectedDepartment()?['id']
+    if departmentId
+      UserModel.getAllUsers((response)->
+        users = response.data
+        superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments())
+        uservm.superiors(superiors))
+    else
+      uservm.superiors([])
+    )
 
   #根据部门Id获取该部门和上级部门所有成员
   getUsersAndSuperiosByDepartmentId = (departmentId, allUsers, allDepartments)->
@@ -101,18 +149,5 @@ init = ->
     for user in allUsers
       result.push(user) if departmentId == user["departmentId"]
     result
-
-  $("#userDepartment").change( ->
-    departmentId = uservm.selectedDepartment()?['id']
-    if departmentId
-      UserModel.getAllUsers((response)->
-        users = response.data
-        superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments())
-        uservm.superiors(superiors))
-    else
-      uservm.superiors([])
-    )
-
-
 
 init()
