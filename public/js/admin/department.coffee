@@ -1,3 +1,4 @@
+treeList = new TreeList("#departmentTree")
 
 #ViewModel---------------------------------------------------------------
 DepartmentViewModel = ->
@@ -23,7 +24,8 @@ DepartmentViewModel = ->
       data = {departmentName: $.trim(self.departmentName()), pid: self.selectedParentDepartment()?["id"]}
       DepartmemtModel.createNewDepartment(data, (response)->
         self.departments.push(response.data)
-        TreeList.showTree("#departmentTree", self.departments()))
+        treeList.dataSource = self.departments()
+        treeList.show() )
 
   self
 
@@ -32,14 +34,6 @@ DepartmentViewModel = ->
 init = ->
   departmentvm = new DepartmentViewModel();
   ko.applyBindings(departmentvm)
-
-  editingDepartment = null
-
-  $("#departmentTree").on("mouseenter", "li div", (event)->
-    $(@).addClass('on') unless $(this)==editingDepartment)
-
-  $("#departmentTree").on("mouseleave", "li div", (event)->
-    $(@).removeClass('on') unless $(this)==editingDepartment)
 
   findDepartment = (departmentId)->
     departments = departmentvm.departments()
@@ -56,15 +50,8 @@ init = ->
           return department
     return null
 
-  $("#departmentTree").on("click", "span.update", ->
-    t = $(@)
-    t.parent().removeClass('on').addClass('selected')
-    t.hide();
-    if editingDepartment
-      editingDepartment.parent().removeClass('selected')
-      editingDepartment.show()
-    editingDepartment = t
-    departmentId = t.parent().attr('id')
+  $("#departmentTree").on("update", (event)->
+    departmentId = event["itemId"]
     department =  findDepartment(departmentId)
     departmentvm.updateDepartment(department)
     departmentvm.updateDepartmentName(department['name'])
@@ -75,84 +62,29 @@ init = ->
     cancelUpdateDepartment())
 
   cancelUpdateDepartment = ->
-    editingDepartment.parent().removeClass('selected')
-    editingDepartment.show()
-    editingDepartment = null
+    treeList.showEditingItem()
     departmentvm.updateDepartment(null)
 
   $("#updateBtn").click( ->
-    departmentId = editingDepartment.parent().attr('id')
+    departmentId = treeList.getEditingItemId()
     data = {departmentId:departmentId, departmentName:departmentvm.updateDepartmentName(), pid: departmentvm.selectedParentDepartment()?["id"]}
     DepartmemtModel.updateDepartment(data,(response)->
       cancelUpdateDepartment()
       departmentvm.departments(response["data"])
-      TreeList.showTree("#departmentTree", response["data"])))
+      treeList.dataSource = response["data"]
+      treeList.show()))
 
 
-  $("#departmentTree").on("click", "span.delete", (event)->
-    t = $(event.target)
-    departmentId = t.parent().attr('id')
-    DepartmemtModel.removeDepartment({departmentId:departmentId}, (response)->
+  $("#departmentTree").on("delete", (event)->
+    DepartmemtModel.removeDepartment({departmentId:event["itemId"]}, (response)->
       departmentvm.departments(response.data)
-      TreeList.showTree("#departmentTree", response.data))
+      treeList.dataSource = response["data"]
+      treeList.show())
     )
-
-  $("#departmentTree").on("click", "li i.icon-plus", (event)->
-    t = $(event.target)
-    event.stopImmediatePropagation()
-    t.addClass('icon-minus').removeClass('icon-plus'))
-
-  $("#departmentTree").on("click", "li i.icon-minus", (event)->
-    t = $(event.target)
-    event.stopImmediatePropagation()
-    t.addClass('icon-plus').removeClass('icon-minus'))
 
   DepartmemtModel.getAllDepartments((response)->
     departmentvm.departments(response.data)
-    TreeList.showTree("#departmentTree", departmentvm.departments()))
+    treeList.dataSource = response["data"]
+    treeList.show())
 
 init()
-
-
-#树形列表----------------------------------------------------------------------------------
-class TreeList
-  @showTree: (nodeName, data)->
-    @data = data
-    $(nodeName).empty()
-    @renderTree(nodeName, @getDepartTreeData())
-
-  # render a tree
-  @renderTree: (node, data)->
-    $(node).append("<ul></ul>")
-    newnode = "#{node} ul:first"
-    for value in data
-      linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
-      if value.children
-        linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-minus' /><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
-
-      $(newnode).append(linode)
-      newnode2 = "#{newnode} ##{value.id}node"
-      if value.children
-        @renderTree(newnode2, value.children)
-    null
-
-  # render a department tree
-  @getDepartTreeData: ->
-    departs = @data
-    treeData = []
-    for value in departs
-      rootnode = {label:value.name, id:value.id};
-      treeData.push(rootnode) unless value.pid
-
-    findChidren = (node, departs)->
-      for value in departs
-        if value.pid == node.id
-          node.children = [] unless node.children
-          childNode = {label:value.name, id:value.id}
-          node.children.push(childNode)
-          findChidren(childNode, departs)
-
-    for node in treeData
-      findChidren(node, departs)
-
-    treeData

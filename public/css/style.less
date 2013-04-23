@@ -1,4 +1,7 @@
+@import-once "treeList";
+@import-once "header";
 
+/**
 header {
   background-color: #FAFAFA;
   background-image: -moz-linear-gradient(center top , #FFFFFF, #F2F2F2);
@@ -80,17 +83,6 @@ header {
       background-color: #FAA732;
       border: 1px solid #c58433;
     }
-
-    div.title {
-      margin:0 0 10px 0;
-      padding:0;
-
-      h2 {
-        display: inline;
-        font-size: 16px;
-        padding-left: 5px;
-      }
-    }
   }
 
   #departmentTree {
@@ -139,6 +131,17 @@ header {
   padding-left:5px;
 }
 
+div.title {
+  margin:0 0 10px 0;
+  padding:0;
+
+  h2 {
+    display: inline;
+    font-size: 16px;
+    padding-left: 5px;
+  }
+}
+
 body.login {
   #loginDiv {
     margin-top: 20px;
@@ -157,19 +160,22 @@ body.login {
 
 body.admin-users {
   #users {
-    margin-top: 20px;
-    background-color: #fbeed5;
-    border: 1px solid #E5E5E5;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    padding: 18px;
-    width: 220px;
-
-    .submitBtn {
-      margin-top: 20px;
+    width: 720px;
+    #newUser, #usersTree {
+      float:left;
+      margin:20px 20px 0 0;
+      background-color: #fbeed5;
+      border: 1px solid #E5E5E5;
+      border-radius: 5px 5px 5px 5px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      padding: 10px 16px;
+      width: 300px;
+      height:430px;
+      overflow: auto;
+      color: #555;
     }
   }
 }
 
-
+*/
 

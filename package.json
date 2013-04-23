@@ -8,7 +8,6 @@
   "dependencies": {
     "express": "3.1.1",
     "hbs": ">=2.1.0",
-    "less-middleware": "*",
     "redis": ">=0.8.3",
     "validator": ">=1.0.0"
   }
