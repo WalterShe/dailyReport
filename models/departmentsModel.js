@@ -50,11 +50,11 @@
         return callback(new Response(1, 'success', newDepartments));
       });
       return client.hgetall("users", function(err, reply) {
-        var childOfKey, key, users, value, _i, _len, _results;
+        var childOfKey, key, users, value, _results;
         users = reply;
         _results = [];
-        for (value = _i = 0, _len = users.length; _i < _len; value = ++_i) {
-          key = users[value];
+        for (key in users) {
+          value = users[key];
           childOfKey = key.split(":");
           if (childOfKey[1] === "department_id" && value === departmentId) {
             _results.push(client.hdel("users", key));

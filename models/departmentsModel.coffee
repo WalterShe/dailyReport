@@ -37,7 +37,7 @@ exports.removeDepartment = (departmentId, callback) ->
     # 该部门用户的部门属性清除
     client.hgetall("users", (err, reply)->
       users = reply
-      for key, value in users
+      for key, value of users
         childOfKey = key.split(":")
         if childOfKey[1] == "department_id" and value == departmentId
           client.hdel("users", key) )

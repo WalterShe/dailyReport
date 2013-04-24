@@ -26,7 +26,8 @@ exports.updateUser = (userId, userName, password, departmentId, superiorId, call
   replycallback =  (err, reply)->
     client.hgetall("users", (err, reply)->
        client.quit()
-       callback(new Response(1, "success",reply)))
+       users = getUsersWithoutPassword(reply)
+       callback(new Response(1, "success",users)))
 
   if (superiorId and password)
     client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, "#{userId}:department_id", departmentId, "#{userId}:superior_id", superiorId, replycallback)
@@ -42,13 +43,14 @@ exports.getAllUsers = (callback) ->
   client = redis.createClient();
   client.hgetall("users", (err, reply)->
     client.quit()
-    callback(new Response(1, "success",reply)))
+    users = getUsersWithoutPassword(reply)
+    callback(new Response(1, "success",users)))
 
 exports.removeUser = (userId, callback) ->
   client = redis.createClient();
   client.hdel("users", "#{userId}:user_name", "#{userId}:password", "#{userId}:department_id", "#{userId}:superior_id", (err, reply)->
     client.hgetall("users", (err, reply)->
-      newUsers = {}
+      newUsers = getUsersWithoutPassword(reply)
       for key, value of reply
         childOfKey = key.split(":")
         if childOfKey[1] == "superior_id" and value == userId
@@ -56,5 +58,14 @@ exports.removeUser = (userId, callback) ->
         else
           newUsers[key] = value
       client.quit()
+
       callback(new Response(1, "success",newUsers))))
 
+# 将用户数据中的密s码信息过滤掉
+getUsersWithoutPassword = (users)->
+  filterUsers = {}
+  for key, value of users
+    childOfKey = key.split(":")
+    filterUsers[key] = value unless childOfKey[1] == "password"
+
+  filterUsers
