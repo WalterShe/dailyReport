@@ -2,6 +2,7 @@ body.admin-users #users {
   width: 720px;
 }
 body.admin-users #users #newUser,
+body.admin-users #users #updateUser,
 body.admin-users #users #usersTree {
   float: left;
   margin: 20px 20px 0 0;
@@ -14,4 +15,8 @@ body.admin-users #users #usersTree {
   height: 430px;
   overflow: auto;
   color: #555;
+}
+body.admin-users #users #updateUser {
+  background-color: #FAA732;
+  border: 1px solid #c58433;
 }

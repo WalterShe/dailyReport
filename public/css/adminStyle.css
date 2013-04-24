@@ -39,6 +39,9 @@ header {
   min-height: 40px;
   width: 100%;
 }
+header.navbar a.brand {
+  padding-left: 40px;
+}
 #department {
   width: 720px;
 }
@@ -67,6 +70,7 @@ body.admin-users #users {
   width: 720px;
 }
 body.admin-users #users #newUser,
+body.admin-users #users #updateUser,
 body.admin-users #users #usersTree {
   float: left;
   margin: 20px 20px 0 0;
@@ -79,6 +83,10 @@ body.admin-users #users #usersTree {
   height: 430px;
   overflow: auto;
   color: #555;
+}
+body.admin-users #users #updateUser {
+  background-color: #FAA732;
+  border: 1px solid #c58433;
 }
 .errorTip {
   color: red;

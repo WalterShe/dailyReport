@@ -7,3 +7,6 @@ header {
   min-height: 40px;
   width: 100%;
 }
+header.navbar a.brand {
+  padding-left: 40px;
+}

@@ -34,6 +34,13 @@ init = ->
   departmentvm = new DepartmentViewModel();
   ko.applyBindings(departmentvm)
 
+  $("#departmentTree").on("update", (event)->
+    departmentId = event["itemId"]
+    department = findDepartment(departmentId)
+    departmentvm.updateDepartment(department)
+    departmentvm.updateDepartmentName(department['name'])
+    departmentvm.selectedParentDepartment(findParentDepartment(department)))
+
   findDepartment = (departmentId)->
     departments = departmentvm.departments()
     for department in departments
@@ -48,14 +55,6 @@ init = ->
         if (department['id'] == pid)
           return department
     return null
-
-  $("#departmentTree").on("update", (event)->
-    departmentId = event["itemId"]
-    department =  findDepartment(departmentId)
-    departmentvm.updateDepartment(department)
-    departmentvm.updateDepartmentName(department['name'])
-    departmentvm.selectedParentDepartment(findParentDepartment(department))
-    )
 
   $("#cancelUpdateBtn").click( ->
     cancelUpdateDepartment())

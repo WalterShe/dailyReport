@@ -28,7 +28,7 @@ class UserModel
     , "json")
 
   @getAllUsers: (callback)->
-    $.post("/admin/getallusers",(response)->
+    $.get("/admin/getallusers",(response)->
       users = UserModel.parseUsers(response.data)
       response.data = users
       UserModel.allUsers = users
@@ -100,8 +100,29 @@ UserViewModel = ->
     else
       alert("creation fail.")
 
-  self.createNewUser = (userName, password)->
+  self.updateUser = ko.observable(null)
 
+  self.userName1 = ko.observable('')
+  self.password1 = ko.observable('')
+  self.repassword1 = ko.observable('')
+  self.validUserName1 = ko.computed(->
+    un = $.trim(self.userName1())
+    un.length >= 6 and un.length<=25)
+
+  self.validPassword1 = ko.computed(->
+    pw = $.trim(self.password1())
+    pw.length >= 7 and pw.length<=25)
+
+  self.validRePassword1 = ko.computed(->
+    $.trim(self.password1()) ==  $.trim(self.repassword1()))
+
+  self.selectedDepartment1 = ko.observable(null)
+
+  self.superiors1 = ko.observableArray([])
+  self.selectedSuperior1 = ko.observable(null)
+
+  self.valid1 = ko.computed(->
+    self.selectedDepartment1()? and self.validUserName1() and self.validPassword1() and self.validRePassword1())
   self
 
 
@@ -123,14 +144,26 @@ init = ->
 
   $("#userDepartment").change( ->
     departmentId = uservm.selectedDepartment()?['id']
+    setSuperiorsByDepartmentId(departmentId))
+
+  setSuperiorsByDepartmentId = (departmentId)->
     if departmentId
       UserModel.getAllUsers((response)->
         users = response.data
         superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments())
-        uservm.superiors(superiors))
+        setSuperiors(superiors) )
     else
-      uservm.superiors([])
-    )
+      setSuperiors([])
+
+  setSuperiors = (superiors)->
+     if isEditing
+       uservm.superiors1(superiors)
+     else
+       uservm.superiors(superiors)
+
+  isEditing = ->
+    uservm.updateUser() ? true : false
+
 
   #根据部门Id获取该部门和上级部门所有成员
   getUsersAndSuperiosByDepartmentId = (departmentId, allUsers, allDepartments)->
@@ -149,5 +182,32 @@ init = ->
     for user in allUsers
       result.push(user) if departmentId == user["departmentId"]
     result
+
+  $("#usersTree").on("update", (event)->
+    userId = event["itemId"]
+    user =  finduser(userId)
+    uservm.updateUser(user)
+    uservm.userName1(user["name"])
+    selectedDepartment = getDepartmentByUserId(userId, UserModel.getLocalAllUsers(), uservm.departments())
+    uservm.selectedDepartment1(selectedDepartment)
+    setSuperiorsByDepartmentId(selectedDepartment["id"]))
+
+  finduser = (userId)->
+    users = UserModel.getLocalAllUsers()
+    for user in users
+      if (user['id'] == userId)
+        return user
+
+  #根据用户Id获取该用户所在部门
+  getDepartmentByUserId = (userId, allUsers, departments)->
+    allUsers = UserModel.getLocalAllUsers()
+    departmentId = null
+    for user in allUsers
+      if userId == user["id"]
+        departmentId = user["departmentId"]
+        break
+    for department in departments
+      return department if department["id"] == departmentId
+    null
 
 init()

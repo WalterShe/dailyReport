@@ -36,7 +36,7 @@
     };
 
     UserModel.getAllUsers = function(callback) {
-      return $.post("/admin/getallusers", function(response) {
+      return $.get("/admin/getallusers", function(response) {
         var users;
         users = UserModel.parseUsers(response.data);
         response.data = users;
@@ -128,12 +128,34 @@
         return alert("creation fail.");
       }
     };
-    self.createNewUser = function(userName, password) {};
+    self.updateUser = ko.observable(null);
+    self.userName1 = ko.observable('');
+    self.password1 = ko.observable('');
+    self.repassword1 = ko.observable('');
+    self.validUserName1 = ko.computed(function() {
+      var un;
+      un = $.trim(self.userName1());
+      return un.length >= 6 && un.length <= 25;
+    });
+    self.validPassword1 = ko.computed(function() {
+      var pw;
+      pw = $.trim(self.password1());
+      return pw.length >= 7 && pw.length <= 25;
+    });
+    self.validRePassword1 = ko.computed(function() {
+      return $.trim(self.password1()) === $.trim(self.repassword1());
+    });
+    self.selectedDepartment1 = ko.observable(null);
+    self.superiors1 = ko.observableArray([]);
+    self.selectedSuperior1 = ko.observable(null);
+    self.valid1 = ko.computed(function() {
+      return (self.selectedDepartment1() != null) && self.validUserName1() && self.validPassword1() && self.validRePassword1();
+    });
     return self;
   };
 
   init = function() {
-    var getUsersAndSuperiosByDepartmentId, getUsersByDepartmentId, uservm;
+    var finduser, getDepartmentByUserId, getUsersAndSuperiosByDepartmentId, getUsersByDepartmentId, isEditing, setSuperiors, setSuperiorsByDepartmentId, uservm;
     uservm = new UserViewModel();
     ko.applyBindings(uservm);
     DepartmemtModel.getAllDepartments(function(response) {
@@ -154,17 +176,33 @@
     $("#userDepartment").change(function() {
       var departmentId, _ref;
       departmentId = (_ref = uservm.selectedDepartment()) != null ? _ref['id'] : void 0;
+      return setSuperiorsByDepartmentId(departmentId);
+    });
+    setSuperiorsByDepartmentId = function(departmentId) {
       if (departmentId) {
         return UserModel.getAllUsers(function(response) {
           var superiors, users;
           users = response.data;
           superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments());
-          return uservm.superiors(superiors);
+          return setSuperiors(superiors);
         });
       } else {
-        return uservm.superiors([]);
+        return setSuperiors([]);
       }
-    });
+    };
+    setSuperiors = function(superiors) {
+      if (isEditing) {
+        return uservm.superiors1(superiors);
+      } else {
+        return uservm.superiors(superiors);
+      }
+    };
+    isEditing = function() {
+      var _ref;
+      return (_ref = uservm.updateUser()) != null ? _ref : {
+        "true": false
+      };
+    };
     getUsersAndSuperiosByDepartmentId = function(departmentId, allUsers, allDepartments) {
       var department, pid, pusers, result, _i, _len;
       result = getUsersByDepartmentId(departmentId, allUsers);
@@ -177,7 +215,7 @@
         }
       }
     };
-    return getUsersByDepartmentId = function(departmentId, allUsers) {
+    getUsersByDepartmentId = function(departmentId, allUsers) {
       var result, user, _i, _len;
       result = [];
       if (!departmentId) {
@@ -190,6 +228,45 @@
         }
       }
       return result;
+    };
+    $("#usersTree").on("update", function(event) {
+      var selectedDepartment, user, userId;
+      userId = event["itemId"];
+      user = finduser(userId);
+      uservm.updateUser(user);
+      uservm.userName1(user["name"]);
+      selectedDepartment = getDepartmentByUserId(userId, UserModel.getLocalAllUsers(), uservm.departments());
+      uservm.selectedDepartment1(selectedDepartment);
+      return setSuperiorsByDepartmentId(selectedDepartment["id"]);
+    });
+    finduser = function(userId) {
+      var user, users, _i, _len;
+      users = UserModel.getLocalAllUsers();
+      for (_i = 0, _len = users.length; _i < _len; _i++) {
+        user = users[_i];
+        if (user['id'] === userId) {
+          return user;
+        }
+      }
+    };
+    return getDepartmentByUserId = function(userId, allUsers, departments) {
+      var department, departmentId, user, _i, _j, _len, _len1;
+      allUsers = UserModel.getLocalAllUsers();
+      departmentId = null;
+      for (_i = 0, _len = allUsers.length; _i < _len; _i++) {
+        user = allUsers[_i];
+        if (userId === user["id"]) {
+          departmentId = user["departmentId"];
+          break;
+        }
+      }
+      for (_j = 0, _len1 = departments.length; _j < _len1; _j++) {
+        department = departments[_j];
+        if (department["id"] === departmentId) {
+          return department;
+        }
+      }
+      return null;
     };
   };
 

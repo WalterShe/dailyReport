@@ -9,7 +9,7 @@ exports.createRutes = (app)->
   app.post('/login', user.login);
   app.post('/admin/createuser', user.createUser);
   app.post('/admin/removeuser', user.removeUser);
-  app.post('/admin/getallusers', user.getAllUsers);
+  app.get('/admin/getallusers', user.getAllUsers);
 
   app.get('/admin', admin.index);
   app.get('/admin/users', admin.usersIndex);

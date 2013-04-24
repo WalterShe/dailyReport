@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>用户管理-日报后台管理</title>
-    <link rel='stylesheet' href='/css/adminStyle.css' />
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/css/adminStyle.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
 </head>
@@ -16,7 +16,7 @@
     </ul>
 </header>
 <section id="users" class="container">
-  <div id="newUser">
+  <div id="newUser"  data-bind="visible: !updateUser()">
     <div class="title"><i class="icon-plus-sign"></i><h2>创建新用户</h2> </div>
     <label for="userName">用户名:
         <span data-bind="css:{errorTip: !validUserName()}, visible: !validUserName()">至少6个，最多25个字符</span></label>
@@ -27,20 +27,47 @@
         <span data-bind="css:{errorTip: !validPassword()}, visible: !validPassword()">至少7个，最多25个字符</span></label>
     <input type="password" required="required" name="password" id="password"
            data-bind="value:password, valueUpdate:'keyup'"/>
-    <label for="password">重复密码:
+    <label for="repassword">重复密码:
         <span data-bind="css:{errorTip: !validRePassword()}, visible: !validRePassword()">两次输入的密码不一致</span></label>
     <input type="password" required="required" name="repassword" id="repassword"
            data-bind="value:repassword, valueUpdate:'keyup'"/>
     <br/>
         <label for="userDepartment">所属部门:<span data-bind="css:{errorTip: !selectedDepartment()}, visible: !selectedDepartment()">必须选择一个部门</span></label>
-         <select id="userDepartment" name="userDepartment"
+         <select id="userDepartment" name="userDepartment1"
                  data-bind="options: departments, optionsText:'name', value:selectedDepartment, optionsCaption: '选择所属部门...'"></select>
-        <label for="superior">直接上级:</label>
-        <select id="superior" name="superior"
+        <label for="superior1">直接上级:</label>
+        <select id="superior1" name="superior1"
                 data-bind="options: superiors, optionsText:'name', value:selectedSuperior, optionsCaption: '选择直接上级...'"></select>
     <div><input id="submitBtn" type="submit" value="提交" class="btn btn-primary"
                 data-bind="click:submit, enable: valid()" /></div>
   </div>
+    <div id="updateUser" data-bind="visible: updateUser()">
+        <div class="title"><i class="icon-edit"></i><h2>更新用户信息</h2> </div>
+        <label for="userName1">用户名:
+            <span data-bind="css:{errorTip: !validUserName1()}, visible: !validUserName1()">至少6个，最多25个字符</span></label>
+        <input id="userName1" type="text" required="required" name="userName1"
+               data-bind="value: userName1, valueUpdate:'keyup'" />
+        <br />
+        <label for="password1">密码: 为空表示不修改原密码
+            <!-- <span data-bind="css:{errorTip: !validPassword1()}, visible: !validPassword1()">至少7个，最多25个字符</span>--></label>
+        <input type="password"  name="password1" id="password1"
+               data-bind="value:password1, valueUpdate:'keyup'"/>
+        <label for="repassword1">重复密码:
+            <span data-bind="css:{errorTip: !validRePassword1()}, visible: !validRePassword1()">两次输入的密码不一致</span></label>
+        <input type="password" name="repassword1" id="repassword1"
+               data-bind="value:repassword1, valueUpdate:'keyup'"/>
+        <br/>
+        <label for="userDepartment1">所属部门:<span data-bind="css:{errorTip: !selectedDepartment1()}, visible: !selectedDepartment1()">必须选择一个部门</span></label>
+        <select id="userDepartment1" name="userDepartment1"
+                data-bind="options: departments, optionsText:'name', value:selectedDepartment1, optionsCaption: '选择所属部门...'"></select>
+        <label for="superior">直接上级:</label>
+        <select id="superior" name="superior"
+                data-bind="options: superiors1, optionsText:'name', value:selectedSuperior1, optionsCaption: '选择直接上级...'"></select>
+        <div><input id="updateBtn" type="submit" value="更新" class="btn btn-primary"
+                    data-bind="click:submit, enable: valid1()" />
+            <input id="cancelBtn" type="submit" value="取消" class="btn btn-primary"
+                   data-bind="click:submit, enable: valid1()" /></div>
+    </div>
   <div id="usersTree"></div>
 </section>
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>

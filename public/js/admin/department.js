@@ -42,6 +42,14 @@
     var cancelUpdateDepartment, departmentvm, findDepartment, findParentDepartment;
     departmentvm = new DepartmentViewModel();
     ko.applyBindings(departmentvm);
+    $("#departmentTree").on("update", function(event) {
+      var department, departmentId;
+      departmentId = event["itemId"];
+      department = findDepartment(departmentId);
+      departmentvm.updateDepartment(department);
+      departmentvm.updateDepartmentName(department['name']);
+      return departmentvm.selectedParentDepartment(findParentDepartment(department));
+    });
     findDepartment = function(departmentId) {
       var department, departments, _i, _len;
       departments = departmentvm.departments();
@@ -66,14 +74,6 @@
       }
       return null;
     };
-    $("#departmentTree").on("update", function(event) {
-      var department, departmentId;
-      departmentId = event["itemId"];
-      department = findDepartment(departmentId);
-      departmentvm.updateDepartment(department);
-      departmentvm.updateDepartmentName(department['name']);
-      return departmentvm.selectedParentDepartment(findParentDepartment(department));
-    });
     $("#cancelUpdateBtn").click(function() {
       return cancelUpdateDepartment();
     });
