@@ -7,7 +7,6 @@ class UserModel
     $.post("/admin/createuser", data,
       (response)->
         user = response.data
-        console.log user
         user["name"] = user["userName"]
         delete user["userName"]
         if user["superiorId"]
@@ -17,6 +16,14 @@ class UserModel
         UserModel.allUsers.push(user)
         callback(response)
     , "json")
+
+  @updateUser: (data, callback)->
+    $.post("/admin/updateuser", data, (response)->
+      users = UserModel.parseUsers(response.data)
+      response.data = users
+      UserModel.allUsers = users
+      callback(response)
+    ,"json")
 
   @removeUser: (data, callback)->
     $.post("/admin/removeuser", data,
@@ -39,7 +46,6 @@ class UserModel
 
   @getLocalAllUsers: ->
     @allUsers
-
 
   # data 后台返回数据  	Object { 1:user_name="walter", 1:department_id="7", 1:superior_id:"3"}
   @parseUsers: (data)->
@@ -98,7 +104,7 @@ UserViewModel = ->
         self.superiors.push(newUser)
         treeList.show(UserModel.getLocalAllUsers()))
     else
-      alert("creation fail.")
+      console.log("creation fail.")
 
   self.updateUser = ko.observable(null)
 
@@ -122,7 +128,12 @@ UserViewModel = ->
   self.selectedSuperior1 = ko.observable(null)
 
   self.valid1 = ko.computed(->
-    self.selectedDepartment1()? and self.validUserName1() and self.validPassword1() and self.validRePassword1())
+    result = self.selectedDepartment1()? and self.validUserName1() and self.validRePassword1()
+    if self.password1()
+      result = result and self.validPassword1()
+
+    result)
+
   self
 
 
@@ -148,22 +159,22 @@ init = ->
 
   setSuperiorsByDepartmentId = (departmentId)->
     if departmentId
-      UserModel.getAllUsers((response)->
-        users = response.data
-        superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments())
-        setSuperiors(superiors) )
+      users = UserModel.getLocalAllUsers()
+      superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments())
+      setSuperiors(superiors)
     else
       setSuperiors([])
 
   setSuperiors = (superiors)->
-     if isEditing
+     if isEditing()
        uservm.superiors1(superiors)
      else
        uservm.superiors(superiors)
 
   isEditing = ->
-    uservm.updateUser() ? true : false
-
+    result = false
+    result = true if uservm.updateUser()
+    return result
 
   #根据部门Id获取该部门和上级部门所有成员
   getUsersAndSuperiosByDepartmentId = (departmentId, allUsers, allDepartments)->
@@ -183,6 +194,7 @@ init = ->
       result.push(user) if departmentId == user["departmentId"]
     result
 
+  #设置用户编辑界面状态
   $("#usersTree").on("update", (event)->
     userId = event["itemId"]
     user =  finduser(userId)
@@ -190,7 +202,14 @@ init = ->
     uservm.userName1(user["name"])
     selectedDepartment = getDepartmentByUserId(userId, UserModel.getLocalAllUsers(), uservm.departments())
     uservm.selectedDepartment1(selectedDepartment)
-    setSuperiorsByDepartmentId(selectedDepartment["id"]))
+    setSuperiorsByDepartmentId(selectedDepartment["id"])
+    superiors = uservm.superiors1()
+    return unless user["pid"]
+
+    for superior in superiors
+      if superior["id"] == user["pid"]
+        uservm.selectedSuperior1(superior)
+        return)
 
   finduser = (userId)->
     users = UserModel.getLocalAllUsers()
@@ -209,5 +228,24 @@ init = ->
     for department in departments
       return department if department["id"] == departmentId
     null
+
+  #取消更新
+  $("#cancelBtn").click( ->
+    cancelUpdate())
+
+  cancelUpdate = ->
+    treeList.showEditingItem()
+    uservm.updateUser(null)
+
+  $("#updateBtn").click( ->
+    if uservm.valid1()
+      data = {userId:uservm.updateUser()["id"] ,userName: $.trim(uservm.userName1()), password:$.trim(uservm.password1()),
+      departmentId:uservm.selectedDepartment1()?["id"], superiorId:uservm.selectedSuperior1()?["id"]}
+      UserModel.updateUser(data, (response)->
+        setSuperiorsByDepartmentId(uservm.selectedDepartment["id"])
+        cancelUpdate()
+        treeList.show(UserModel.getLocalAllUsers()))
+    else
+      console.log "valid fail")
 
 init()

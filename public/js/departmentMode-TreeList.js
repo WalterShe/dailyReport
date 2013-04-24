@@ -61,7 +61,8 @@
       if (!this.editingItem) {
         return;
       }
-      this.editingItem.parent().removeClass('selected');
+      console.log(this.editingItem);
+      this.editingItem.parent().removeClass('treeListItemSelected');
       this.editingItem.show();
       return this.editingItem = null;
     };

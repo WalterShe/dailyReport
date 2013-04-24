@@ -45,7 +45,8 @@ class TreeList
 
   showEditingItem: ->
     return unless  @editingItem
-    @editingItem.parent().removeClass('selected')
+    console.log  @editingItem
+    @editingItem.parent().removeClass('treeListItemSelected')
     @editingItem.show()
     @editingItem = null
 

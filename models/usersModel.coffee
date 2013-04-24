@@ -20,6 +20,24 @@ exports.createUser = (userName, password, departmentId, superiorId, callback) ->
       client.hmset("users", "#{reply}:user_name", userName, "#{reply}:password", password, "#{reply}:department_id", departmentId, replycallback)
   )
 
+exports.updateUser = (userId, userName, password, departmentId, superiorId, callback) ->
+  client = redis.createClient();
+
+  replycallback =  (err, reply)->
+    client.hgetall("users", (err, reply)->
+       client.quit()
+       callback(new Response(1, "success",reply)))
+
+  if (superiorId and password)
+    client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, "#{userId}:department_id", departmentId, "#{userId}:superior_id", superiorId, replycallback)
+  else if superiorId
+    client.hmset("users", "#{userId}:user_name", userName, "#{userId}:department_id", departmentId, "#{userId}:superior_id", superiorId, replycallback)
+  else if password
+    client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, "#{userId}:department_id", departmentId, replycallback)
+  else
+    client.hmset("users", "#{userId}:user_name", userName, "#{userId}:department_id", departmentId, replycallback)
+
+
 exports.getAllUsers = (callback) ->
   client = redis.createClient();
   client.hgetall("users", (err, reply)->
@@ -39,3 +57,4 @@ exports.removeUser = (userId, callback) ->
           newUsers[key] = value
       client.quit()
       callback(new Response(1, "success",newUsers))))
+

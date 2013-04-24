@@ -64,9 +64,9 @@
         <select id="superior" name="superior"
                 data-bind="options: superiors1, optionsText:'name', value:selectedSuperior1, optionsCaption: '选择直接上级...'"></select>
         <div><input id="updateBtn" type="submit" value="更新" class="btn btn-primary"
-                    data-bind="click:submit, enable: valid1()" />
-            <input id="cancelBtn" type="submit" value="取消" class="btn btn-primary"
-                   data-bind="click:submit, enable: valid1()" /></div>
+                    data-bind="enable: valid1()" />
+
+            <input id="cancelBtn" type="submit" value="取消" class="btn btn-primary"/></div>
     </div>
   <div id="usersTree"></div>
 </section>

@@ -10,6 +10,7 @@ exports.createRutes = (app)->
   app.post('/admin/createuser', user.createUser);
   app.post('/admin/removeuser', user.removeUser);
   app.get('/admin/getallusers', user.getAllUsers);
+  app.post('/admin/updateuser', user.updateUser);
 
   app.get('/admin', admin.index);
   app.get('/admin/users', admin.usersIndex);

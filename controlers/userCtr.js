@@ -58,6 +58,38 @@
     });
   };
 
+  exports.updateUser = function(req, res) {
+    var departmentId, errorMessage, hashedPassword, password, superiorId, userId, userName;
+    userId = sanitize(req.body.userId).trim();
+    userName = sanitize(req.body.userName).trim();
+    password = sanitize(req.body.password).trim();
+    departmentId = req.body.departmentId;
+    superiorId = req.body.superiorId;
+    errorMessage = "";
+    try {
+      check(userName, "字符长度为6-25，不能含有:符号").len(6, 25).notContains(":");
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    /*try
+      check(password, "字符长度为7-25，不能含有:符号").len(7,25).notContains(":")
+    catch  error
+      errorMessage = "#{errorMessage}, #{error.message}"
+    */
+
+    if (errorMessage === "") {
+      hashedPassword = null;
+      if (password) {
+        hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
+      }
+      return userModel.updateUser(userId, userName, hashedPassword, departmentId, superiorId, function(response) {
+        return res.send(response);
+      });
+    } else {
+      return res.send(new Response(0, errorMessage));
+    }
+  };
+
   exports.getAllUsers = function(req, res) {
     return userModel.getAllUsers(function(response) {
       return res.send(response);

@@ -39,6 +39,26 @@
     });
   };
 
+  exports.updateUser = function(userId, userName, password, departmentId, superiorId, callback) {
+    var client, replycallback;
+    client = redis.createClient();
+    replycallback = function(err, reply) {
+      return client.hgetall("users", function(err, reply) {
+        client.quit();
+        return callback(new Response(1, "success", reply));
+      });
+    };
+    if (superiorId && password) {
+      return client.hmset("users", "" + userId + ":user_name", userName, "" + userId + ":password", password, "" + userId + ":department_id", departmentId, "" + userId + ":superior_id", superiorId, replycallback);
+    } else if (superiorId) {
+      return client.hmset("users", "" + userId + ":user_name", userName, "" + userId + ":department_id", departmentId, "" + userId + ":superior_id", superiorId, replycallback);
+    } else if (password) {
+      return client.hmset("users", "" + userId + ":user_name", userName, "" + userId + ":password", password, "" + userId + ":department_id", departmentId, replycallback);
+    } else {
+      return client.hmset("users", "" + userId + ":user_name", userName, "" + userId + ":department_id", departmentId, replycallback);
+    }
+  };
+
   exports.getAllUsers = function(callback) {
     var client;
     client = redis.createClient();

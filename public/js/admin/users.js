@@ -12,7 +12,6 @@
       return $.post("/admin/createuser", data, function(response) {
         var user;
         user = response.data;
-        console.log(user);
         user["name"] = user["userName"];
         delete user["userName"];
         if (user["superiorId"]) {
@@ -21,6 +20,16 @@
         }
         response.data = user;
         UserModel.allUsers.push(user);
+        return callback(response);
+      }, "json");
+    };
+
+    UserModel.updateUser = function(data, callback) {
+      return $.post("/admin/updateuser", data, function(response) {
+        var users;
+        users = UserModel.parseUsers(response.data);
+        response.data = users;
+        UserModel.allUsers = users;
         return callback(response);
       }, "json");
     };
@@ -125,7 +134,7 @@
           return treeList.show(UserModel.getLocalAllUsers());
         });
       } else {
-        return alert("creation fail.");
+        return console.log("creation fail.");
       }
     };
     self.updateUser = ko.observable(null);
@@ -149,13 +158,18 @@
     self.superiors1 = ko.observableArray([]);
     self.selectedSuperior1 = ko.observable(null);
     self.valid1 = ko.computed(function() {
-      return (self.selectedDepartment1() != null) && self.validUserName1() && self.validPassword1() && self.validRePassword1();
+      var result;
+      result = (self.selectedDepartment1() != null) && self.validUserName1() && self.validRePassword1();
+      if (self.password1()) {
+        result = result && self.validPassword1();
+      }
+      return result;
     });
     return self;
   };
 
   init = function() {
-    var finduser, getDepartmentByUserId, getUsersAndSuperiosByDepartmentId, getUsersByDepartmentId, isEditing, setSuperiors, setSuperiorsByDepartmentId, uservm;
+    var cancelUpdate, finduser, getDepartmentByUserId, getUsersAndSuperiosByDepartmentId, getUsersByDepartmentId, isEditing, setSuperiors, setSuperiorsByDepartmentId, uservm;
     uservm = new UserViewModel();
     ko.applyBindings(uservm);
     DepartmemtModel.getAllDepartments(function(response) {
@@ -179,29 +193,29 @@
       return setSuperiorsByDepartmentId(departmentId);
     });
     setSuperiorsByDepartmentId = function(departmentId) {
+      var superiors, users;
       if (departmentId) {
-        return UserModel.getAllUsers(function(response) {
-          var superiors, users;
-          users = response.data;
-          superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments());
-          return setSuperiors(superiors);
-        });
+        users = UserModel.getLocalAllUsers();
+        superiors = getUsersAndSuperiosByDepartmentId(departmentId, users, uservm.departments());
+        return setSuperiors(superiors);
       } else {
         return setSuperiors([]);
       }
     };
     setSuperiors = function(superiors) {
-      if (isEditing) {
+      if (isEditing()) {
         return uservm.superiors1(superiors);
       } else {
         return uservm.superiors(superiors);
       }
     };
     isEditing = function() {
-      var _ref;
-      return (_ref = uservm.updateUser()) != null ? _ref : {
-        "true": false
-      };
+      var result;
+      result = false;
+      if (uservm.updateUser()) {
+        result = true;
+      }
+      return result;
     };
     getUsersAndSuperiosByDepartmentId = function(departmentId, allUsers, allDepartments) {
       var department, pid, pusers, result, _i, _len;
@@ -230,14 +244,25 @@
       return result;
     };
     $("#usersTree").on("update", function(event) {
-      var selectedDepartment, user, userId;
+      var selectedDepartment, superior, superiors, user, userId, _i, _len;
       userId = event["itemId"];
       user = finduser(userId);
       uservm.updateUser(user);
       uservm.userName1(user["name"]);
       selectedDepartment = getDepartmentByUserId(userId, UserModel.getLocalAllUsers(), uservm.departments());
       uservm.selectedDepartment1(selectedDepartment);
-      return setSuperiorsByDepartmentId(selectedDepartment["id"]);
+      setSuperiorsByDepartmentId(selectedDepartment["id"]);
+      superiors = uservm.superiors1();
+      if (!user["pid"]) {
+        return;
+      }
+      for (_i = 0, _len = superiors.length; _i < _len; _i++) {
+        superior = superiors[_i];
+        if (superior["id"] === user["pid"]) {
+          uservm.selectedSuperior1(superior);
+          return;
+        }
+      }
     });
     finduser = function(userId) {
       var user, users, _i, _len;
@@ -249,7 +274,7 @@
         }
       }
     };
-    return getDepartmentByUserId = function(userId, allUsers, departments) {
+    getDepartmentByUserId = function(userId, allUsers, departments) {
       var department, departmentId, user, _i, _j, _len, _len1;
       allUsers = UserModel.getLocalAllUsers();
       departmentId = null;
@@ -268,6 +293,32 @@
       }
       return null;
     };
+    $("#cancelBtn").click(function() {
+      return cancelUpdate();
+    });
+    cancelUpdate = function() {
+      treeList.showEditingItem();
+      return uservm.updateUser(null);
+    };
+    return $("#updateBtn").click(function() {
+      var data, _ref, _ref1;
+      if (uservm.valid1()) {
+        data = {
+          userId: uservm.updateUser()["id"],
+          userName: $.trim(uservm.userName1()),
+          password: $.trim(uservm.password1()),
+          departmentId: (_ref = uservm.selectedDepartment1()) != null ? _ref["id"] : void 0,
+          superiorId: (_ref1 = uservm.selectedSuperior1()) != null ? _ref1["id"] : void 0
+        };
+        return UserModel.updateUser(data, function(response) {
+          setSuperiorsByDepartmentId(uservm.selectedDepartment["id"]);
+          cancelUpdate();
+          return treeList.show(UserModel.getLocalAllUsers());
+        });
+      } else {
+        return console.log("valid fail");
+      }
+    });
   };
 
   init();
