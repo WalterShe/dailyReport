@@ -32,7 +32,16 @@ exports.removeDepartment = (departmentId, callback) ->
         else
           newDepartments[key] = value
 
-      callback(new Response(1,'success',newDepartments))))
+      callback(new Response(1,'success',newDepartments)))
+
+    # 该部门用户的部门属性清除
+    client.hgetall("users", (err, reply)->
+      users = reply
+      for key, value in users
+        childOfKey = key.split(":")
+        if childOfKey[1] == "department_id" and value == departmentId
+          client.hdel("users", key) )
+  )
 
 #更新部门
 exports.updateDepartment = (departmentId, departmentName, parentId, callback) ->

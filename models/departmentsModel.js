@@ -35,7 +35,7 @@
     var client;
     client = redis.createClient();
     return client.hdel("departments", "" + departmentId + ":name", "" + departmentId + ":pid", function(err, reply) {
-      return client.hgetall("departments", function(err, reply) {
+      client.hgetall("departments", function(err, reply) {
         var childOfKey, key, newDepartments, value;
         newDepartments = {};
         for (key in reply) {
@@ -48,6 +48,21 @@
           }
         }
         return callback(new Response(1, 'success', newDepartments));
+      });
+      return client.hgetall("users", function(err, reply) {
+        var childOfKey, key, users, value, _i, _len, _results;
+        users = reply;
+        _results = [];
+        for (value = _i = 0, _len = users.length; _i < _len; value = ++_i) {
+          key = users[value];
+          childOfKey = key.split(":");
+          if (childOfKey[1] === "department_id" && value === departmentId) {
+            _results.push(client.hdel("users", key));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
       });
     });
   };
