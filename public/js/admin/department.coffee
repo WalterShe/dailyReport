@@ -31,7 +31,7 @@ DepartmentViewModel = ->
 
 # 初始化 ----------------------------------------------------------------------------
 init = ->
-  departmentvm = new DepartmentViewModel();
+  departmentvm = new DepartmentViewModel()
   ko.applyBindings(departmentvm)
 
   $("#departmentTree").on("update", (event)->

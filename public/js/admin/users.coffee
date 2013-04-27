@@ -139,7 +139,7 @@ UserViewModel = ->
 
 # 初始化 ----------------------------------------------------------------------------
 init = ->
-  uservm = new UserViewModel();
+  uservm = new UserViewModel()
   ko.applyBindings(uservm)
 
   DepartmemtModel.getAllDepartments((response)->

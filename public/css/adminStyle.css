@@ -82,11 +82,13 @@ body.admin-users #users #usersTree {
   width: 300px;
   height: 430px;
   overflow: auto;
-  color: #555;
 }
 body.admin-users #users #updateUser {
   background-color: #FAA732;
   border: 1px solid #c58433;
+}
+* {
+  color: #555;
 }
 .errorTip {
   color: red;
