@@ -15,8 +15,8 @@
 <header class="navbar">
     <a class="brand" href="/" title="home page">Daily Report</a>
     <ul class="nav">
-        <li class="active"><a href="/admin">写日报</a></li>
-        <!-- <li ><a href="#">user</a></li> -->
+        <li class="active"><a href="#">写日报</a></li>
+        <li ><a href="/show">查看日报</a></li>
     </ul>
 </header>
 <section class="container">
@@ -31,29 +31,13 @@
                       placeholder="Here is your daily report..."></textarea></div>
 
         <div><input id="reportSubmitBtn" type="button" value="发布" class="btn btn-primary"
-                    data-bind="click:submit, enable:validDateTxt()"/></div>
-    </article>
-    <article id="reportList">
-        <ul class="unstyled">
-
-            <li class="report">
-                <p class="date"></p><p></p>
-                <p class="btn btn-link reply"></p>
-                <p class="btn btn-link delete"></p>
-
-        </ul>
-        <div class="pagination">
-            <ul>
-
-                <li class=""><a href="#"></a></li>
-
-            </ul>
-        </div>
+                    data-bind="enable:validDateTxt()"/></div>
     </article>
 </section>
 
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 <script type="text/javascript" src='/js/validator.js'></script>
-<script type="text/javascript" src='/js/report.js'></script>
+<script type="text/javascript" src='/js/ReportModel.js'></script>
+<script type="text/javascript" src='/js/writereport.js'></script>
 </body>
 </html>

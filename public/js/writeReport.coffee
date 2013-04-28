@@ -2,7 +2,7 @@ validator = new Validator()
 editor = UE.getEditor('content')
 
 # ViewModel---------------------------------------------------------------
-ReportViewModel = ->
+WriteReportViewModel = ->
   self = @
   self.dateTxt = ko.observable(null)
   self.validDateTxt = ko.computed(->
@@ -18,10 +18,6 @@ ReportViewModel = ->
     catch  error
       return false)
 
-  self.submit = ->
-    if self.validDateTxt()
-      console.log editor.getContent()
-
   self
 
 # 初始化 ---------------------------------------------------------------
@@ -29,15 +25,25 @@ init = ->
   $("#dateTxt").datepicker();
   $("#dateTxt").datepicker("option", "dateFormat", "yy-mm-dd")
 
-  reportvm = new ReportViewModel()
+  reportvm = new WriteReportViewModel()
   ko.applyBindings(reportvm)
 
-  today = new Date()
-  year = today.getFullYear()
-  month = today.getMonth() + 1
-  date = today.getDate()
-  dateStr =  "#{year}-#{month}-#{date}"
+  getDateStr = (date)->
+    today = new Date()
+    year = date.getFullYear()
+    month = date.getMonth() + 1
+    date = date.getDate()
+    return "#{year}-#{month}-#{date}"
+
+  dateStr =  getDateStr(new Date())
   reportvm.dateTxt(dateStr)
   #console.log $("#dateTxt").datepicker("getDate")
+
+  $("#reportSubmitBtn").click((event)->
+    return unless reportvm.validDateTxt()
+    dateStr = getDateStr($("#dateTxt").datepicker("getDate"))
+    data = {date:dateStr, content:editor.getContent()}
+    ReportModel.createReport(data, (response)->
+      console.log response))
 
 init()

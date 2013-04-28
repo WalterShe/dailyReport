@@ -12,7 +12,9 @@
 
   exports.createRutes = function(app) {
     app.get('/', report.index);
-    app.get('/write', report.write);
+    app.get('/write', report.writeIndex);
+    app.post('/write', report.write);
+    app.get('/show', report.showIndex);
     app.get('/login', user.loginIndex);
     app.post('/login', user.login);
     app.post('/admin/createuser', user.createUser);
