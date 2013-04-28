@@ -15,6 +15,7 @@
     app.get('/write', report.writeIndex);
     app.post('/write', report.write);
     app.get('/show', report.showIndex);
+    app.post('/getreports', report.getReports);
     app.get('/login', user.loginIndex);
     app.post('/login', user.login);
     app.post('/admin/createuser', user.createUser);

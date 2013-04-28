@@ -30,3 +30,19 @@ exports.write = (req, res) ->
 
 exports.showIndex = (req, res) ->
   res.render("show")
+
+exports.getReports = (req, res) ->
+  #第几页
+  page =  sanitize(req.body.page).trim()
+
+  #每页显示条数
+  pageNum =  sanitize(req.body.pageNum).trim()
+
+  errorMessage = ""
+  try
+    check(page).isNumeric().min(1)
+    check(page).isNumeric().min(1)
+    reportModel.getReports("28", page, pageNum, (response)->
+      res.send(response))
+  catch error
+    res.send(new Response(0,"页数和每页显示条数为非负数"))

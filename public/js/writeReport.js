@@ -54,7 +54,7 @@
         content: editor.getContent()
       };
       return ReportModel.createReport(data, function(response) {
-        return console.log(response);
+        return window.location.href = "/show";
       });
     });
   };

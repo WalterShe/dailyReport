@@ -21,13 +21,11 @@
 <section class="container">
     <div class="title"> <i class="icon-book"></i><h1>我的日报</h1></div>
     <article id="reportList">
-        <ul class="unstyled">
-
+        <ul class="unstyled" data-bind="foreach: reports">
             <li class="report">
-                <p class="date"></p><p></p>
+                <p class="date" data-bind="text: date"></p><div data-bind="html: content"></div>
                 <p class="btn btn-link reply"></p>
                 <p class="btn btn-link delete"></p>
-
         </ul>
         <div class="pagination">
             <ul>
@@ -42,6 +40,6 @@
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 <script type="text/javascript" src='/js/validator.js'></script>
 <script type="text/javascript" src='/js/ReportModel.js'></script>
-<script type="text/javascript" src='/js/showreport.js'></script>
+<script type="text/javascript" src='/js/showreports.js'></script>
 </body>
 </html>

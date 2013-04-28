@@ -44,4 +44,20 @@
     return res.render("show");
   };
 
+  exports.getReports = function(req, res) {
+    var errorMessage, page, pageNum;
+    page = sanitize(req.body.page).trim();
+    pageNum = sanitize(req.body.pageNum).trim();
+    errorMessage = "";
+    try {
+      check(page).isNumeric().min(1);
+      check(page).isNumeric().min(1);
+      return reportModel.getReports("28", page, pageNum, function(response) {
+        return res.send(response);
+      });
+    } catch (error) {
+      return res.send(new Response(0, "页数和每页显示条数为非负数"));
+    }
+  };
+
 }).call(this);

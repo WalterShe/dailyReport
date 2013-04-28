@@ -12,6 +12,12 @@
       }, "json");
     };
 
+    ReportModel.getReports = function(data, callback) {
+      return $.post("/getreports", data, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
     return ReportModel;
 
   })();
