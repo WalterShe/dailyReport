@@ -28,9 +28,8 @@
                 <p class="btn btn-link delete"></p>
         </ul>
         <div class="pagination">
-            <ul>
-
-                <li class=""><a href="#"></a></li>
+            <ul data-bind="foreach: pageNum">
+                <li data-bind="css: {active: ($index()+1) == $parent.currentPage()}"><span data-bind="text: $index()+1, visible: ($index()+1)==$parent.currentPage()"></span><a href="#" data-bind="text: $index()+1, attr: { href: '/show/'+($index()+1)}, visible: ($index()+1)!=$parent.currentPage()"></a></li>
 
             </ul>
         </div>

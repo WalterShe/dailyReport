@@ -60,4 +60,10 @@
     }
   };
 
+  exports.getReportNum = function(req, res) {
+    return reportModel.getReportNum("28", function(response) {
+      return res.send(response);
+    });
+  };
+
 }).call(this);

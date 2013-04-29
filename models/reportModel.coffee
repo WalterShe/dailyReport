@@ -37,3 +37,10 @@ exports.getReports = (userId, page, pageNum, callback) ->
           response.push({date:dates[i], content:contents[i]})
         client.quit()
         callback(new Response(1,'success',response)) )))
+
+exports.getReportNum = (userId, callback) ->
+  client = redis.createClient();
+  client.zcount("userid:#{userId}:reportIds", "-inf", "+inf", (err, count)->
+    client.quit()
+    console.log count
+    callback(new Response(1,'success',count)) )

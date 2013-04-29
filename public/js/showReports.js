@@ -8,6 +8,9 @@
     var self;
     self = this;
     self.reports = ko.observableArray([]);
+    self.pageNum = ko.observableArray([1]);
+    self.currentPage = ko.observable(1);
+    self.test = ko.observable(1);
     return self;
   };
 
@@ -19,8 +22,17 @@
       page: 1,
       pageNum: 7
     };
-    return ReportModel.getReports(data, function(response) {
+    ReportModel.getReports(data, function(response) {
       return reportvm.reports(response.data);
+    });
+    return ReportModel.getReportNum(function(response) {
+      var pageNum, _i, _results;
+      pageNum = Math.ceil(response.data / 7);
+      return reportvm.pageNum((function() {
+        _results = [];
+        for (var _i = 1; 1 <= pageNum ? _i <= pageNum : _i >= pageNum; 1 <= pageNum ? _i++ : _i--){ _results.push(_i); }
+        return _results;
+      }).apply(this));
     });
   };
 

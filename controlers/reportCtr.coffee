@@ -46,3 +46,7 @@ exports.getReports = (req, res) ->
       res.send(response))
   catch error
     res.send(new Response(0,"页数和每页显示条数为非负数"))
+
+exports.getReportNum = (req, res) ->
+  reportModel.getReportNum("28", (response)->
+    res.send(response))
