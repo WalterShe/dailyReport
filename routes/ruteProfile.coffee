@@ -8,6 +8,7 @@ exports.createRutes = (app)->
   app.get('/', report.index);
   app.get('/write', report.writeIndex);
   app.post('/write', report.write);
+  app.post('/delete', report.delete);
   app.get('/show', report.showIndex);
   app.post('/getreports', report.getReports);
   app.post('/getreportnum', report.getReportNum);

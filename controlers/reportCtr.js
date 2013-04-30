@@ -66,4 +66,12 @@
     });
   };
 
+  exports["delete"] = function(req, res) {
+    var reportId;
+    reportId = req.body.reportId;
+    return reportModel.deleteReport("28", reportId, function(response) {
+      return res.send(response);
+    });
+  };
+
 }).call(this);

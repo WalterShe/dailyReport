@@ -2,7 +2,7 @@ redis = require("redis")
 {Response} = require('../vo/response')
 
 exports.createReport = (userId, content, dateStr, callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   userId = "28"
   client.incr("next_report_id", (err, reportId)->
     score = getDateNumber(dateStr)
@@ -18,7 +18,7 @@ getDateNumber = (dateStr)->
   parseInt("#{year}#{months}#{date}")
 
 exports.getReports = (userId, page, pageNum, callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   start =  pageNum * (page-1)
   start = 0 if start < 0
   end = (pageNum * page) - 1
@@ -34,13 +34,20 @@ exports.getReports = (userId, page, pageNum, callback) ->
         len = contents.length
         response = []
         for i in [0...len]
-          response.push({date:dates[i], content:contents[i]})
+          response.push({id:reportIds[i], date:dates[i], content:contents[i]})
         client.quit()
         callback(new Response(1,'success',response)) )))
 
 exports.getReportNum = (userId, callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   client.zcount("userid:#{userId}:reportIds", "-inf", "+inf", (err, count)->
     client.quit()
     console.log count
     callback(new Response(1,'success',count)) )
+
+exports.deleteReport = (userId, reportId, callback)->
+  client = redis.createClient()
+  client.zrem("userid:#{userId}:reportIds", reportId, (err, reply)->
+    client.hdel("userid:#{userId}:reports", "#{reportId}:date", "#{reportId}:content", (err, reply)->
+    client.quit()
+    callback(new Response(1,'success',reply))))

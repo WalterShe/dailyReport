@@ -24,4 +24,12 @@ init = ->
     pageNum = Math.ceil(response.data / 7 )
     reportvm.pageNum([1..pageNum]))
 
+  $("#reportList").on("click", "p.delete", ->
+    reportId = $(this).attr("reportId")
+    ReportModel.deleteReport({reportId:reportId}, (response)->
+      reports = reportvm.reports()
+      for report in reports
+        if report["id"] == reportId
+          return reportvm.reports.remove(report)  ))
+
 init()

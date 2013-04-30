@@ -20,12 +20,12 @@
 </header>
 <section class="container">
     <div class="title"> <i class="icon-book"></i><h1>我的日报</h1></div>
-    <article id="reportList">
+    <article id="reportList" >
         <ul class="unstyled" data-bind="foreach: reports">
             <li class="report">
                 <p class="date" data-bind="text: date"></p><div data-bind="html: content"></div>
-                <p class="btn btn-link reply"></p>
-                <p class="btn btn-link delete"></p>
+                <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p>
+                <p class="btn btn-link delete" data-bind="attr: {reportId: id}">delete</p>
         </ul>
         <div class="pagination">
             <ul data-bind="foreach: pageNum">

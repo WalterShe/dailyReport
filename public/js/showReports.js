@@ -25,7 +25,7 @@
     ReportModel.getReports(data, function(response) {
       return reportvm.reports(response.data);
     });
-    return ReportModel.getReportNum(function(response) {
+    ReportModel.getReportNum(function(response) {
       var pageNum, _i, _results;
       pageNum = Math.ceil(response.data / 7);
       return reportvm.pageNum((function() {
@@ -33,6 +33,22 @@
         for (var _i = 1; 1 <= pageNum ? _i <= pageNum : _i >= pageNum; 1 <= pageNum ? _i++ : _i--){ _results.push(_i); }
         return _results;
       }).apply(this));
+    });
+    return $("#reportList").on("click", "p.delete", function() {
+      var reportId;
+      reportId = $(this).attr("reportId");
+      return ReportModel.deleteReport({
+        reportId: reportId
+      }, function(response) {
+        var report, reports, _i, _len;
+        reports = reportvm.reports();
+        for (_i = 0, _len = reports.length; _i < _len; _i++) {
+          report = reports[_i];
+          if (report["id"] === reportId) {
+            return reportvm.reports.remove(report);
+          }
+        }
+      });
     });
   };
 

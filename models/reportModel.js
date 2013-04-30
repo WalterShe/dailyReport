@@ -57,6 +57,7 @@
           response = [];
           for (i = _j = 0; 0 <= len ? _j < len : _j > len; i = 0 <= len ? ++_j : --_j) {
             response.push({
+              id: reportIds[i],
               date: dates[i],
               content: contents[i]
             });
@@ -75,6 +76,14 @@
       client.quit();
       console.log(count);
       return callback(new Response(1, 'success', count));
+    });
+  };
+
+  exports.deleteReport = function(userId, reportId, callback) {
+    var client;
+    client = redis.createClient();
+    return client.zrem("userid:" + userId + ":reportIds", reportId, function(err, reply) {
+      return client.hdel("userid:" + userId + ":reports", "" + reportId + ":date", "" + reportId + ":content", function(err, reply) {}, client.quit(), callback(new Response(1, 'success', reply)));
     });
   };
 

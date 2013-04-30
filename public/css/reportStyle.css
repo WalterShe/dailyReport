@@ -17,13 +17,14 @@ div.title h1 {
   display: inline;
   font-size: 18px;
   padding-left: 5px;
+  margin: 0;
 }
 #reportCreation {
   background-color: #fbeed5;
   border: 1px solid #E5E5E5;
   border-radius: 5px 5px 5px 5px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  padding: 18px 20px;
+  padding: 0 20px 18px 20px;
 }
 #reportCreation textarea {
   width: 100%;
@@ -34,21 +35,19 @@ div.title h1 {
 #reportCreation #reportSubmitBtn {
   margin-top: 20px;
 }
-#reportList {
-  margin-top: 30px;
-}
 #reportList li.report {
   background-color: #eeeeee;
   border: 1px solid #E5E5E5;
   border-radius: 5px 5px 5px 5px;
   padding: 5px;
-  margin-top: 10px;
+  margin-bottom: 15px;
   width: 100%;
   float: left;
 }
 #reportList li.report .date {
   font-size: 18px;
   font-weight: bold;
+  color: #1a700b;
 }
 #reportList li.report .reply,
 #reportList li.report .delete {

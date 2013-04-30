@@ -6,6 +6,11 @@ class ReportModel
       callback(response)
     , "json")
 
+  @deleteReport: (data, callback)->
+    $.post("/delete", data, (response)->
+      callback(response)
+    , "json")
+
   @getReportNum: (callback)->
     $.post("/getreportnum", (response)->
       callback(response)

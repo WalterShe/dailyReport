@@ -50,3 +50,8 @@ exports.getReports = (req, res) ->
 exports.getReportNum = (req, res) ->
   reportModel.getReportNum("28", (response)->
     res.send(response))
+
+exports.delete = (req, res) ->
+  reportId =  req.body.reportId
+  reportModel.deleteReport("28", reportId, (response)->
+    res.send(response))

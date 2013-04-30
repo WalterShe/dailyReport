@@ -12,6 +12,12 @@
       }, "json");
     };
 
+    ReportModel.deleteReport = function(data, callback) {
+      return $.post("/delete", data, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
     ReportModel.getReportNum = function(callback) {
       return $.post("/getreportnum", function(response) {
         return callback(response);
