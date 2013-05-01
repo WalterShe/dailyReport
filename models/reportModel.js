@@ -33,14 +33,14 @@
     return parseInt("" + year + months + date);
   };
 
-  exports.getReports = function(userId, page, pageNum, callback) {
+  exports.getReports = function(userId, page, numOfPage, callback) {
     var client, end, start;
     client = redis.createClient();
-    start = pageNum * (page - 1);
+    start = numOfPage * (page - 1);
     if (start < 0) {
       start = 0;
     }
-    end = (pageNum * page) - 1;
+    end = (numOfPage * page) - 1;
     return client.zrevrange("userid:" + userId + ":reportIds", start, end, function(err, reportIds) {
       var contentArgs, dateArgs, reportId, _i, _len;
       dateArgs = ["userid:" + userId + ":reports"];

@@ -45,14 +45,15 @@
   };
 
   exports.getReports = function(req, res) {
-    var errorMessage, page, pageNum;
+    var errorMessage, numOfPage, page;
     page = sanitize(req.body.page).trim();
-    pageNum = sanitize(req.body.pageNum).trim();
+    numOfPage = sanitize(req.body.numOfPage).trim();
+    console.log("page:" + page + ", numOfPage" + numOfPage);
     errorMessage = "";
     try {
       check(page).isNumeric().min(1);
       check(page).isNumeric().min(1);
-      return reportModel.getReports("28", page, pageNum, function(response) {
+      return reportModel.getReports("28", page, numOfPage, function(response) {
         return res.send(response);
       });
     } catch (error) {

@@ -36,13 +36,13 @@ exports.getReports = (req, res) ->
   page =  sanitize(req.body.page).trim()
 
   #每页显示条数
-  pageNum =  sanitize(req.body.pageNum).trim()
-
+  numOfPage =  sanitize(req.body.numOfPage).trim()
+  console.log "page:#{page}, numOfPage#{numOfPage}"
   errorMessage = ""
   try
     check(page).isNumeric().min(1)
     check(page).isNumeric().min(1)
-    reportModel.getReports("28", page, pageNum, (response)->
+    reportModel.getReports("28", page, numOfPage, (response)->
       res.send(response))
   catch error
     res.send(new Response(0,"页数和每页显示条数为非负数"))

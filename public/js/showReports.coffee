@@ -12,17 +12,20 @@ ShowReportsViewModel = ->
 
 # 初始化 ---------------------------------------------------------------
 init = ->
-
+  NUMOFPAGE = 4
   reportvm = new ShowReportsViewModel()
   ko.applyBindings(reportvm)
 
-  data = {page:1, pageNum:7}
+  data = {page:1, numOfPage:NUMOFPAGE}
   ReportModel.getReports(data, (response)->
     reportvm.reports(response.data))
 
-  ReportModel.getReportNum((response)->
-    pageNum = Math.ceil(response.data / 7 )
-    reportvm.pageNum([1..pageNum]))
+  getPageNum = ->
+    ReportModel.getReportNum((response)->
+      pageNum = Math.ceil(response.data / NUMOFPAGE )
+      reportvm.pageNum([1..pageNum]))
+
+  getPageNum()
 
   $("#reportList").on("click", "p.delete", ->
     reportId = $(this).attr("reportId")
@@ -30,6 +33,23 @@ init = ->
       reports = reportvm.reports()
       for report in reports
         if report["id"] == reportId
-          return reportvm.reports.remove(report)  ))
+          reportvm.reports.remove(report)
+          if (reportvm.reports().length == 0 &&  reportvm.currentPage() > 1)
+            page = reportvm.currentPage() - 1
+            gotoPage(page)
+          getPageNum()
+          return))
+
+  $("div.pagination").on("click", "li a", ->
+    page = $(this).text()
+    page = parseInt(page)
+    gotoPage(page)
+    false)
+
+  gotoPage = (page)->
+    reportvm.currentPage(page)
+    data = {page:page, numOfPage:NUMOFPAGE}
+    ReportModel.getReports(data, (response)->
+      reportvm.reports(response.data))
 
 init()

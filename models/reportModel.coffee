@@ -17,11 +17,11 @@ getDateNumber = (dateStr)->
   date = "0#{date}" if date.length == 1
   parseInt("#{year}#{months}#{date}")
 
-exports.getReports = (userId, page, pageNum, callback) ->
+exports.getReports = (userId, page, numOfPage, callback) ->
   client = redis.createClient()
-  start =  pageNum * (page-1)
+  start =  numOfPage * (page-1)
   start = 0 if start < 0
-  end = (pageNum * page) - 1
+  end = (numOfPage * page) - 1
   client.zrevrange("userid:#{userId}:reportIds", start, end, (err, reportIds)->
     dateArgs = ["userid:#{userId}:reports"]
     contentArgs = ["userid:#{userId}:reports"]
