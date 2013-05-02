@@ -6,7 +6,6 @@ ShowReportsViewModel = ->
   self.reports = ko.observableArray([])
   self.pageNum = ko.observableArray([1])
   self.currentPage = ko.observable(1)
-  self.test = ko.observable(1)
 
   self
 

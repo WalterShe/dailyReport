@@ -74,7 +74,6 @@
     client = redis.createClient();
     return client.zcount("userid:" + userId + ":reportIds", "-inf", "+inf", function(err, count) {
       client.quit();
-      console.log(count);
       return callback(new Response(1, 'success', count));
     });
   };

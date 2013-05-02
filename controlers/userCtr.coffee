@@ -74,3 +74,4 @@ exports.updateUser = (req, res) ->
 exports.getAllUsers = (req, res) ->
   userModel.getAllUsers((response)->
     res.send(response))
+

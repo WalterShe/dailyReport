@@ -16,7 +16,10 @@
     <a class="brand" href="/" title="home page">Daily Report</a>
     <ul class="nav">
         <li class="active"><a href="#">写日报</a></li>
-        <li ><a href="/show">查看日报</a></li>
+        <li ><a href="/show">我的日报</a></li>
+        {{#if hasSubordinate}}
+        <li ><a href="/showsubordinate">下属日报</a></li>
+        {{/if}}
     </ul>
 </header>
 <section class="container">

@@ -14,7 +14,7 @@ class TreeList
       $(@).removeClass('treeListItemOver') unless $(this) == @editingItem)
 
     $(@containerNode).on("click", "span.update", (event)=>
-       t = $(event.target);
+       t = $(event.target)
        t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
        t.hide();
        if @editingItem
@@ -26,7 +26,7 @@ class TreeList
        $(@containerNode).trigger(updateEvent))
 
     $(@containerNode).on("click", "span.delete", (event)=>
-      t = $(event.target);
+      t = $(event.target)
       deleteEvent = jQuery.Event("delete")
       deleteEvent["itemId"] = t.parent().attr('id')
       $(@containerNode).trigger(deleteEvent))

@@ -2,13 +2,12 @@ crypto = require('crypto');
 check = require('validator').check
 sanitize = require('validator').sanitize
 reportModel = require('../models/reportModel')
+userModel = require('../models/usersModel')
 {Response} = require('../vo/Response')
 
-exports.index = (req, res) ->
-  res.render("index")
-
 exports.writeIndex = (req, res) ->
-  res.render("write")
+  userId = "28"
+  showPage(res, userId, "write")
 
 exports.write = (req, res) ->
   dateStr =  sanitize(req.body.date).trim()
@@ -29,7 +28,20 @@ exports.write = (req, res) ->
     res.send(new Response(0,"日期格式不正确或者内容为空"))
 
 exports.showIndex = (req, res) ->
-  res.render("show")
+  userId = "28"
+  showPage(res, userId, "show")
+
+showPage = (res, userId, pageTitle) ->
+  userModel.hasSubordinate(userId, (result)->
+    data = {hasSubordinate: result}
+    res.render(pageTitle, data))
+
+exports.showsubordinateIndex = (req, res) ->
+  userModel.hasSubordinate("28", (result)->
+    if result
+      res.render("showsubordinate")
+    else
+      res.send("您目前没有下属") )
 
 exports.getReports = (req, res) ->
   #第几页

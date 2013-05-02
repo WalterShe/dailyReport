@@ -51,7 +51,7 @@ exports.removeUser = (userId, callback) ->
   client.hdel("users", "#{userId}:user_name", "#{userId}:password", "#{userId}:department_id", "#{userId}:superior_id", (err, reply)->
     client.hgetall("users", (err, reply)->
       newUsers = getUsersWithoutPassword(reply)
-      for key, value of reply
+      for key, value of newUsers
         childOfKey = key.split(":")
         if childOfKey[1] == "superior_id" and value == userId
           client.hdel("users", key)
@@ -69,3 +69,18 @@ getUsersWithoutPassword = (users)->
     filterUsers[key] = value unless childOfKey[1] == "password"
 
   filterUsers
+
+# 查看某个用户（userId）是否有下属
+exports.hasSubordinate = (userId, callback) ->
+  client = redis.createClient();
+  client.hgetall("users", (err, users)->
+    result = false
+    for key, value of users
+      childOfKey = key.split(":")
+      if childOfKey[1] == "superior_id" and value == userId
+        result = true
+        console.log result
+        break
+    client.quit()
+    console.log result
+    callback(result))

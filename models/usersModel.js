@@ -79,8 +79,8 @@
       return client.hgetall("users", function(err, reply) {
         var childOfKey, key, newUsers, value;
         newUsers = getUsersWithoutPassword(reply);
-        for (key in reply) {
-          value = reply[key];
+        for (key in newUsers) {
+          value = newUsers[key];
           childOfKey = key.split(":");
           if (childOfKey[1] === "superior_id" && value === userId) {
             client.hdel("users", key);
@@ -105,6 +105,27 @@
       }
     }
     return filterUsers;
+  };
+
+  exports.hasSubordinate = function(userId, callback) {
+    var client;
+    client = redis.createClient();
+    return client.hgetall("users", function(err, users) {
+      var childOfKey, key, result, value;
+      result = false;
+      for (key in users) {
+        value = users[key];
+        childOfKey = key.split(":");
+        if (childOfKey[1] === "superior_id" && value === userId) {
+          result = true;
+          console.log(result);
+          break;
+        }
+      }
+      client.quit();
+      console.log(result);
+      return callback(result);
+    });
   };
 
 }).call(this);

@@ -42,7 +42,6 @@ exports.getReportNum = (userId, callback) ->
   client = redis.createClient()
   client.zcount("userid:#{userId}:reportIds", "-inf", "+inf", (err, count)->
     client.quit()
-    console.log count
     callback(new Response(1,'success',count)) )
 
 exports.deleteReport = (userId, reportId, callback)->
