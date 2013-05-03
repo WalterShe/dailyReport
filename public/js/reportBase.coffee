@@ -6,6 +6,7 @@ ShowReportsViewModel = ->
   self.reportNum = ko.observable(0)
   self.pageNumArray = ko.computed(->
     pageNum = Math.ceil(self.reportNum() / NUMOFPAGE)
+    pageNum = 1 if pageNum == 0
     [1..pageNum])
 
   self.currentPage = ko.observable(1)
@@ -19,7 +20,6 @@ NUMOFPAGE = 4
 
 getReports = (userId=null)->
   data = {page:1, numOfPage:NUMOFPAGE, userId:userId}
-  console.log data
   ReportModel.getReports(data, (response)->
     reportvm.reports(response.data))
 

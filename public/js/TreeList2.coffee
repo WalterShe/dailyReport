@@ -53,7 +53,6 @@ class TreeList2
     newnode = "#{node} ul:first"
     for value in data
       value.node ?= 0
-      console.log value.node
       linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='page'><span class='nodename'>#{value.label}</span><span class='review btn btn-warning'>查看</span></div></div></li>"
       if value.node == 1
         linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='node'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span></div></div></li>"

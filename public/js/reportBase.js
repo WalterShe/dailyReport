@@ -10,6 +10,9 @@
     self.pageNumArray = ko.computed(function() {
       var pageNum, _i, _results;
       pageNum = Math.ceil(self.reportNum() / NUMOFPAGE);
+      if (pageNum === 0) {
+        pageNum = 1;
+      }
       return (function() {
         _results = [];
         for (var _i = 1; 1 <= pageNum ? _i <= pageNum : _i >= pageNum; 1 <= pageNum ? _i++ : _i--){ _results.push(_i); }
@@ -32,7 +35,6 @@
       numOfPage: NUMOFPAGE,
       userId: userId
     };
-    console.log(data);
     return ReportModel.getReports(data, function(response) {
       return reportvm.reports(response.data);
     });

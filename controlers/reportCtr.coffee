@@ -47,13 +47,11 @@ exports.getReports = (req, res) ->
   #第几页
   page =  sanitize(req.body.page).trim()
   userId = sanitize(req.body.userId).trim()
-  console.log "userId:#{userId}"
-  userId ?= "28"
-  console.log "userId:#{userId}"
+  console.log "userId:#{userId}-"
+  userId = "28" #unless userId
+  console.log "userId:#{userId}-"
   #每页显示条数
   numOfPage =  sanitize(req.body.numOfPage).trim()
-  #console.log "page:#{page}, numOfPage#{numOfPage}"
-  errorMessage = ""
   try
     check(page).isNumeric().min(1)
     check(page).isNumeric().min(1)
@@ -64,7 +62,8 @@ exports.getReports = (req, res) ->
 
 exports.getReportNum = (req, res) ->
   userId = sanitize(req.body.userId).trim()
-  userId ?= "28"
+  userId = "28" #unless userId
+
   reportModel.getReportNum(userId, (response)->
     res.send(response))
 

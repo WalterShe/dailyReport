@@ -30,7 +30,7 @@
                 <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p>
                 <p class="btn btn-link delete" data-bind="attr: {reportId: id}">delete</p>
         </ul>
-        <div class="pagination">
+        <div class="pagination" data-bind="if: pageNumArray().length > 1">
             <ul data-bind="foreach: pageNumArray">
                 <li data-bind="css: {active: ($index()+1) == $parent.currentPage()}"><span data-bind="text: $index()+1, visible: ($index()+1)==$parent.currentPage()"></span><a href="#" data-bind="text: $index()+1, visible: ($index()+1)!=$parent.currentPage()"></a></li>
             </ul>

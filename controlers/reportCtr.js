@@ -67,16 +67,13 @@
   };
 
   exports.getReports = function(req, res) {
-    var errorMessage, numOfPage, page, userId;
+    var numOfPage, page, userId;
     page = sanitize(req.body.page).trim();
     userId = sanitize(req.body.userId).trim();
-    console.log("userId:" + userId);
-    if (userId == null) {
-      userId = "28";
-    }
-    console.log("userId:" + userId);
+    console.log("userId:" + userId + "-");
+    userId = "28";
+    console.log("userId:" + userId + "-");
     numOfPage = sanitize(req.body.numOfPage).trim();
-    errorMessage = "";
     try {
       check(page).isNumeric().min(1);
       check(page).isNumeric().min(1);
@@ -91,9 +88,7 @@
   exports.getReportNum = function(req, res) {
     var userId;
     userId = sanitize(req.body.userId).trim();
-    if (userId == null) {
-      userId = "28";
-    }
+    userId = "28";
     return reportModel.getReportNum(userId, function(response) {
       return res.send(response);
     });
