@@ -15,6 +15,7 @@
     app.post('/write', report.write);
     app.post('/delete', report["delete"]);
     app.get('/show', report.showIndex);
+    app.post('/getsubordinateuseranddepartment', report.getSubordinateUserAndDepartment);
     app.get('/showsubordinate', report.showsubordinateIndex);
     app.post('/getreports', report.getReports);
     app.post('/getreportnum', report.getReportNum);

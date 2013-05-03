@@ -11,8 +11,13 @@ class ReportModel
       callback(response)
     , "json")
 
-  @getReportNum: (callback)->
-    $.post("/getreportnum", (response)->
+  @getReportNum: (userId, callback)->
+    $.post("/getreportnum", {userId:userId}, (response)->
+      callback(response)
+    , "json")
+
+  @getSubordinateUserAndDepartment: (userId, callback)->
+    $.post("/getsubordinateuseranddepartment", {userId:userId}, (response)->
       callback(response)
     , "json")
 

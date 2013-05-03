@@ -1,5 +1,6 @@
 redis = require("redis")
 {Response} = require('../vo/response')
+userModel = require('./usersModel')
 
 exports.createReport = (userId, content, dateStr, callback) ->
   client = redis.createClient()
@@ -50,3 +51,119 @@ exports.deleteReport = (userId, reportId, callback)->
     client.hdel("userid:#{userId}:reports", "#{reportId}:date", "#{reportId}:content", (err, reply)->
     client.quit()
     callback(new Response(1,'success',reply))))
+
+exports.getSubordinateUserAndDepartment = (userId, callback)->
+  client = redis.createClient()
+  client.hgetall("users", (err, users)->
+    [userObjs, userArray] = parseUsers(users)
+    userTree = getDepartTreeData(userArray, {})
+    subordinateIds = []
+    children = []
+
+    for user in userTree
+      if user["id"] == userId
+        children = user["children"]
+        break
+
+    getSubordinateIds = (children, subordinateIds)->
+      for user in children
+        subordinateIds.push(user["id"])
+        getSubordinateIds(user["children"], subordinateIds) if user["children"]
+
+    getSubordinateIds(children, subordinateIds)
+    subordinateUsers = []
+
+    for userId in subordinateIds
+      subordinateUsers.push(userObjs[userId])
+
+    client.hgetall("departments", (err, departments)->
+
+      [departmentObjs, _] = parseDepartments(departments)
+      subordinateDepartmentObjs = {}
+
+      for user in subordinateUsers
+        departmentId = user["departmentId"]
+        subordinateDepartmentObjs[departmentId] = departmentObjs[departmentId]
+
+      subordinateDepartments = []
+      for _, department of subordinateDepartmentObjs
+        subordinateDepartments.push(department)
+
+      departmentTree = getDepartTreeData(subordinateDepartments, subordinateDepartmentObjs)
+
+      getUserDepartmentTreeData = (departmentTree)->
+        for department in departmentTree
+          # 不是部门节点的跳过
+          continue unless department["node"]
+          departmentId = department["id"]
+          department["children"] ?= []
+          for user in subordinateUsers
+            continue if user["departmentId"] != departmentId
+            department["children"].push({id:user["id"],label:user["name"]})
+
+          if department["children"]
+            getUserDepartmentTreeData(department["children"])
+      getUserDepartmentTreeData(departmentTree)
+      client.quit()
+
+      callback(new Response(1,'success',departmentTree))))
+
+# data 后台返回数据  	Object { 1:user_name="walter", 1:department_id="7", 1:superior_id:"3"}
+ parseUsers = (data)->
+  resultObj = {} #Object { 1:{id:1, name:"walter",pid:"3", departmentId:"7"}}
+  for key, value of data
+    childOfKey = key.split(":")
+    userId = childOfKey[0]
+    resultObj[userId] ?= {id: userId}
+    if childOfKey[1] == "user_name"
+      resultObj[userId]["name"] = value
+    else if childOfKey[1] == "department_id"
+      resultObj[userId]["departmentId"] = value
+    else if childOfKey[1] == "superior_id"
+      resultObj[userId]["pid"] = value
+
+  result = []
+  for key2, value2 of resultObj
+    result.push(value2)
+
+  # h该函数输出数据 [{id:1, name:"walter",pid:"3", departmentId:"7"}]
+  [resultObj, result]
+
+# data 后台返回数据  	Object { 1:name="PHP", 2:name="IOS", 3:name="p2", 3:pid="1"}
+# 输出数据 Object { 1:{id:1, name:"PHP"}, 2:{id:2, name:"ios"},3:{id:3, name:"p2", pid:"1"}}
+parseDepartments = (data)->
+  resultObj = {}
+  for key, value of data
+    childOfKey = key.split(":")
+    departmentId = childOfKey[0]
+    resultObj[departmentId] ?= {id: departmentId}
+    if childOfKey[1] == "name"
+      resultObj[departmentId]["name"] = value
+    else if childOfKey[1] == "pid"
+      resultObj[departmentId]["pid"] = value
+
+  result = []
+  for key2, value2 of resultObj
+    result.push(value2)
+
+  # h该函数输出数据 [{id:1, name:"PHP"}, {id:2, name:"ios"},{id:3, name:"p2", pid:"1"}]
+  [resultObj,result]
+
+getDepartTreeData = (departs, allObjs)->
+  treeData = []
+  for value in departs
+    rootnode = {label:value.name, id:value.id, node:1};
+    treeData.push(rootnode) unless (value.pid and  allObjs[value.pid])
+
+  findChidren = (node, departs)->
+    for value in departs
+      if value.pid == node.id
+        node.children = [] unless node.children
+        childNode = {label:value.name, id:value.id, node:1}
+        node.children.push(childNode)
+        findChidren(childNode, departs)
+
+  for node in treeData
+    findChidren(node, departs)
+
+  treeData

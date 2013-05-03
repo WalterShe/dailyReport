@@ -97,4 +97,12 @@
     });
   };
 
+  exports.getSubordinateUserAndDepartment = function(req, res) {
+    var userId;
+    userId = "28";
+    return reportModel.getSubordinateUserAndDepartment("28", function(response) {
+      return res.send(response);
+    });
+  };
+
 }).call(this);

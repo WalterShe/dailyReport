@@ -18,8 +18,18 @@
       }, "json");
     };
 
-    ReportModel.getReportNum = function(callback) {
-      return $.post("/getreportnum", function(response) {
+    ReportModel.getReportNum = function(userId, callback) {
+      return $.post("/getreportnum", {
+        userId: userId
+      }, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
+    ReportModel.getSubordinateUserAndDepartment = function(userId, callback) {
+      return $.post("/getsubordinateuseranddepartment", {
+        userId: userId
+      }, function(response) {
         return callback(response);
       }, "json");
     };

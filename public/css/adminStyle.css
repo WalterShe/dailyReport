@@ -23,7 +23,8 @@
   cursor: pointer;
 }
 .treeList li div span.delete,
-.treeList li div span.update {
+.treeList li div span.update,
+.treeList li div span.review {
   margin-right: 8px;
   font-size: 12px;
   height: 16px;

@@ -67,3 +67,9 @@ exports.delete = (req, res) ->
   reportId =  req.body.reportId
   reportModel.deleteReport("28", reportId, (response)->
     res.send(response))
+
+
+exports.getSubordinateUserAndDepartment = (req, res) ->
+  userId = "28"
+  reportModel.getSubordinateUserAndDepartment("28", (response)->
+    res.send(response))
