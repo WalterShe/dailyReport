@@ -67,15 +67,20 @@
   };
 
   exports.getReports = function(req, res) {
-    var errorMessage, numOfPage, page;
+    var errorMessage, numOfPage, page, userId;
     page = sanitize(req.body.page).trim();
+    userId = sanitize(req.body.userId).trim();
+    console.log("userId:" + userId);
+    if (userId == null) {
+      userId = "28";
+    }
+    console.log("userId:" + userId);
     numOfPage = sanitize(req.body.numOfPage).trim();
-    console.log("page:" + page + ", numOfPage" + numOfPage);
     errorMessage = "";
     try {
       check(page).isNumeric().min(1);
       check(page).isNumeric().min(1);
-      return reportModel.getReports("28", page, numOfPage, function(response) {
+      return reportModel.getReports(userId, page, numOfPage, function(response) {
         return res.send(response);
       });
     } catch (error) {
@@ -84,7 +89,12 @@
   };
 
   exports.getReportNum = function(req, res) {
-    return reportModel.getReportNum("28", function(response) {
+    var userId;
+    userId = sanitize(req.body.userId).trim();
+    if (userId == null) {
+      userId = "28";
+    }
+    return reportModel.getReportNum(userId, function(response) {
       return res.send(response);
     });
   };

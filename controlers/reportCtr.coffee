@@ -46,21 +46,26 @@ exports.showsubordinateIndex = (req, res) ->
 exports.getReports = (req, res) ->
   #第几页
   page =  sanitize(req.body.page).trim()
-
+  userId = sanitize(req.body.userId).trim()
+  console.log "userId:#{userId}"
+  userId ?= "28"
+  console.log "userId:#{userId}"
   #每页显示条数
   numOfPage =  sanitize(req.body.numOfPage).trim()
-  console.log "page:#{page}, numOfPage#{numOfPage}"
+  #console.log "page:#{page}, numOfPage#{numOfPage}"
   errorMessage = ""
   try
     check(page).isNumeric().min(1)
     check(page).isNumeric().min(1)
-    reportModel.getReports("28", page, numOfPage, (response)->
+    reportModel.getReports(userId, page, numOfPage, (response)->
       res.send(response))
   catch error
     res.send(new Response(0,"页数和每页显示条数为非负数"))
 
 exports.getReportNum = (req, res) ->
-  reportModel.getReportNum("28", (response)->
+  userId = sanitize(req.body.userId).trim()
+  userId ?= "28"
+  reportModel.getReportNum(userId, (response)->
     res.send(response))
 
 exports.delete = (req, res) ->

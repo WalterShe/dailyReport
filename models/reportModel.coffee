@@ -24,6 +24,9 @@ exports.getReports = (userId, page, numOfPage, callback) ->
   start = 0 if start < 0
   end = (numOfPage * page) - 1
   client.zrevrange("userid:#{userId}:reportIds", start, end, (err, reportIds)->
+    console.log "reportIds:#{reportIds}"
+    return callback(new Response(1,'success',[])) if reportIds and reportIds.length == 0
+
     dateArgs = ["userid:#{userId}:reports"]
     contentArgs = ["userid:#{userId}:reports"]
     for reportId in reportIds
@@ -43,6 +46,7 @@ exports.getReportNum = (userId, callback) ->
   client = redis.createClient()
   client.zcount("userid:#{userId}:reportIds", "-inf", "+inf", (err, count)->
     client.quit()
+    console.log count
     callback(new Response(1,'success',count)) )
 
 exports.deleteReport = (userId, reportId, callback)->

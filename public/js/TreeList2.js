@@ -20,26 +20,18 @@
           return $(this).removeClass('treeListItemOver');
         }
       });
-      $(this.containerNode).on("click", "span.update", function(event) {
+      $(this.containerNode).on("click", "span.review", function(event) {
         var t, updateEvent;
         t = $(event.target);
         t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected');
-        t.hide();
         if (_this.editingItem) {
           _this.editingItem.parent().removeClass('treeListItemSelected');
           _this.editingItem.show();
         }
         _this.editingItem = t;
-        updateEvent = jQuery.Event("update");
+        updateEvent = jQuery.Event("review");
         updateEvent["itemId"] = t.parent().attr('id');
         return $(_this.containerNode).trigger(updateEvent);
-      });
-      $(this.containerNode).on("click", "span.delete", function(event) {
-        var deleteEvent, t;
-        t = $(event.target);
-        deleteEvent = jQuery.Event("delete");
-        deleteEvent["itemId"] = t.parent().attr('id');
-        return $(_this.containerNode).trigger(deleteEvent);
       });
       $(this.containerNode).on("click", "li i.icon-plus-sign", function(event) {
         event.stopImmediatePropagation();
@@ -86,7 +78,7 @@
         console.log(value.node);
         linode = "<li id='" + value.id + "node" + value.node + "'><div id='" + value.id + "' class='page'><span class='nodename'>" + value.label + "</span><span class='review btn btn-warning'>查看</span></div></div></li>";
         if (value.node === 1) {
-          linode = "<li id='" + value.id + "node" + value.node + "'><div id='" + value.id + "' class='node'><i class='icon-minus-sign' /><span class='nodename'>" + value.label + "</span><span class='review btn btn-warning'>查看</span></div></div></li>";
+          linode = "<li id='" + value.id + "node" + value.node + "'><div id='" + value.id + "' class='node'><i class='icon-minus-sign' /><span class='nodename'>" + value.label + "</span></div></div></li>";
         }
         $(newnode).append(linode);
         newnode2 = "" + newnode + " #" + value.id + "node" + value.node;

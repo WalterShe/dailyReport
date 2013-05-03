@@ -45,6 +45,10 @@
     end = (numOfPage * page) - 1;
     return client.zrevrange("userid:" + userId + ":reportIds", start, end, function(err, reportIds) {
       var contentArgs, dateArgs, reportId, _i, _len;
+      console.log("reportIds:" + reportIds);
+      if (reportIds && reportIds.length === 0) {
+        return callback(new Response(1, 'success', []));
+      }
       dateArgs = ["userid:" + userId + ":reports"];
       contentArgs = ["userid:" + userId + ":reports"];
       for (_i = 0, _len = reportIds.length; _i < _len; _i++) {
@@ -76,6 +80,7 @@
     client = redis.createClient();
     return client.zcount("userid:" + userId + ":reportIds", "-inf", "+inf", function(err, count) {
       client.quit();
+      console.log(count);
       return callback(new Response(1, 'success', count));
     });
   };

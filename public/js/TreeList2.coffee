@@ -13,23 +13,16 @@ class TreeList2
     $(@containerNode).on("mouseleave", "li div", (event)->
       $(@).removeClass('treeListItemOver') unless $(this) == @editingItem)
 
-    $(@containerNode).on("click", "span.update", (event)=>
+    $(@containerNode).on("click", "span.review", (event)=>
        t = $(event.target)
        t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
-       t.hide();
        if @editingItem
          @editingItem.parent().removeClass('treeListItemSelected')
          @editingItem.show()
        @editingItem = t
-       updateEvent = jQuery.Event("update")
+       updateEvent = jQuery.Event("review")
        updateEvent["itemId"] = t.parent().attr('id')
        $(@containerNode).trigger(updateEvent))
-
-    $(@containerNode).on("click", "span.delete", (event)=>
-      t = $(event.target)
-      deleteEvent = jQuery.Event("delete")
-      deleteEvent["itemId"] = t.parent().attr('id')
-      $(@containerNode).trigger(deleteEvent))
 
     $(@containerNode).on("click", "li i.icon-plus-sign", (event)->
       event.stopImmediatePropagation()
@@ -63,7 +56,7 @@ class TreeList2
       console.log value.node
       linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='page'><span class='nodename'>#{value.label}</span><span class='review btn btn-warning'>查看</span></div></div></li>"
       if value.node == 1
-        linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='node'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span><span class='review btn btn-warning'>查看</span></div></div></li>"
+        linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='node'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span></div></div></li>"
 
       $(newnode).append(linode)
       newnode2 = "#{newnode} ##{value.id}node#{value.node}"

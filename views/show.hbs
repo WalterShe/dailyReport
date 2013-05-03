@@ -31,16 +31,16 @@
                 <p class="btn btn-link delete" data-bind="attr: {reportId: id}">delete</p>
         </ul>
         <div class="pagination">
-            <ul data-bind="foreach: pageNum">
-                <li data-bind="css: {active: ($index()+1) == $parent.currentPage()}"><span data-bind="text: $index()+1, visible: ($index()+1)==$parent.currentPage()"></span><a href="#" data-bind="text: $index()+1, attr: { href: '/show/'+($index()+1)}, visible: ($index()+1)!=$parent.currentPage()"></a></li>
+            <ul data-bind="foreach: pageNumArray">
+                <li data-bind="css: {active: ($index()+1) == $parent.currentPage()}"><span data-bind="text: $index()+1, visible: ($index()+1)==$parent.currentPage()"></span><a href="#" data-bind="text: $index()+1, visible: ($index()+1)!=$parent.currentPage()"></a></li>
             </ul>
         </div>
     </article>
 </section>
 
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
-<script type="text/javascript" src='/js/validator.js'></script>
 <script type="text/javascript" src='/js/ReportModel.js'></script>
+<script type="text/javascript" src='/js/reportBase.js'></script>
 <script type="text/javascript" src='/js/showreports.js'></script>
 </body>
 </html>

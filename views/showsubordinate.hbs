@@ -20,28 +20,28 @@
     </ul>
 </header>
 <section class="container">
-    <div id="userTree">
-
-    </div>
-    <div class="title"> <i class="icon-book"></i><h1>日报内容</h1></div>
-    <article id="reportList" >
-        <ul class="unstyled" data-bind="foreach: reports">
-            <li class="report">
-                <p class="date" data-bind="text: date"></p><div data-bind="html: content"></div>
-                <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p>
-                <p class="btn btn-link delete" data-bind="attr: {reportId: id}">delete</p>
-        </ul>
-        <div class="pagination">
-            <ul data-bind="foreach: pageNum">
-                <li data-bind="css: {active: ($index()+1) == $parent.currentPage()}"><span data-bind="text: $index()+1, visible: ($index()+1)==$parent.currentPage()"></span><a href="#" data-bind="text: $index()+1, attr: { href: '/show/'+($index()+1)}, visible: ($index()+1)!=$parent.currentPage()"></a></li>
+    <section id="userTree"></section>
+    <section id="reports">
+        <div class="title"> <i class="icon-book"></i><h1>日报内容</h1></div>
+        <article id="reportList" >
+            <ul class="unstyled" data-bind="foreach: reports">
+                <li class="report">
+                    <p class="date" data-bind="text: date"></p><div data-bind="html: content"></div>
+                    <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p>
             </ul>
-        </div>
-    </article>
+            <div class="pagination">
+                <ul data-bind="foreach: pageNumArray">
+                    <li data-bind="css: {active: ($index()+1) == $parent.currentPage()}"><span data-bind="text: $index()+1, visible: ($index()+1)==$parent.currentPage()"></span><a href="#" data-bind="text: $index()+1, attr: { href: '/show/'+($index()+1)}, visible: ($index()+1)!=$parent.currentPage()"></a></li>
+                </ul>
+            </div>
+        </article>
+    </section>
 </section>
 
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
 <script type="text/javascript" src='/js/ReportModel.js'></script>
 <script type="text/javascript" src='/js/TreeList2.js'></script>
+<script type="text/javascript" src='/js/reportBase.js'></script>
 <script type="text/javascript" src='/js/subordinateReports.js'></script>
 </body>
 </html>
