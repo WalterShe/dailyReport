@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
+    <meta charset="utf-8">
     <title>用户管理-日报后台管理</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/adminStyle.css' />
@@ -12,7 +13,8 @@
     <a class="brand" href="/" title="home page">Daily Report</a>
     <ul class="nav">
         <li><a href="/admin">部门</a></li>
-        <li class="active"><a href="#">user</a></li>
+        <li class="active"><a href="#">用户</a></li>
+        <li><a href="/admin/admingroup">权限</a></li>
     </ul>
 </header>
 <section id="users" class="container">
@@ -71,7 +73,8 @@
   <div id="usersTree"></div>
 </section>
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
-<script type="text/javascript" src='/js/departmentMode-TreeList.js'></script>
+<script type="text/javascript" src='/js/TreeList.js'></script>
+<script type="text/javascript" src='/js/admin/DepartmentUserMode.js'></script>
 <script type="text/javascript" src='/js/admin/users.js'></script>
 </body>
 </html>

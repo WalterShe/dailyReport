@@ -4,3 +4,7 @@ exports.index = (req, res) ->
 
 exports.usersIndex = (req, res) ->
   res.render("admin/users")
+
+exports.admingroupIndex = (req, res) ->
+  res.render("admin/admingroup")
+

@@ -28,6 +28,7 @@
     app.post('/admin/updateuser', user.updateUser);
     app.get('/admin', admin.index);
     app.get('/admin/users', admin.usersIndex);
+    app.get('/admin/admingroup', admin.admingroupIndex);
     app.post('/admin/createdepartment', department.createDepartment);
     app.get('/admin/alldepartments', department.getAllDepartments);
     app.post('/admin/removedepartment', department.removeDepartment);

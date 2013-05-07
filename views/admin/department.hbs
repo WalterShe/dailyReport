@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
+    <meta charset="utf-8">
     <title>部门信息-日报后台管理系统</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/adminStyle.css' />
@@ -15,6 +16,7 @@
     <ul class="nav">
         <li class="active"><a href="#">部门</a></li>
         <li><a href="/admin/users">用户</a></li>
+        <li><a href="/admin/admingroup">权限</a></li>
     </ul>
 </header>
 <section id="department" class="container">
@@ -45,7 +47,8 @@
     </div>
 </section>
 <script type="text/javascript" src='/js/knockout-2.2.1.js'></script>
-<script type="text/javascript" src='/js/departmentMode-TreeList.js'></script>
+<script type="text/javascript" src='/js/TreeList.js'></script>
+<script type="text/javascript" src='/js/admin/DepartmentUserMode.js'></script>
 <script type="text/javascript" src='/js/admin/department.js'></script>
 </body>
 </html>

@@ -9,4 +9,8 @@
     return res.render("admin/users");
   };
 
+  exports.admingroupIndex = function(req, res) {
+    return res.render("admin/admingroup");
+  };
+
 }).call(this);
