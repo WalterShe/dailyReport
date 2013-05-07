@@ -4,7 +4,6 @@ userModel = require('./usersModel')
 
 exports.createReport = (userId, content, dateStr, callback) ->
   client = redis.createClient()
-  userId = "28"
   client.incr("next_report_id", (err, reportId)->
     score = getDateNumber(dateStr)
     client.zadd("userid:#{userId}:reportIds", score, reportId, (err, reply)->

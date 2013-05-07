@@ -1,4 +1,4 @@
-crypto = require('crypto');
+crypto = require('crypto')
 
 sanitize = require('validator').sanitize
 check = require('validator').check
@@ -10,11 +10,35 @@ exports.loginIndex = (req, res) ->
     res.render("login")
 
 exports.login = (req, res) ->
-  username = req.body.userName
-  password = req.body.password
+  userName = sanitize(req.body.userName).trim()
+  password = sanitize(req.body.password).trim()
+  hashedPassword = crypto.createHash("sha1").update(password).digest('hex')
 
-  #res.send("#{username} login in.")
-  res.redirect('/admin')
+  userModel.getAllUsersWithPassword((response)->
+    users = response.data
+    userId = null
+    for key, value of users
+      [id,property] = key.split(":")
+
+      if (property == "user_name" and value == userName)
+        userId = id
+        break
+
+    return res.render("login",{hasError:true, message:"用户名:#{userName}不存在"}) unless userId
+
+    hasThisUser = false
+    for key, value of users
+      [id,property] = key.split(":")
+      if (id == userId and property == "password" and value == hashedPassword)
+        userId = id
+        hasThisUser = true
+        break
+    return res.render("login",{hasError:true, message:"密码错误"}) unless hasThisUser
+
+    #console.log "userName:#{userName}, userId:#{userId}"
+    req.session.userId = userId
+    res.redirect("/show"))
+
 
 exports.createUser = (req, res) ->
   userName = sanitize(req.body.userName).trim()

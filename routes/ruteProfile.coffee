@@ -5,7 +5,7 @@ admin = require('../controlers/adminCtr')
 report = require('../controlers/reportCtr')
 
 exports.createRutes = (app)->
-  #app.get('/', report.index);
+  app.get('/', report.index);
   app.get('/write', report.writeIndex);
   app.post('/write', report.write);
   app.post('/delete', report.delete);

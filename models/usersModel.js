@@ -72,6 +72,15 @@
     });
   };
 
+  exports.getAllUsersWithPassword = function(callback) {
+    var client;
+    client = redis.createClient();
+    return client.hgetall("users", function(err, users) {
+      client.quit();
+      return callback(new Response(1, "success", users));
+    });
+  };
+
   exports.removeUser = function(userId, callback) {
     var client;
     client = redis.createClient();

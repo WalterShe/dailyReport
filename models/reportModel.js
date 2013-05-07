@@ -11,7 +11,6 @@
   exports.createReport = function(userId, content, dateStr, callback) {
     var client;
     client = redis.createClient();
-    userId = "28";
     return client.incr("next_report_id", function(err, reportId) {
       var score;
       score = getDateNumber(dateStr);

@@ -11,6 +11,7 @@
   report = require('../controlers/reportCtr');
 
   exports.createRutes = function(app) {
+    app.get('/', report.index);
     app.get('/write', report.writeIndex);
     app.post('/write', report.write);
     app.post('/delete', report["delete"]);

@@ -46,6 +46,12 @@ exports.getAllUsers = (callback) ->
     users = getUsersWithoutPassword(reply)
     callback(new Response(1, "success",users)))
 
+exports.getAllUsersWithPassword = (callback) ->
+  client = redis.createClient();
+  client.hgetall("users", (err, users)->
+    client.quit()
+    callback(new Response(1, "success",users)))
+
 exports.removeUser = (userId, callback) ->
   client = redis.createClient();
   client.hdel("users", "#{userId}:user_name", "#{userId}:password", "#{userId}:department_id", "#{userId}:superior_id", (err, reply)->

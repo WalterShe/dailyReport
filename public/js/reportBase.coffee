@@ -41,7 +41,7 @@ $("div.pagination").on("click", "li a", ->
   gotoPage(page)
   false)
 
-gotoPage = (page)->
+window.gotoPage = (page)->
   reportvm.currentPage(page)
   data = {page:page, numOfPage:NUMOFPAGE}
   ReportModel.getReports(data, (response)->

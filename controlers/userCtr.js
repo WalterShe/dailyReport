@@ -17,10 +17,47 @@
   };
 
   exports.login = function(req, res) {
-    var password, username;
-    username = req.body.userName;
-    password = req.body.password;
-    return res.redirect('/admin');
+    var hashedPassword, password, userName;
+    userName = sanitize(req.body.userName).trim();
+    password = sanitize(req.body.password).trim();
+    hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
+    return userModel.getAllUsersWithPassword(function(response) {
+      var hasThisUser, id, key, property, userId, users, value, _ref, _ref1;
+      users = response.data;
+      userId = null;
+      for (key in users) {
+        value = users[key];
+        _ref = key.split(":"), id = _ref[0], property = _ref[1];
+        if (property === "user_name" && value === userName) {
+          userId = id;
+          break;
+        }
+      }
+      if (!userId) {
+        return res.render("login", {
+          hasError: true,
+          message: "用户名:" + userName + "不存在"
+        });
+      }
+      hasThisUser = false;
+      for (key in users) {
+        value = users[key];
+        _ref1 = key.split(":"), id = _ref1[0], property = _ref1[1];
+        if (id === userId && property === "password" && value === hashedPassword) {
+          userId = id;
+          hasThisUser = true;
+          break;
+        }
+      }
+      if (!hasThisUser) {
+        return res.render("login", {
+          hasError: true,
+          message: "密码错误"
+        });
+      }
+      req.session.userId = userId;
+      return res.redirect("/show");
+    });
   };
 
   exports.createUser = function(req, res) {

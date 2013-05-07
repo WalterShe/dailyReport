@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
+    <meta charset="utf-8">
     <title>Login-Daily Report</title>
-    <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/reportStyle.css' />
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/jquery-ui-1.10.2.custom.min.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
@@ -14,11 +15,15 @@
         <a class="brand" href="/" title="home page">Daily Report</a>
     </header>
     <section id="loginDiv" class="container">
+        <div class="title"> <i class="icon-user"></i><h1>用户登陆</h1></div>
+        {{#if hasError}}
+        <p id="errorTip">{{message}}</p>
+        {{/if}}
         <form method="post">
-            <label for="userName">User Name:</label>
+            <label for="userName">用户名:</label>
             <input type="text" required="required" name="userName" id="userName" />
             <br />
-            <label for="password">Password:</label>
+            <label for="password">密码:</label>
             <input type="password" required="required" name="password" id="password" />
             <div><input id="submitBtn" type="submit" value="submit" class="btn btn-primary" /></div>
         </form>
