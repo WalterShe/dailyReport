@@ -3,29 +3,21 @@ check = require('validator').check
 sanitize = require('validator').sanitize
 reportModel = require('../models/reportModel')
 userModel = require('../models/usersModel')
+utils = require('../utils')
 {Response} = require('../vo/Response')
 
-authenticateUser = (req,res)->
-  result = true
-  unless req.session.userId
-    res.redirect('/login')
-    result = false
-
-  result
-
 exports.index = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   res.redirect("/show")
 
 exports.writeIndex = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
-  showPage(res, userId, "write")
+  showPage(req, res, userId, "write")
 
 exports.write = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
-  console.log "write userId:#{userId}"
   dateStr =  sanitize(req.body.date).trim()
   content =  sanitize(req.body.content).trim()
 
@@ -43,26 +35,27 @@ exports.write = (req, res) ->
     res.send(new Response(0,"日期格式不正确或者内容为空"))
 
 exports.showIndex = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
-  showPage(res, userId, "show")
+  showPage(req, res, userId, "show")
 
-showPage = (res, userId, pageTitle) ->
+showPage = (req, res, userId, pageTitle) ->
   userModel.hasSubordinate(userId, (result)->
-    data = {hasSubordinate: result}
+    data = {hasSubordinate: result, isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
     res.render(pageTitle, data))
 
 exports.showsubordinateIndex = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
   userModel.hasSubordinate(userId, (result)->
     if result
-      res.render("showsubordinate")
+      data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
+      res.render("showsubordinate", data)
     else
       res.send("您目前没有下属,不需要访问该页面！") )
 
 exports.getReports = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
 
   #第几页
   page =  sanitize(req.body.page).trim()
@@ -83,7 +76,7 @@ exports.getReports = (req, res) ->
     res.send(new Response(0,"页数和每页显示条数为非负数"))
 
 exports.getReportNum = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = sanitize(req.body.userId).trim()
   #没有userId表示访问自己的日报
   userId = req.session.userId unless userId
@@ -92,7 +85,7 @@ exports.getReportNum = (req, res) ->
     res.send(response))
 
 exports.delete = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
   reportId =  req.body.reportId
   reportModel.deleteReport(userId, reportId, (response)->
@@ -100,7 +93,7 @@ exports.delete = (req, res) ->
 
 
 exports.getSubordinateUserAndDepartment = (req, res) ->
-  return unless authenticateUser(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
   reportModel.getSubordinateUserAndDepartment(userId, (response)->
     res.send(response))

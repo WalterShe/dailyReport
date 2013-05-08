@@ -2,7 +2,7 @@ crypto = require('crypto')
 
 sanitize = require('validator').sanitize
 check = require('validator').check
-
+utils = require('../utils')
 userModel = require('../models/usersModel')
 {Response} = require('../vo/Response')
 
@@ -37,8 +37,23 @@ exports.login = (req, res) ->
 
     #console.log "userName:#{userName}, userId:#{userId}"
     req.session.userId = userId
-    res.redirect("/show"))
+    isAdmin(userId, (response)->
+      req.session.isAdmin = 1 if response
+      res.redirect("/show")))
 
+isAdmin = (userId, callback) ->
+  userModel.getAdminIds((response)->
+    result = false
+    ids = response.data
+    for id in ids
+      if id == userId
+        result = true
+        break
+    callback(result))
+
+exports.logout = (req, res) ->
+  req.session.destroy()
+  res.redirect("/login")
 
 exports.createUser = (req, res) ->
   userName = sanitize(req.body.userName).trim()

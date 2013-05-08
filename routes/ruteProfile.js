@@ -21,6 +21,7 @@
     app.post('/getreports', report.getReports);
     app.post('/getreportnum', report.getReportNum);
     app.get('/login', user.loginIndex);
+    app.get('/logout', user.logout);
     app.post('/login', user.login);
     app.post('/admin/createuser', user.createUser);
     app.post('/admin/removeuser', user.removeUser);

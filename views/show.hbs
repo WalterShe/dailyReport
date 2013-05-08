@@ -19,6 +19,12 @@
         {{#if hasSubordinate}}
         <li ><a href="/showsubordinate">下属日报</a></li>
         {{/if}}
+        {{#if isAdmin}}
+        <li ><a href="/admin">管理员控制台</a></li>
+        {{/if}}
+        {{#if isLoginUser}}
+        <li ><a href="/logout">退出</a></li>
+        {{/if}}
     </ul>
 </header>
 <section class="container">
@@ -29,6 +35,7 @@
                 <p class="date" data-bind="text: date"></p><div data-bind="html: content"></div>
                 <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p>
                 <p class="btn btn-link delete" data-bind="attr: {reportId: id}">delete</p>
+            </li>
         </ul>
         <div class="pagination" data-bind="if: pageNumArray().length > 1">
             <ul data-bind="foreach: pageNumArray">
