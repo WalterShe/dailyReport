@@ -32,7 +32,10 @@
     app.post('/admin/createdepartment', department.createDepartment);
     app.get('/admin/alldepartments', department.getAllDepartments);
     app.post('/admin/removedepartment', department.removeDepartment);
-    return app.post('/admin/updatedepartment', department.updateDepartment);
+    app.post('/admin/updatedepartment', department.updateDepartment);
+    app.post('/admin/setadmin', user.setAdmin);
+    app.post('/admin/deleteadmin', user.deleteAdmin);
+    return app.post('/admin/getadmins', user.getAdmins);
   };
 
 }).call(this);

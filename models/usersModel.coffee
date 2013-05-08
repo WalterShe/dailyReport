@@ -21,7 +21,7 @@ exports.createUser = (userName, password, departmentId, superiorId, callback) ->
   )
 
 exports.updateUser = (userId, userName, password, departmentId, superiorId, callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
 
   replycallback =  (err, reply)->
     client.hgetall("users", (err, reply)->
@@ -40,20 +40,20 @@ exports.updateUser = (userId, userName, password, departmentId, superiorId, call
 
 
 exports.getAllUsers = (callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   client.hgetall("users", (err, reply)->
     client.quit()
     users = getUsersWithoutPassword(reply)
     callback(new Response(1, "success",users)))
 
 exports.getAllUsersWithPassword = (callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   client.hgetall("users", (err, users)->
     client.quit()
     callback(new Response(1, "success",users)))
 
 exports.removeUser = (userId, callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   client.hdel("users", "#{userId}:user_name", "#{userId}:password", "#{userId}:department_id", "#{userId}:superior_id", (err, reply)->
     client.hgetall("users", (err, reply)->
       newUsers = getUsersWithoutPassword(reply)
@@ -78,15 +78,33 @@ getUsersWithoutPassword = (users)->
 
 # 查看某个用户（userId）是否有下属
 exports.hasSubordinate = (userId, callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   client.hgetall("users", (err, users)->
     result = false
     for key, value of users
       childOfKey = key.split(":")
       if childOfKey[1] == "superior_id" and value == userId
         result = true
-        console.log result
         break
     client.quit()
-    console.log result
     callback(result))
+
+# 获取所有管理员Id
+exports.getAdminIds = (callback) ->
+  client = redis.createClient()
+  client.smembers("administrators", (err, ids)->
+    console.log "ids:#{ids}"
+    client.quit()
+    callback(new Response(1, "success",ids)))
+
+exports.setAdmin = (userId, callback) ->
+  client = redis.createClient()
+  client.sadd("administrators", userId, (err, reply)->
+    client.quit()
+    callback(new Response(1, "success",reply)))
+
+exports.deleteAdmin = (userId, callback) ->
+  client = redis.createClient()
+  client.srem("administrators", userId, (err, reply)->
+    client.quit()
+    callback(new Response(1, "success",reply)))

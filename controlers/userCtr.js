@@ -133,4 +133,26 @@
     });
   };
 
+  exports.getAdmins = function(req, res) {
+    return userModel.getAdminIds(function(response) {
+      return res.send(response);
+    });
+  };
+
+  exports.setAdmin = function(req, res) {
+    var userId;
+    userId = req.body.userId;
+    return userModel.setAdmin(userId, function(response) {
+      return res.send(response);
+    });
+  };
+
+  exports.deleteAdmin = function(req, res) {
+    var userId;
+    userId = req.body.userId;
+    return userModel.deleteAdmin(userId, function(response) {
+      return res.send(response);
+    });
+  };
+
 }).call(this);

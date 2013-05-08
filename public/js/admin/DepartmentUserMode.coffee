@@ -56,6 +56,22 @@ window.DepartmemtModel = DepartmemtModel
 # user model层，处理数据调用和解析 ---------------------------------------------------------------
 class UserModel
 
+  @setAdministrator: (userId, callback)->
+    $.post("/admin/setadmin", {userId:userId}, (response)->
+      callback(response)
+    , "json")
+
+  @deleteAdministrator: (userId, callback)->
+    $.post("/admin/deleteadmin", {userId:userId}, (response)->
+      callback(response)
+    , "json")
+
+  @getAdmins: (callback)->
+    $.post("/admin/getadmins", (response)->
+      callback(response)
+    , "json")
+
+
   @createUser: (data, callback)->
     $.post("/admin/createuser", data,
           (response)->

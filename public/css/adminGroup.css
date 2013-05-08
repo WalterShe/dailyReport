@@ -14,3 +14,14 @@ body.admin-admingroup #adminlist {
   height: 430px;
   overflow: auto;
 }
+body.admin-admingroup #adminlist a.delete {
+  float: right;
+  margin-right: 10px;
+}
+body.admin-admingroup #adminlist li {
+  padding: 6px 0 10px 5px;
+}
+body.admin-admingroup #adminlist li.itemOver {
+  background-color: #78b608;
+  border-radius: 5px 5px 5px 5px;
+}

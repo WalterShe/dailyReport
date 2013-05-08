@@ -99,3 +99,19 @@ exports.getAllUsers = (req, res) ->
   userModel.getAllUsers((response)->
     res.send(response))
 
+
+exports.getAdmins = (req, res) ->
+  userModel.getAdminIds((response)->
+    res.send(response))
+
+exports.setAdmin = (req, res) ->
+  userId = req.body.userId
+  userModel.setAdmin(userId, (response)->
+    res.send(response))
+
+exports.deleteAdmin = (req, res) ->
+  userId = req.body.userId
+  userModel.deleteAdmin(userId, (response)->
+    res.send(response))
+
+

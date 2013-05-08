@@ -75,6 +75,28 @@
 
     function UserModel() {}
 
+    UserModel.setAdministrator = function(userId, callback) {
+      return $.post("/admin/setadmin", {
+        userId: userId
+      }, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
+    UserModel.deleteAdministrator = function(userId, callback) {
+      return $.post("/admin/deleteadmin", {
+        userId: userId
+      }, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
+    UserModel.getAdmins = function(callback) {
+      return $.post("/admin/getadmins", function(response) {
+        return callback(response);
+      }, "json");
+    };
+
     UserModel.createUser = function(data, callback) {
       return $.post("/admin/createuser", data, function(response) {
         var user;

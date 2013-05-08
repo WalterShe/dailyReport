@@ -29,3 +29,7 @@ exports.createRutes = (app)->
   app.get('/admin/alldepartments', department.getAllDepartments);
   app.post('/admin/removedepartment', department.removeDepartment);
   app.post('/admin/updatedepartment', department.updateDepartment);
+
+  app.post('/admin/setadmin', user.setAdmin);
+  app.post('/admin/deleteadmin', user.deleteAdmin);
+  app.post('/admin/getadmins', user.getAdmins);

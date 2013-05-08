@@ -127,13 +127,39 @@
         childOfKey = key.split(":");
         if (childOfKey[1] === "superior_id" && value === userId) {
           result = true;
-          console.log(result);
           break;
         }
       }
       client.quit();
-      console.log(result);
       return callback(result);
+    });
+  };
+
+  exports.getAdminIds = function(callback) {
+    var client;
+    client = redis.createClient();
+    return client.smembers("administrators", function(err, ids) {
+      console.log("ids:" + ids);
+      client.quit();
+      return callback(new Response(1, "success", ids));
+    });
+  };
+
+  exports.setAdmin = function(userId, callback) {
+    var client;
+    client = redis.createClient();
+    return client.sadd("administrators", userId, function(err, reply) {
+      client.quit();
+      return callback(new Response(1, "success", reply));
+    });
+  };
+
+  exports.deleteAdmin = function(userId, callback) {
+    var client;
+    client = redis.createClient();
+    return client.srem("administrators", userId, function(err, reply) {
+      client.quit();
+      return callback(new Response(1, "success", reply));
     });
   };
 

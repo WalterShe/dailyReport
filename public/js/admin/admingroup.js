@@ -9,17 +9,25 @@
     self.selectedDepartment = ko.observable(null);
     self.users = ko.observableArray([]);
     self.selectedUser = ko.observable(null);
+    self.admins = ko.observableArray([]);
     self.valid = ko.computed(function() {
-      return (self.selectedDepartment() != null) && self.selectedUser();
+      return self.selectedDepartment() && self.selectedUser();
     });
     self.submit = function() {
-      return console.log(self.selectedUser());
+      var user;
+      if (!self.valid()) {
+        console.log("fail: 必须选择一个成员");
+      }
+      user = self.selectedUser();
+      return UserModel.setAdministrator(user["id"], function(response) {
+        return self.admins.push(user);
+      });
     };
     return self;
   };
 
   init = function() {
-    var adminvm, getUsersByDepartmentId;
+    var adminvm, getAdmins, getUsersByDepartmentId;
     adminvm = new AdminGroupViewModel();
     ko.applyBindings(adminvm);
     DepartmemtModel.getAllDepartments(function(response) {
@@ -27,16 +35,58 @@
     });
     UserModel.getAllUsers(function(response) {
       var users;
-      return users = response.data;
+      users = response.data;
+      UserModel.getAdmins(function(response) {
+        var adminIds, admins;
+        adminIds = response.data;
+        admins = getAdmins(users, adminIds);
+        return adminvm.admins(admins);
+      });
+      return null;
     });
+    getAdmins = function(allUsers, adminIds) {
+      var adminId, result, user, _i, _j, _len, _len1;
+      result = [];
+      for (_i = 0, _len = adminIds.length; _i < _len; _i++) {
+        adminId = adminIds[_i];
+        for (_j = 0, _len1 = allUsers.length; _j < _len1; _j++) {
+          user = allUsers[_j];
+          if (adminId === user["id"]) {
+            result.push(user);
+            break;
+          }
+        }
+      }
+      return result;
+    };
     $("#depar").change(function() {
-      var departmentId, departmentUsers, users, _ref;
+      var admin, admins, departmentId, departmentUsers, user, users, _i, _len, _ref, _results;
       departmentId = (_ref = adminvm.selectedDepartment()) != null ? _ref['id'] : void 0;
       users = UserModel.getLocalAllUsers();
       departmentUsers = getUsersByDepartmentId(departmentId, users);
-      return adminvm.users(departmentUsers);
+      adminvm.users(departmentUsers);
+      admins = adminvm.admins();
+      _results = [];
+      for (_i = 0, _len = admins.length; _i < _len; _i++) {
+        admin = admins[_i];
+        _results.push((function() {
+          var _j, _len1, _results1;
+          _results1 = [];
+          for (_j = 0, _len1 = users.length; _j < _len1; _j++) {
+            user = users[_j];
+            if (user["id"] === admin["id"]) {
+              adminvm.users.remove(user);
+              break;
+            } else {
+              _results1.push(void 0);
+            }
+          }
+          return _results1;
+        })());
+      }
+      return _results;
     });
-    return getUsersByDepartmentId = function(departmentId, allUsers) {
+    getUsersByDepartmentId = function(departmentId, allUsers) {
       var result, user, _i, _len;
       result = [];
       if (!departmentId) {
@@ -50,6 +100,26 @@
       }
       return result;
     };
+    $("#adminlist").on("click", "a.delete", function(event) {
+      var userId;
+      userId = $(this).attr("userid");
+      return UserModel.deleteAdministrator(userId, function(response) {
+        var admin, admins, _i, _len;
+        admins = adminvm.admins();
+        for (_i = 0, _len = admins.length; _i < _len; _i++) {
+          admin = admins[_i];
+          if (admin["id"] === userId) {
+            return adminvm.admins.remove(admin);
+          }
+        }
+      });
+    });
+    $("#adminlist").on("mouseenter", "li", function(event) {
+      return $(this).addClass('itemOver');
+    });
+    return $("#adminlist").on("mouseleave", "li", function(event) {
+      return $(this).removeClass('itemOver');
+    });
   };
 
   init();

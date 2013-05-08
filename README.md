@@ -1,3 +1,16 @@
+初次安装好redis后，执行如下命令添加管理员账户：
+redis 127.0.0.1:6379> incr next_user_id
+(integer) 1
+执行完该命令后表明 next_user_id 的值为1，然后执行如下命令（1:user_name和1:password中的1即为上一步执行incr next_user_id后的
+next_user_id的值）
+redis 127.0.0.1:6379> hmset users 1:user_name adminn 1:password 20eabe5d64b0e216796e834f52d61f
+OK
+执行下面的命令将管理员adminn的id添加到管理员集合中
+redis 127.0.0.1:6379> sadd administrators 1
+(integer) 1
+
+执行完以上命令后我们新增加了一个管理员账户adminn,密码为1234567。可以使用该账户登陆进入管理后台进行管理。
+
 数据库字段说明：
 
 用户数据：
@@ -25,3 +38,6 @@ member 为report id
 
 userid:#{userId}:reports (类型 hash)
  #{reportId}:date为日报日期  #{reportId}:content为日报内容
+
+管理员：
+administrators (类型 set) 存储的是用户id,管理员用户的id都在该集合中
