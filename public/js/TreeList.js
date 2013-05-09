@@ -5,7 +5,8 @@
   TreeList = (function() {
 
     function TreeList(containerNode, dataSource) {
-      var _this = this;
+      var treeNodes,
+        _this = this;
       this.containerNode = containerNode;
       this.dataSource = dataSource != null ? dataSource : null;
       this.editingItem = null;
@@ -41,13 +42,21 @@
         deleteEvent["itemId"] = t.parent().attr('id');
         return $(_this.containerNode).trigger(deleteEvent);
       });
+      treeNodes = {};
       $(this.containerNode).on("click", "li i.icon-plus-sign", function(event) {
+        var name;
         event.stopImmediatePropagation();
-        return $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        name = $(this).parent().parent().attr("id");
+        $("#" + name).append(treeNodes[name]);
+        return delete treeNodes[name];
       });
       $(this.containerNode).on("click", "li i.icon-minus-sign", function(event) {
+        var name;
         event.stopImmediatePropagation();
-        return $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        name = $(this).parent().parent().attr("id");
+        return treeNodes[name] = $(this).parent().next().detach();
       });
     }
 
@@ -61,7 +70,6 @@
       if (!this.editingItem) {
         return;
       }
-      console.log(this.editingItem);
       this.editingItem.parent().removeClass('treeListItemSelected');
       this.editingItem.show();
       return this.editingItem = null;
@@ -96,7 +104,6 @@
     TreeList.prototype.getDepartTreeData = function() {
       var departs, findChidren, node, rootnode, treeData, value, _i, _j, _len, _len1;
       departs = this.dataSource;
-      console.log(departs);
       treeData = [];
       for (_i = 0, _len = departs.length; _i < _len; _i++) {
         value = departs[_i];
@@ -133,7 +140,6 @@
         node = treeData[_j];
         findChidren(node, departs);
       }
-      console.log(treeData);
       return treeData;
     };
 

@@ -24,13 +24,20 @@ class TreeList2
        updateEvent["itemId"] = t.parent().attr('id')
        $(@containerNode).trigger(updateEvent))
 
+    treeNodes = {}
+
     $(@containerNode).on("click", "li i.icon-plus-sign", (event)->
       event.stopImmediatePropagation()
-      $(@).addClass('icon-minus-sign').removeClass('icon-plus-sign'))
+      $(@).addClass('icon-minus-sign').removeClass('icon-plus-sign')
+      name = $(@).parent().parent().attr("id")
+      $("##{name}").append(treeNodes[name])
+      delete treeNodes[name])
 
     $(@containerNode).on("click", "li i.icon-minus-sign", (event)->
       event.stopImmediatePropagation()
-      $(@).addClass('icon-plus-sign').removeClass('icon-minus-sign'))
+      $(@).addClass('icon-plus-sign').removeClass('icon-minus-sign')
+      name = $(@).parent().parent().attr("id")
+      treeNodes[name] = $(@).parent().next().detach())
 
   show: (@dataSource)->
     $(@containerNode).empty()

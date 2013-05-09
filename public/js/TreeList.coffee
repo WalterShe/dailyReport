@@ -31,13 +31,20 @@ class TreeList
       deleteEvent["itemId"] = t.parent().attr('id')
       $(@containerNode).trigger(deleteEvent))
 
+    treeNodes = {}
+
     $(@containerNode).on("click", "li i.icon-plus-sign", (event)->
       event.stopImmediatePropagation()
-      $(@).addClass('icon-minus-sign').removeClass('icon-plus-sign'))
+      $(@).addClass('icon-minus-sign').removeClass('icon-plus-sign')
+      name = $(@).parent().parent().attr("id")
+      $("##{name}").append(treeNodes[name])
+      delete treeNodes[name])
 
     $(@containerNode).on("click", "li i.icon-minus-sign", (event)->
       event.stopImmediatePropagation()
-      $(@).addClass('icon-plus-sign').removeClass('icon-minus-sign'))
+      $(@).addClass('icon-plus-sign').removeClass('icon-minus-sign')
+      name = $(@).parent().parent().attr("id")
+      treeNodes[name] = $(@).parent().next().detach())
 
   show: (@dataSource)->
     $(@containerNode).empty()
@@ -45,7 +52,6 @@ class TreeList
 
   showEditingItem: ->
     return unless  @editingItem
-    console.log  @editingItem
     @editingItem.parent().removeClass('treeListItemSelected')
     @editingItem.show()
     @editingItem = null
@@ -72,7 +78,6 @@ class TreeList
   # render a department tree
   getDepartTreeData: ->
     departs = @dataSource
-    console.log departs
     treeData = []
     for value in departs
       rootnode = {label:value.name, id:value.id};
@@ -88,7 +93,7 @@ class TreeList
 
     for node in treeData
       findChidren(node, departs)
-    console.log treeData
+
     treeData
 
 window.TreeList = TreeList

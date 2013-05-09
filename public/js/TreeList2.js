@@ -5,7 +5,8 @@
   TreeList2 = (function() {
 
     function TreeList2(containerNode, dataSource) {
-      var _this = this;
+      var treeNodes,
+        _this = this;
       this.containerNode = containerNode;
       this.dataSource = dataSource != null ? dataSource : null;
       this.editingItem = null;
@@ -33,13 +34,21 @@
         updateEvent["itemId"] = t.parent().attr('id');
         return $(_this.containerNode).trigger(updateEvent);
       });
+      treeNodes = {};
       $(this.containerNode).on("click", "li i.icon-plus-sign", function(event) {
+        var name;
         event.stopImmediatePropagation();
-        return $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        name = $(this).parent().parent().attr("id");
+        $("#" + name).append(treeNodes[name]);
+        return delete treeNodes[name];
       });
       $(this.containerNode).on("click", "li i.icon-minus-sign", function(event) {
+        var name;
         event.stopImmediatePropagation();
-        return $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        name = $(this).parent().parent().attr("id");
+        return treeNodes[name] = $(this).parent().next().detach();
       });
     }
 
