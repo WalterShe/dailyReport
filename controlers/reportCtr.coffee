@@ -1,6 +1,5 @@
 crypto = require('crypto');
 check = require('validator').check
-sanitize = require('validator').sanitize
 reportModel = require('../models/reportModel')
 userModel = require('../models/usersModel')
 utils = require('../utils')
@@ -18,8 +17,8 @@ exports.writeIndex = (req, res) ->
 exports.write = (req, res) ->
   return unless utils.authenticateUser(req,res)
   userId = req.session.userId
-  dateStr =  sanitize(req.body.date).trim()
-  content =  sanitize(req.body.content).trim()
+  dateStr = req.body.date
+  content = req.body.content
 
   try
     check(dateStr).notEmpty()
@@ -52,21 +51,19 @@ exports.showsubordinateIndex = (req, res) ->
       data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
       res.render("showsubordinate", data)
     else
-      res.send("您目前没有下属,不需要访问该页面！") )
+      res.send(new Response(0,"您目前没有下属,不需要访问该页面！")) )
 
 exports.getReports = (req, res) ->
   return unless utils.authenticateUser(req,res)
 
   #第几页
-  page =  sanitize(req.body.page).trim()
-  userId = sanitize(req.body.userId).trim()
-
-  #console.log "userId:#{userId}-"
+  page =  req.body.page
+  userId = req.body.userId
   #没有userId表示访问自己的日报
   userId = req.session.userId unless userId
-  #console.log "userId:#{userId}-"
+
   #每页显示条数
-  numOfPage =  sanitize(req.body.numOfPage).trim()
+  numOfPage =  req.body.numOfPage
   try
     check(page).isNumeric().min(1)
     check(page).isNumeric().min(1)
@@ -77,7 +74,7 @@ exports.getReports = (req, res) ->
 
 exports.getReportNum = (req, res) ->
   return unless utils.authenticateUser(req,res)
-  userId = sanitize(req.body.userId).trim()
+  userId = req.body.userId
   #没有userId表示访问自己的日报
   userId = req.session.userId unless userId
 

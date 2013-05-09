@@ -1,11 +1,14 @@
 redis = require("redis")
 {Response} = require('../vo/response')
+utils = require("../utils")
 
 exports.createUser = (userName, password, departmentId, superiorId, callback) ->
   client = redis.createClient();
   client.incr("next_user_id", (err, reply)->
+    return utils.showDBError(callback, client) if err
     userId = "#{reply}"
     replycallback =  (err, reply)->
+      return utils.showDBError(callback, client) if err
       client.quit()
       if superiorId
         data = {id: userId, userName:userName, departmentId:departmentId, superiorId:superiorId}
@@ -24,10 +27,12 @@ exports.updateUser = (userId, userName, password, departmentId, superiorId, call
   client = redis.createClient()
 
   replycallback =  (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.hgetall("users", (err, reply)->
-       client.quit()
-       users = getUsersWithoutPassword(reply)
-       callback(new Response(1, "success",users)))
+      return utils.showDBError(callback, client) if err
+      client.quit()
+      users = getUsersWithoutPassword(reply)
+      callback(new Response(1, "success",users)))
 
   if (superiorId and password)
     client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, "#{userId}:department_id", departmentId, "#{userId}:superior_id", superiorId, replycallback)
@@ -42,6 +47,7 @@ exports.updateUser = (userId, userName, password, departmentId, superiorId, call
 exports.getAllUsers = (callback) ->
   client = redis.createClient()
   client.hgetall("users", (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.quit()
     users = getUsersWithoutPassword(reply)
     callback(new Response(1, "success",users)))
@@ -49,13 +55,16 @@ exports.getAllUsers = (callback) ->
 exports.getAllUsersWithPassword = (callback) ->
   client = redis.createClient()
   client.hgetall("users", (err, users)->
+    return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",users)))
 
 exports.removeUser = (userId, callback) ->
   client = redis.createClient()
   client.hdel("users", "#{userId}:user_name", "#{userId}:password", "#{userId}:department_id", "#{userId}:superior_id", (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.hgetall("users", (err, reply)->
+      return utils.showDBError(callback, client) if err
       newUsers = getUsersWithoutPassword(reply)
       for key, value of newUsers
         childOfKey = key.split(":")
@@ -80,6 +89,7 @@ getUsersWithoutPassword = (users)->
 exports.hasSubordinate = (userId, callback) ->
   client = redis.createClient()
   client.hgetall("users", (err, users)->
+    return utils.showDBError(callback, client) if err
     result = false
     for key, value of users
       childOfKey = key.split(":")
@@ -93,18 +103,20 @@ exports.hasSubordinate = (userId, callback) ->
 exports.getAdminIds = (callback) ->
   client = redis.createClient()
   client.smembers("administrators", (err, ids)->
-    console.log "ids:#{ids}"
+    return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",ids)))
 
 exports.setAdmin = (userId, callback) ->
   client = redis.createClient()
   client.sadd("administrators", userId, (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",reply)))
 
 exports.deleteAdmin = (userId, callback) ->
   client = redis.createClient()
   client.srem("administrators", userId, (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",reply)))

@@ -1,6 +1,4 @@
 crypto = require('crypto')
-
-sanitize = require('validator').sanitize
 check = require('validator').check
 utils = require('../utils')
 userModel = require('../models/usersModel')
@@ -10,11 +8,12 @@ exports.loginIndex = (req, res) ->
     res.render("login")
 
 exports.login = (req, res) ->
-  userName = sanitize(req.body.userName).trim()
-  password = sanitize(req.body.password).trim()
+  userName = req.body.userName
+  password = req.body.password
   hashedPassword = crypto.createHash("sha1").update(password).digest('hex')
 
   userModel.getAllUsersWithPassword((response)->
+    return res.send(response) if response.state == 0
     users = response.data
     userId = null
     for key, value of users
@@ -37,83 +36,60 @@ exports.login = (req, res) ->
 
     #console.log "userName:#{userName}, userId:#{userId}"
     req.session.userId = userId
-    isAdmin(userId, (response)->
-      req.session.isAdmin = 1 if response
-      res.redirect("/show")))
 
-isAdmin = (userId, callback) ->
-  userModel.getAdminIds((response)->
-    result = false
-    ids = response.data
-    for id in ids
-      if id == userId
-        result = true
-        break
-    callback(result))
+    userModel.getAdminIds((response)->
+      return res.redirect("/show") if response.state == 0
+
+      ids = response.data
+      for id in ids
+        if id == userId
+          req.session.isAdmin = 1
+          return res.redirect("/show")))
 
 exports.logout = (req, res) ->
   req.session.destroy()
   res.redirect("/login")
 
 exports.createUser = (req, res) ->
-  userName = sanitize(req.body.userName).trim()
-  password = sanitize(req.body.password).trim()
+  userName = req.body.userName
+  password = req.body.password
   departmentId = req.body.departmentId;
   superiorId = req.body.superiorId;
 
-  errorMessage = ""
   try
     check(userName, "字符长度为6-25，不能含有:符号").len(6,25).notContains(":")
-  catch  error
-    errorMessage = error.message
-
-  try
     check(password, "字符长度为7-25，不能含有:符号").len(7,25).notContains(":")
-  catch  error
-    errorMessage = "#{errorMessage}, #{error.message}"
-
-  if errorMessage == ""
     hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
     userModel.createUser(userName, hashedPassword, departmentId, superiorId, (response)->
       res.send(response))
-  else
-    res.send(new Response(0,errorMessage))
+  catch  error
+    errorMessage = error.message
+    res.send(new Response(0, errorMessage))
 
 exports.removeUser = (req, res) ->
-  userId = sanitize(req.body.userId).trim()
+  userId = req.body.userId
   userModel.removeUser(userId, (response)->
       res.send(response))
 
 exports.updateUser = (req, res) ->
-  userId = sanitize(req.body.userId).trim()
-  userName = sanitize(req.body.userName).trim()
-  password = sanitize(req.body.password).trim()
+  userId = req.body.userId
+  userName = req.body.userName
+  password = req.body.password
   departmentId = req.body.departmentId;
   superiorId = req.body.superiorId;
 
-  errorMessage = ""
   try
     check(userName, "字符长度为6-25，不能含有:符号").len(6,25).notContains(":")
-  catch  error
-    errorMessage = error.message
-
-  ###try
-    check(password, "字符长度为7-25，不能含有:符号").len(7,25).notContains(":")
-  catch  error
-    errorMessage = "#{errorMessage}, #{error.message}" ###
-
-  if errorMessage == ""
     hashedPassword = null
     hashedPassword = crypto.createHash("sha1").update(password).digest('hex') if password
     userModel.updateUser(userId, userName, hashedPassword, departmentId, superiorId, (response)->
       res.send(response))
-  else
-    res.send(new Response(0,errorMessage))
+  catch error
+    res.send(new Response(0,error.errorMessage))
 
 exports.getAllUsers = (req, res) ->
   userModel.getAllUsers((response)->
     res.send(response))
-
 
 exports.getAdmins = (req, res) ->
   userModel.getAdminIds((response)->

@@ -1,13 +1,16 @@
 redis = require("redis")
 {Response} = require('../vo/response')
+utils = require("../utils")
 
 exports.createDepartment = (departmentName, parentId, callback) ->
   client = redis.createClient();
-  #console.log "departmentName:#{departmentName}, parentId:#{parentId}"
 
   client.incr("next_department_id", (err, reply)->
+    return utils.showDBError(callback, client) if err
+
     client.hset("departments", "#{reply}:name", departmentName)
     result = {name:departmentName}
+
     #id 以字符串形式返回
     department = {name:departmentName, id:"#{reply}"}
     if parentId
@@ -17,13 +20,15 @@ exports.createDepartment = (departmentName, parentId, callback) ->
 
     client.quit()
 
-    callback(new Response(1,'success',department)) if callback  )
+    callback(new Response(1,'success',department)))
 
 #删除部门
 exports.removeDepartment = (departmentId, callback) ->
   client = redis.createClient()
   client.hdel("departments", "#{departmentId}:name", "#{departmentId}:pid", (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.hgetall("departments", (err, reply)->
+      return utils.showDBError(callback, client) if err
       newDepartments = {}
       for key, value of reply
         childOfKey = key.split(":")
@@ -33,6 +38,7 @@ exports.removeDepartment = (departmentId, callback) ->
           newDepartments[key] = value
 
       client.hgetall("users", (err, users)->
+        return utils.showDBError(callback, client) if err
         for key, value of users
           childOfKey = key.split(":")
           if childOfKey[1] == "department_id" and value == departmentId
@@ -44,6 +50,7 @@ exports.updateDepartment = (departmentId, departmentName, parentId, callback)->
   client = redis.createClient()
 
   replycallback =  (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.hgetall("departments", (err, reply)->
        client.quit()
        callback(new Response(1,'success',reply)))
@@ -56,5 +63,6 @@ exports.updateDepartment = (departmentId, departmentName, parentId, callback)->
 exports.getAllDepartments = (callback) ->
   client = redis.createClient()
   client.hgetall("departments", (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.quit()
-    callback(new Response(1,'success',reply)) if callback)
+    callback(new Response(1,'success',reply)))

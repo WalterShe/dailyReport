@@ -1,13 +1,18 @@
 redis = require("redis")
 {Response} = require('../vo/response')
 userModel = require('./usersModel')
+utils = require("../utils")
 
 exports.createReport = (userId, content, dateStr, callback) ->
   client = redis.createClient()
   client.incr("next_report_id", (err, reportId)->
+    return utils.showDBError(callback, client) if err
     score = getDateNumber(dateStr)
     client.zadd("userid:#{userId}:reportIds", score, reportId, (err, reply)->
+      return utils.showDBError(callback, client) if err
       client.hmset("userid:#{userId}:reports", "#{reportId}:date", dateStr, "#{reportId}:content", content, (err, reply)->
+        return utils.showDBError(callback, client) if err
+        client.quit()
         callback(new Response(1,'success',reply)) )))
 
 #日期字符串变为数字，例如 “2013-4-27” 变为 20130427
@@ -23,6 +28,7 @@ exports.getReports = (userId, page, numOfPage, callback) ->
   start = 0 if start < 0
   end = (numOfPage * page) - 1
   client.zrevrange("userid:#{userId}:reportIds", start, end, (err, reportIds)->
+    return utils.showDBError(callback, client) if err
     return callback(new Response(1,'success',[])) if reportIds and reportIds.length == 0
 
     dateArgs = ["userid:#{userId}:reports"]
@@ -31,8 +37,9 @@ exports.getReports = (userId, page, numOfPage, callback) ->
       dateArgs.push("#{reportId}:date")
       contentArgs.push("#{reportId}:content")
     client.hmget(dateArgs, (err, dates)->
-
+      return utils.showDBError(callback, client) if err
       client.hmget(contentArgs, (err, contents)->
+        return utils.showDBError(callback, client) if err
         len = contents.length
         response = []
         for i in [0...len]
@@ -43,19 +50,23 @@ exports.getReports = (userId, page, numOfPage, callback) ->
 exports.getReportNum = (userId, callback) ->
   client = redis.createClient()
   client.zcount("userid:#{userId}:reportIds", "-inf", "+inf", (err, count)->
+    return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1,'success',count)) )
 
 exports.deleteReport = (userId, reportId, callback)->
   client = redis.createClient()
   client.zrem("userid:#{userId}:reportIds", reportId, (err, reply)->
+    return utils.showDBError(callback, client) if err
     client.hdel("userid:#{userId}:reports", "#{reportId}:date", "#{reportId}:content", (err, reply)->
-    client.quit()
-    callback(new Response(1,'success',reply))))
+      return utils.showDBError(callback, client) if err
+      client.quit()
+      callback(new Response(1,'success',reply))))
 
 exports.getSubordinateUserAndDepartment = (userId, callback)->
   client = redis.createClient()
   client.hgetall("users", (err, users)->
+    return utils.showDBError(callback, client) if err
     [userObjs, userArray] = parseUsers(users)
     userTree = getDepartTreeData(userArray, {})
     subordinateIds = []
@@ -78,7 +89,7 @@ exports.getSubordinateUserAndDepartment = (userId, callback)->
       subordinateUsers.push(userObjs[userId])
 
     client.hgetall("departments", (err, departments)->
-
+      return utils.showDBError(callback, client) if err
       [departmentObjs, _] = parseDepartments(departments)
       subordinateDepartmentObjs = {}
       #console.log "subordinateUsers:"
@@ -110,7 +121,6 @@ exports.getSubordinateUserAndDepartment = (userId, callback)->
             getUserDepartmentTreeData(department["children"])
       getUserDepartmentTreeData(departmentTree)
       client.quit()
-
       callback(new Response(1,'success',departmentTree))))
 
 # data 后台返回数据  	Object { 1:user_name="walter", 1:department_id="7", 1:superior_id:"3"}
