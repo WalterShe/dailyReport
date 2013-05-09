@@ -23,7 +23,6 @@ exports.getReports = (userId, page, numOfPage, callback) ->
   start = 0 if start < 0
   end = (numOfPage * page) - 1
   client.zrevrange("userid:#{userId}:reportIds", start, end, (err, reportIds)->
-    console.log "reportIds:#{reportIds}"
     return callback(new Response(1,'success',[])) if reportIds and reportIds.length == 0
 
     dateArgs = ["userid:#{userId}:reports"]
@@ -45,7 +44,6 @@ exports.getReportNum = (userId, callback) ->
   client = redis.createClient()
   client.zcount("userid:#{userId}:reportIds", "-inf", "+inf", (err, count)->
     client.quit()
-    console.log count
     callback(new Response(1,'success',count)) )
 
 exports.deleteReport = (userId, reportId, callback)->
@@ -83,15 +81,19 @@ exports.getSubordinateUserAndDepartment = (userId, callback)->
 
       [departmentObjs, _] = parseDepartments(departments)
       subordinateDepartmentObjs = {}
-
+      #console.log "subordinateUsers:"
+      #console.log subordinateUsers
       for user in subordinateUsers
-        departmentId = user["departmentId"]
-        subordinateDepartmentObjs[departmentId] = departmentObjs[departmentId]
-
+        if user["departmentId"]
+          departmentId = user["departmentId"]
+          subordinateDepartmentObjs[departmentId] = departmentObjs[departmentId]
+      #console.log "subordinateDepartmentObjs:"
+      #console.log subordinateDepartmentObjs
       subordinateDepartments = []
       for _, department of subordinateDepartmentObjs
         subordinateDepartments.push(department)
-
+      #console.log "subordinateDepartments:"
+      #console.log subordinateDepartments
       departmentTree = getDepartTreeData(subordinateDepartments, subordinateDepartmentObjs)
 
       getUserDepartmentTreeData = (departmentTree)->
@@ -153,6 +155,8 @@ parseDepartments = (data)->
   [resultObj,result]
 
 getDepartTreeData = (departs, allObjs)->
+  #console.log departs
+  #console.log allObjs
   treeData = []
   for value in departs
     rootnode = {label:value.name, id:value.id, node:1};

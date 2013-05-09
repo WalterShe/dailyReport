@@ -21,7 +21,7 @@ exports.createDepartment = (departmentName, parentId, callback) ->
 
 #删除部门
 exports.removeDepartment = (departmentId, callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   client.hdel("departments", "#{departmentId}:name", "#{departmentId}:pid", (err, reply)->
     client.hgetall("departments", (err, reply)->
       newDepartments = {}
@@ -32,20 +32,16 @@ exports.removeDepartment = (departmentId, callback) ->
         else
           newDepartments[key] = value
 
-      callback(new Response(1,'success',newDepartments)))
-
-    # 该部门用户的部门属性清除
-    client.hgetall("users", (err, reply)->
-      users = reply
-      for key, value of users
-        childOfKey = key.split(":")
-        if childOfKey[1] == "department_id" and value == departmentId
-          client.hdel("users", key) )
-  )
+      client.hgetall("users", (err, users)->
+        for key, value of users
+          childOfKey = key.split(":")
+          if childOfKey[1] == "department_id" and value == departmentId
+            client.hdel("users", key)
+        callback(new Response(1,'success',newDepartments)))))
 
 #更新部门
-exports.updateDepartment = (departmentId, departmentName, parentId, callback) ->
-  client = redis.createClient();
+exports.updateDepartment = (departmentId, departmentName, parentId, callback)->
+  client = redis.createClient()
 
   replycallback =  (err, reply)->
     client.hgetall("departments", (err, reply)->
@@ -58,7 +54,7 @@ exports.updateDepartment = (departmentId, departmentName, parentId, callback) ->
     client.hset("departments", "#{departmentId}:name", departmentName, replycallback)
 
 exports.getAllDepartments = (callback) ->
-  client = redis.createClient();
+  client = redis.createClient()
   client.hgetall("departments", (err, reply)->
     client.quit()
-    callback(new Response(1,'success',reply)) if callback  )
+    callback(new Response(1,'success',reply)) if callback)

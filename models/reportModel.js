@@ -44,7 +44,6 @@
     end = (numOfPage * page) - 1;
     return client.zrevrange("userid:" + userId + ":reportIds", start, end, function(err, reportIds) {
       var contentArgs, dateArgs, reportId, _i, _len;
-      console.log("reportIds:" + reportIds);
       if (reportIds && reportIds.length === 0) {
         return callback(new Response(1, 'success', []));
       }
@@ -79,7 +78,6 @@
     client = redis.createClient();
     return client.zcount("userid:" + userId + ":reportIds", "-inf", "+inf", function(err, count) {
       client.quit();
-      console.log(count);
       return callback(new Response(1, 'success', count));
     });
   };
@@ -134,8 +132,10 @@
         subordinateDepartmentObjs = {};
         for (_k = 0, _len2 = subordinateUsers.length; _k < _len2; _k++) {
           user = subordinateUsers[_k];
-          departmentId = user["departmentId"];
-          subordinateDepartmentObjs[departmentId] = departmentObjs[departmentId];
+          if (user["departmentId"]) {
+            departmentId = user["departmentId"];
+            subordinateDepartmentObjs[departmentId] = departmentObjs[departmentId];
+          }
         }
         subordinateDepartments = [];
         for (_ in subordinateDepartmentObjs) {
