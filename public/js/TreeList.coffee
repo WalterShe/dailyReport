@@ -31,24 +31,31 @@ class TreeList
       deleteEvent["itemId"] = t.parent().attr('id')
       $(@containerNode).trigger(deleteEvent))
 
-    treeNodes = {}
-
+    @treeNodes = {}
+    self = @
     $(@containerNode).on("click", "li i.icon-plus-sign", (event)->
       event.stopImmediatePropagation()
       $(@).addClass('icon-minus-sign').removeClass('icon-plus-sign')
       name = $(@).parent().parent().attr("id")
-      $("##{name}").append(treeNodes[name])
-      delete treeNodes[name])
+      console.log self.treeNodes[name]
+      $("##{name}").append(self.treeNodes[name])
+      delete self.treeNodes[name])
 
     $(@containerNode).on("click", "li i.icon-minus-sign", (event)->
       event.stopImmediatePropagation()
       $(@).addClass('icon-plus-sign').removeClass('icon-minus-sign')
       name = $(@).parent().parent().attr("id")
-      treeNodes[name] = $(@).parent().next().detach())
+      self.treeNodes[name] = $(@).parent().next().detach())
 
   show: (@dataSource)->
     $(@containerNode).empty()
     @renderTree(@containerNode, @getDepartTreeData())
+
+    #收缩的菜单项依旧收缩
+    for name, _ of @treeNodes
+      ul = $("##{name}").find("ul:first")
+      ul.prev().find("i:first").addClass('icon-plus-sign').removeClass('icon-minus-sign')
+      @treeNodes[name] = ul.detach()
 
   showEditingItem: ->
     return unless  @editingItem

@@ -5,7 +5,7 @@
   TreeList = (function() {
 
     function TreeList(containerNode, dataSource) {
-      var treeNodes,
+      var self,
         _this = this;
       this.containerNode = containerNode;
       this.dataSource = dataSource != null ? dataSource : null;
@@ -42,28 +42,40 @@
         deleteEvent["itemId"] = t.parent().attr('id');
         return $(_this.containerNode).trigger(deleteEvent);
       });
-      treeNodes = {};
+      this.treeNodes = {};
+      self = this;
       $(this.containerNode).on("click", "li i.icon-plus-sign", function(event) {
         var name;
         event.stopImmediatePropagation();
         $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
         name = $(this).parent().parent().attr("id");
-        $("#" + name).append(treeNodes[name]);
-        return delete treeNodes[name];
+        console.log(self.treeNodes[name]);
+        $("#" + name).append(self.treeNodes[name]);
+        return delete self.treeNodes[name];
       });
       $(this.containerNode).on("click", "li i.icon-minus-sign", function(event) {
         var name;
         event.stopImmediatePropagation();
         $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
         name = $(this).parent().parent().attr("id");
-        return treeNodes[name] = $(this).parent().next().detach();
+        return self.treeNodes[name] = $(this).parent().next().detach();
       });
     }
 
     TreeList.prototype.show = function(dataSource) {
+      var name, ul, _, _ref, _results;
       this.dataSource = dataSource;
       $(this.containerNode).empty();
-      return this.renderTree(this.containerNode, this.getDepartTreeData());
+      this.renderTree(this.containerNode, this.getDepartTreeData());
+      _ref = this.treeNodes;
+      _results = [];
+      for (name in _ref) {
+        _ = _ref[name];
+        ul = $("#" + name).find("ul:first");
+        ul.prev().find("i:first").addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        _results.push(this.treeNodes[name] = ul.detach());
+      }
+      return _results;
     };
 
     TreeList.prototype.showEditingItem = function() {
