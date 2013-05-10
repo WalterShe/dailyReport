@@ -22,9 +22,10 @@
   <div id="newUser"  data-bind="visible: !updateUser()">
     <div class="title"><i class="icon-plus-sign"></i><h2>创建新用户</h2> </div>
     <label for="userName">用户名:
-        <span data-bind="css:{errorTip: !validUserName()}, visible: !validUserName()">至少6个，最多25个字符</span></label>
+        <span data-bind="css:{errorTip: !validUserName()}, visible: !validUserName()">至少6个，最多25个字符</span>
+        <span data-bind="css:{errorTip: showHasUserTip()}, visible: showHasUserTip()">该用户名已经存在</span></label>
     <input id="userName" type="text" required="required" name="userName"
-           data-bind="value: userName, valueUpdate:'keyup'" />
+           data-bind="value: userName, valueUpdate:'keyup',event: {focusout: checkUserExit}" />
     <br />
     <label for="password">密码:
         <span data-bind="css:{errorTip: !validPassword()}, visible: !validPassword()">至少7个，最多25个字符</span></label>

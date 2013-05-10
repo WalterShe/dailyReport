@@ -65,6 +65,21 @@ UserViewModel = ->
 
     result)
 
+  #输入的用户名已经存在
+  self.hasUser = ko.observable(false)
+  self.oldUserName = ""
+
+  self.showHasUserTip = ko.computed(->
+    return false if !self.validUserName()
+    self.hasUser())
+
+  self.checkUserExit = ->
+    return  if self.oldUserName == self.userName()
+    self.oldUserName = self.userName()
+    return self.hasUser(false) unless self.validUserName()
+    UserModel.hasUser(self.userName(), (response)->
+      self.hasUser(response.data))
+
   self
 
 

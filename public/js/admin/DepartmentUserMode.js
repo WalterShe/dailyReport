@@ -97,6 +97,14 @@
       }, "json");
     };
 
+    UserModel.hasUser = function(userName, callback) {
+      return $.post("/admin/hasuser", {
+        userName: userName
+      }, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
     UserModel.createUser = function(data, callback) {
       return $.post("/admin/createuser", data, function(response) {
         var user;

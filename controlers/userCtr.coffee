@@ -59,12 +59,15 @@ exports.createUser = (req, res) ->
   try
     check(userName, "字符长度为6-25，不能含有:符号").len(6,25).notContains(":")
     check(password, "字符长度为7-25，不能含有:符号").len(7,25).notContains(":")
-    hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
-    userModel.createUser(userName, hashedPassword, departmentId, superiorId, (response)->
-      res.send(response))
   catch  error
     errorMessage = error.message
-    res.send(new Response(0, errorMessage))
+    return res.send(new Response(0, errorMessage))
+
+  userModel.hasUser(userName, (response)->
+    return res.send(response) if response.state == 0 or response.data
+    hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
+    userModel.createUser(userName, hashedPassword, departmentId, superiorId, (response)->
+      res.send(response)))
 
 exports.removeUser = (req, res) ->
   userId = req.body.userId
@@ -105,4 +108,7 @@ exports.deleteAdmin = (req, res) ->
   userModel.deleteAdmin(userId, (response)->
     res.send(response))
 
-
+exports.hasUser = (req, res) ->
+  userName = req.body.userName
+  userModel.hasUser(userName, (response)->
+    res.send(response))

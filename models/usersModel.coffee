@@ -6,6 +6,7 @@ exports.createUser = (userName, password, departmentId, superiorId, callback) ->
   client = redis.createClient();
   client.incr("next_user_id", (err, reply)->
     return utils.showDBError(callback, client) if err
+
     userId = "#{reply}"
     replycallback =  (err, reply)->
       return utils.showDBError(callback, client) if err
@@ -18,9 +19,9 @@ exports.createUser = (userName, password, departmentId, superiorId, callback) ->
       callback(new Response(1,'success',data))
 
     if superiorId
-      client.hmset("users", "#{reply}:user_name", userName, "#{reply}:password", password, "#{reply}:department_id", departmentId, "#{reply}:superior_id", superiorId, replycallback)
+      client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, "#{userId}:department_id", departmentId, "#{userId}:superior_id", superiorId, replycallback)
     else
-      client.hmset("users", "#{reply}:user_name", userName, "#{reply}:password", password, "#{reply}:department_id", departmentId, replycallback)
+      client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, "#{userId}:department_id", departmentId, replycallback)
   )
 
 exports.updateUser = (userId, userName, password, departmentId, superiorId, callback) ->
@@ -120,3 +121,17 @@ exports.deleteAdmin = (userId, callback) ->
     return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",reply)))
+
+exports.hasUser = (userName, callback) ->
+  client = redis.createClient()
+  client.hgetall("users", (err, users)->
+    return utils.showDBError(callback, client) if err
+    result = false
+    client.quit()
+    for key, value of users
+      [_,property] = key.split(":")
+      if property == "user_name" and value == userName
+        result = true
+        break
+
+    callback(new Response(1, "success",result)))

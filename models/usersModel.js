@@ -40,9 +40,9 @@
         return callback(new Response(1, 'success', data));
       };
       if (superiorId) {
-        return client.hmset("users", "" + reply + ":user_name", userName, "" + reply + ":password", password, "" + reply + ":department_id", departmentId, "" + reply + ":superior_id", superiorId, replycallback);
+        return client.hmset("users", "" + userId + ":user_name", userName, "" + userId + ":password", password, "" + userId + ":department_id", departmentId, "" + userId + ":superior_id", superiorId, replycallback);
       } else {
-        return client.hmset("users", "" + reply + ":user_name", userName, "" + reply + ":password", password, "" + reply + ":department_id", departmentId, replycallback);
+        return client.hmset("users", "" + userId + ":user_name", userName, "" + userId + ":password", password, "" + userId + ":department_id", departmentId, replycallback);
       }
     });
   };
@@ -197,6 +197,28 @@
       }
       client.quit();
       return callback(new Response(1, "success", reply));
+    });
+  };
+
+  exports.hasUser = function(userName, callback) {
+    var client;
+    client = redis.createClient();
+    return client.hgetall("users", function(err, users) {
+      var key, property, result, value, _, _ref;
+      if (err) {
+        return utils.showDBError(callback, client);
+      }
+      result = false;
+      client.quit();
+      for (key in users) {
+        value = users[key];
+        _ref = key.split(":"), _ = _ref[0], property = _ref[1];
+        if (property === "user_name" && value === userName) {
+          result = true;
+          break;
+        }
+      }
+      return callback(new Response(1, "success", result));
     });
   };
 

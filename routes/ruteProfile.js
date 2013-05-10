@@ -27,6 +27,7 @@
     app.post('/admin/removeuser', user.removeUser);
     app.get('/admin/getallusers', user.getAllUsers);
     app.post('/admin/updateuser', user.updateUser);
+    app.post('/admin/hasuser', user.hasUser);
     app.get('/admin', admin.index);
     app.get('/admin/users', admin.usersIndex);
     app.get('/admin/admingroup', admin.admingroupIndex);

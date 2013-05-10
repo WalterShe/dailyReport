@@ -82,7 +82,7 @@
   };
 
   exports.createUser = function(req, res) {
-    var departmentId, errorMessage, hashedPassword, password, superiorId, userName;
+    var departmentId, errorMessage, password, superiorId, userName;
     userName = req.body.userName;
     password = req.body.password;
     departmentId = req.body.departmentId;
@@ -90,14 +90,20 @@
     try {
       check(userName, "字符长度为6-25，不能含有:符号").len(6, 25).notContains(":");
       check(password, "字符长度为7-25，不能含有:符号").len(7, 25).notContains(":");
-      hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
-      return userModel.createUser(userName, hashedPassword, departmentId, superiorId, function(response) {
-        return res.send(response);
-      });
     } catch (error) {
       errorMessage = error.message;
       return res.send(new Response(0, errorMessage));
     }
+    return userModel.hasUser(userName, function(response) {
+      var hashedPassword;
+      if (response.state === 0 || response.data) {
+        return res.send(response);
+      }
+      hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
+      return userModel.createUser(userName, hashedPassword, departmentId, superiorId, function(response) {
+        return res.send(response);
+      });
+    });
   };
 
   exports.removeUser = function(req, res) {
@@ -153,6 +159,14 @@
     var userId;
     userId = req.body.userId;
     return userModel.deleteAdmin(userId, function(response) {
+      return res.send(response);
+    });
+  };
+
+  exports.hasUser = function(req, res) {
+    var userName;
+    userName = req.body.userName;
+    return userModel.hasUser(userName, function(response) {
       return res.send(response);
     });
   };

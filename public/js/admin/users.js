@@ -77,6 +77,26 @@
       }
       return result;
     });
+    self.hasUser = ko.observable(false);
+    self.oldUserName = "";
+    self.showHasUserTip = ko.computed(function() {
+      if (!self.validUserName()) {
+        return false;
+      }
+      return self.hasUser();
+    });
+    self.checkUserExit = function() {
+      if (self.oldUserName === self.userName()) {
+        return;
+      }
+      self.oldUserName = self.userName();
+      if (!self.validUserName()) {
+        return self.hasUser(false);
+      }
+      return UserModel.hasUser(self.userName(), function(response) {
+        return self.hasUser(response.data);
+      });
+    };
     return self;
   };
 
