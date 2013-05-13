@@ -34,23 +34,16 @@
     return ReportModel.deleteReport({
       reportId: reportId
     }, function(response) {
-      var page, report, reports, _i, _len;
+      var page;
       if (response.state === 0) {
         return;
       }
-      reports = reportvm.reports();
-      for (_i = 0, _len = reports.length; _i < _len; _i++) {
-        report = reports[_i];
-        if (report["id"] === reportId) {
-          reportvm.reports.remove(report);
-          reportvm.reportNum(reportvm.reportNum() - 1);
-          if (reportvm.reports().length === 0 && reportvm.currentPage() > 1) {
-            page = reportvm.currentPage() - 1;
-            gotoPage(page);
-          }
-          return;
-        }
+      reportvm.reportNum(reportvm.reportNum() - 1);
+      page = reportvm.currentPage();
+      if (reportvm.reports().length === 1 && reportvm.currentPage() > 1) {
+        page = reportvm.currentPage() - 1;
       }
+      return gotoPage(page);
     });
   };
 
