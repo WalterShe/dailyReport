@@ -16,8 +16,8 @@ class ReportModel
       callback(response)
     , "json")
 
-  @getSubordinateUserAndDepartment: (userId, callback)->
-    $.post("/getsubordinateuseranddepartment", {userId:userId}, (response)->
+  @getSubordinateUserAndDepartment: (callback)->
+    $.post("/getsubordinateuseranddepartment",(response)->
       callback(response)
     , "json")
 

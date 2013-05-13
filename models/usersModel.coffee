@@ -3,7 +3,7 @@
 utils = require("../utils")
 
 exports.createUser = (userName, password, departmentId, superiorId, callback) ->
-  client = utils.createClient();
+  client = utils.createClient()
   client.incr("next_user_id", (err, reply)->
     return utils.showDBError(callback, client) if err
 

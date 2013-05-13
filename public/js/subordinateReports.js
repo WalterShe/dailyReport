@@ -4,8 +4,11 @@
 
   treeList = new TreeList2("#userTree");
 
-  ReportModel.getSubordinateUserAndDepartment("28", function(response) {
+  ReportModel.getSubordinateUserAndDepartment(function(response) {
     var treeData;
+    if (response.state === 0) {
+      return;
+    }
     treeData = response.data;
     return treeList.renderTree("#userTree", treeData);
   });

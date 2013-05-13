@@ -7,10 +7,14 @@ var express = require('express')
   , http = require('http')
   , routeProfile = require('./routes/ruteProfile')
   , path = require('path')
+  , redis = require("redis")
   , RedisStore = require('connect-redis')(express);
 
 var app = express();
-
+var redisClient = redis.createClient();
+redisClient.on("error", function(err) {
+   console.log(err);
+});
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -22,7 +26,8 @@ app.use(express.compress());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.session({ store: new RedisStore({host:'127.0.0.1', port:6379, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
+//app.use(express.session({ store: new RedisStore({host:'127.0.0.1', port:6379, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
+app.use(express.session({ store: new RedisStore({client:redisClient, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
 /**app.use(function(req, res, next){
     console.log("I'm Walter She.");
     next();

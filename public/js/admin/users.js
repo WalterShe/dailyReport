@@ -41,6 +41,9 @@
         };
         return UserModel.createUser(data, function(response) {
           var newUser;
+          if (response.state === 0) {
+            return;
+          }
           newUser = response.data;
           self.superiors.push(newUser);
           return treeList.show(UserModel.getLocalAllUsers());
@@ -94,6 +97,9 @@
         return self.hasUser(false);
       }
       return UserModel.hasUser(self.userName(), function(response) {
+        if (response.state === 0) {
+          return;
+        }
         return self.hasUser(response.data);
       });
     };
@@ -109,6 +115,9 @@
     });
     UserModel.getAllUsers(function(response) {
       var users;
+      if (response.state === 0) {
+        return;
+      }
       users = response.data;
       return treeList.show(users);
     });
@@ -116,6 +125,9 @@
       return UserModel.removeUser({
         userId: event["itemId"]
       }, function(response) {
+        if (response.state === 0) {
+          return;
+        }
         return treeList.show(response["data"]);
       });
     });
@@ -243,6 +255,9 @@
           superiorId: (_ref1 = uservm.selectedSuperior1()) != null ? _ref1["id"] : void 0
         };
         return UserModel.updateUser(data, function(response) {
+          if (response.state === 0) {
+            return;
+          }
           setSuperiorsByDepartmentId(uservm.selectedDepartment["id"]);
           cancelUpdate();
           return treeList.show(UserModel.getLocalAllUsers());

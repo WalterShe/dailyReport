@@ -21,10 +21,12 @@ NUMOFPAGE = 4
 getReports = (userId=null)->
   data = {page:1, numOfPage:NUMOFPAGE, userId:userId}
   ReportModel.getReports(data, (response)->
+    return if response.state == 0
     reportvm.reports(response.data))
 
 getReportNum = (userId=null)->
   ReportModel.getReportNum(userId, (response)->
+    return if response.state == 0
     reportvm.reportNum(response.data))
 
 reportvm = new ShowReportsViewModel()
@@ -45,4 +47,5 @@ window.gotoPage = (page)->
   reportvm.currentPage(page)
   data = {page:page, numOfPage:NUMOFPAGE}
   ReportModel.getReports(data, (response)->
+    return if response.state == 0
     reportvm.reports(response.data))

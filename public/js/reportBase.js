@@ -36,6 +36,9 @@
       userId: userId
     };
     return ReportModel.getReports(data, function(response) {
+      if (response.state === 0) {
+        return;
+      }
       return reportvm.reports(response.data);
     });
   };
@@ -45,6 +48,9 @@
       userId = null;
     }
     return ReportModel.getReportNum(userId, function(response) {
+      if (response.state === 0) {
+        return;
+      }
       return reportvm.reportNum(response.data);
     });
   };
@@ -75,6 +81,9 @@
       numOfPage: NUMOFPAGE
     };
     return ReportModel.getReports(data, function(response) {
+      if (response.state === 0) {
+        return;
+      }
       return reportvm.reports(response.data);
     });
   };

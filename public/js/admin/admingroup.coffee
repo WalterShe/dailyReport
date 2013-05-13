@@ -18,7 +18,8 @@ AdminGroupViewModel = ->
     console.log  "fail: 必须选择一个成员" unless self.valid()
     user = self.selectedUser()
     UserModel.setAdministrator(user["id"], (response)->
-       self.admins.push(user))
+      return if response.state == 0
+      self.admins.push(user))
 
   self
 
@@ -32,8 +33,11 @@ init = ->
     adminvm.departments(response.data))
 
   UserModel.getAllUsers((response)->
+    return if response.state == 0
+
     users = response.data
     UserModel.getAdmins((response)->
+      return if response.state == 0
       adminIds = response.data
       admins = getAdmins(users, adminIds)
       adminvm.admins(admins))
@@ -74,6 +78,7 @@ init = ->
   $("#adminlist").on("click", "a.delete", (event)->
     userId = $(@).attr("userid")
     UserModel.deleteAdministrator(userId, (response)->
+      return if response.state == 0
       admins = adminvm.admins()
       for admin in admins
         return adminvm.admins.remove(admin) if admin["id"] == userId))

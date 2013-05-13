@@ -9,8 +9,10 @@
     DepartmemtModel.getAllDepartments = function(callback) {
       return $.get("/admin/alldepartments", function(response) {
         var departments;
-        departments = DepartmemtModel.parseDepartments(response.data);
-        response['data'] = departments;
+        if (response.state === 1) {
+          departments = DepartmemtModel.parseDepartments(response.data);
+          response['data'] = departments;
+        }
         return callback(response);
       }, "json");
     };
@@ -50,8 +52,10 @@
     DepartmemtModel.updateDepartment = function(data, callback) {
       return $.post("/admin/updatedepartment", data, function(response) {
         var departments;
-        departments = DepartmemtModel.parseDepartments(response.data);
-        response['data'] = departments;
+        if (response.state === 1) {
+          departments = DepartmemtModel.parseDepartments(response.data);
+          response['data'] = departments;
+        }
         return callback(response);
       }, "json");
     };
@@ -59,8 +63,10 @@
     DepartmemtModel.removeDepartment = function(data, callback) {
       return $.post("/admin/removedepartment", data, function(response) {
         var departments;
-        departments = DepartmemtModel.parseDepartments(response.data);
-        response.data = departments;
+        if (response.state === 1) {
+          departments = DepartmemtModel.parseDepartments(response.data);
+          response.data = departments;
+        }
         return callback(response);
       }, "json");
     };
@@ -108,15 +114,17 @@
     UserModel.createUser = function(data, callback) {
       return $.post("/admin/createuser", data, function(response) {
         var user;
-        user = response.data;
-        user["name"] = user["userName"];
-        delete user["userName"];
-        if (user["superiorId"]) {
-          user["pid"] = user["superiorId"];
-          delete user["superiorId"];
+        if (response.state === 1) {
+          user = response.data;
+          user["name"] = user["userName"];
+          delete user["userName"];
+          if (user["superiorId"]) {
+            user["pid"] = user["superiorId"];
+            delete user["superiorId"];
+          }
+          response.data = user;
+          UserModel.allUsers.push(user);
         }
-        response.data = user;
-        UserModel.allUsers.push(user);
         return callback(response);
       }, "json");
     };
@@ -124,9 +132,11 @@
     UserModel.updateUser = function(data, callback) {
       return $.post("/admin/updateuser", data, function(response) {
         var users;
-        users = UserModel.parseUsers(response.data);
-        response.data = users;
-        UserModel.allUsers = users;
+        if (response.state === 1) {
+          users = UserModel.parseUsers(response.data);
+          response.data = users;
+          UserModel.allUsers = users;
+        }
         return callback(response);
       }, "json");
     };
@@ -134,9 +144,11 @@
     UserModel.removeUser = function(data, callback) {
       return $.post("/admin/removeuser", data, function(response) {
         var users;
-        users = UserModel.parseUsers(response.data);
-        response.data = users;
-        UserModel.allUsers = users;
+        if (response.state === 1) {
+          users = UserModel.parseUsers(response.data);
+          response.data = users;
+          UserModel.allUsers = users;
+        }
         return callback(response);
       }, "json");
     };
@@ -144,9 +156,11 @@
     UserModel.getAllUsers = function(callback) {
       return $.get("/admin/getallusers", function(response) {
         var users;
-        users = UserModel.parseUsers(response.data);
-        response.data = users;
-        UserModel.allUsers = users;
+        if (response.state === 1) {
+          users = UserModel.parseUsers(response.data);
+          response.data = users;
+          UserModel.allUsers = users;
+        }
         return callback(response);
       }, "json");
     };

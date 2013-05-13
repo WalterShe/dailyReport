@@ -44,6 +44,7 @@ init = ->
     dateStr = getDateStr($("#dateTxt").datepicker("getDate"))
     data = {date:dateStr, content:editor.getContent()}
     ReportModel.createReport(data, (response)->
+      return if response.state == 0
       window.location.href = "/show"))
 
 init()

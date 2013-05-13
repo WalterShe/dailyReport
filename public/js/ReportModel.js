@@ -26,10 +26,8 @@
       }, "json");
     };
 
-    ReportModel.getSubordinateUserAndDepartment = function(userId, callback) {
-      return $.post("/getsubordinateuseranddepartment", {
-        userId: userId
-      }, function(response) {
+    ReportModel.getSubordinateUserAndDepartment = function(callback) {
+      return $.post("/getsubordinateuseranddepartment", function(response) {
         return callback(response);
       }, "json");
     };

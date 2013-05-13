@@ -23,6 +23,7 @@ DepartmentViewModel = ->
     if self.validDepartmentName()
       data = {departmentName: $.trim(self.departmentName()), pid: self.selectedParentDepartment()?["id"]}
       DepartmemtModel.createNewDepartment(data, (response)->
+        return if response.state == 0
         self.departments.push(response.data)
         treeList.show(self.departments()) )
 
@@ -67,6 +68,7 @@ init = ->
     departmentId = treeList.getEditingItemId()
     data = {departmentId:departmentId, departmentName:departmentvm.updateDepartmentName(), pid: departmentvm.selectedParentDepartment()?["id"]}
     DepartmemtModel.updateDepartment(data,(response)->
+      return if response.state == 0
       cancelUpdateDepartment()
       departmentvm.departments(response["data"])
       treeList.show(response["data"])))
@@ -74,11 +76,13 @@ init = ->
 
   $("#departmentTree").on("delete", (event)->
     DepartmemtModel.removeDepartment({departmentId:event["itemId"]}, (response)->
+      return if response.state == 0
       departmentvm.departments(response.data)
       treeList.show(response["data"]))
     )
 
   DepartmemtModel.getAllDepartments((response)->
+    return if response.state == 0
     departmentvm.departments(response.data)
     treeList.show(response["data"]))
 

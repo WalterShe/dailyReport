@@ -20,6 +20,9 @@
       }
       user = self.selectedUser();
       return UserModel.setAdministrator(user["id"], function(response) {
+        if (response.state === 0) {
+          return;
+        }
         return self.admins.push(user);
       });
     };
@@ -35,9 +38,15 @@
     });
     UserModel.getAllUsers(function(response) {
       var users;
+      if (response.state === 0) {
+        return;
+      }
       users = response.data;
       UserModel.getAdmins(function(response) {
         var adminIds, admins;
+        if (response.state === 0) {
+          return;
+        }
         adminIds = response.data;
         admins = getAdmins(users, adminIds);
         return adminvm.admins(admins);
@@ -105,6 +114,9 @@
       userId = $(this).attr("userid");
       return UserModel.deleteAdministrator(userId, function(response) {
         var admin, admins, _i, _len;
+        if (response.state === 0) {
+          return;
+        }
         admins = adminvm.admins();
         for (_i = 0, _len = admins.length; _i < _len; _i++) {
           admin = admins[_i];

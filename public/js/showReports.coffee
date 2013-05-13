@@ -5,6 +5,7 @@ getReportNum()
 $("#reportList").on("click", "p.delete", ->
   reportId = $(this).attr("reportId")
   ReportModel.deleteReport({reportId:reportId}, (response)->
+    return if response.state == 0
     reports = reportvm.reports()
     for report in reports
       if report["id"] == reportId

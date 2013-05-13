@@ -12,6 +12,9 @@
       reportId: reportId
     }, function(response) {
       var page, report, reports, _i, _len;
+      if (response.state === 0) {
+        return;
+      }
       reports = reportvm.reports();
       for (_i = 0, _len = reports.length; _i < _len; _i++) {
         report = reports[_i];

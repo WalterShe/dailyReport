@@ -30,6 +30,9 @@
           pid: (_ref = self.selectedParentDepartment()) != null ? _ref["id"] : void 0
         };
         return DepartmemtModel.createNewDepartment(data, function(response) {
+          if (response.state === 0) {
+            return;
+          }
           self.departments.push(response.data);
           return treeList.show(self.departments());
         });
@@ -90,6 +93,9 @@
         pid: (_ref = departmentvm.selectedParentDepartment()) != null ? _ref["id"] : void 0
       };
       return DepartmemtModel.updateDepartment(data, function(response) {
+        if (response.state === 0) {
+          return;
+        }
         cancelUpdateDepartment();
         departmentvm.departments(response["data"]);
         return treeList.show(response["data"]);
@@ -99,11 +105,17 @@
       return DepartmemtModel.removeDepartment({
         departmentId: event["itemId"]
       }, function(response) {
+        if (response.state === 0) {
+          return;
+        }
         departmentvm.departments(response.data);
         return treeList.show(response["data"]);
       });
     });
     return DepartmemtModel.getAllDepartments(function(response) {
+      if (response.state === 0) {
+        return;
+      }
       departmentvm.departments(response.data);
       return treeList.show(response["data"]);
     });

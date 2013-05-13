@@ -5,8 +5,9 @@ class DepartmemtModel
   @getAllDepartments: (callback)->
     $.get("/admin/alldepartments",
          (response)->
-           departments = DepartmemtModel.parseDepartments(response.data)
-           response['data'] = departments
+           if response.state == 1
+             departments = DepartmemtModel.parseDepartments(response.data)
+             response['data'] = departments
            callback(response)
          , "json")
   # data 后台返回数据  	Object { 1:name="PHP", 2:name="IOS", 3:name="p2", 3:pid="1"}
@@ -38,18 +39,19 @@ class DepartmemtModel
   @updateDepartment: (data, callback)->
     $.post("/admin/updatedepartment", data,
           (response)->
-            departments = DepartmemtModel.parseDepartments(response.data)
-            response['data'] = departments
+            if response.state == 1
+              departments = DepartmemtModel.parseDepartments(response.data)
+              response['data'] = departments
             callback(response)
           , "json")
 
   @removeDepartment: (data, callback)->
-    $.post("/admin/removedepartment", data,
-          (response)->
-            departments = DepartmemtModel.parseDepartments(response.data)
-            response.data = departments
-            callback(response)
-          , "json")
+    $.post("/admin/removedepartment", data,(response)->
+      if response.state == 1
+        departments = DepartmemtModel.parseDepartments(response.data)
+        response.data = departments
+      callback(response)
+    , "json")
 
 window.DepartmemtModel = DepartmemtModel
 
@@ -78,40 +80,43 @@ class UserModel
 
 
   @createUser: (data, callback)->
-    $.post("/admin/createuser", data,
-          (response)->
-            user = response.data
-            user["name"] = user["userName"]
-            delete user["userName"]
-            if user["superiorId"]
-              user["pid"] = user["superiorId"]
-              delete user["superiorId"]
-            response.data = user
-            UserModel.allUsers.push(user)
-            callback(response)
-          , "json")
+    $.post("/admin/createuser", data, (response)->
+      if response.state == 1
+        user = response.data
+        user["name"] = user["userName"]
+        delete user["userName"]
+        if user["superiorId"]
+          user["pid"] = user["superiorId"]
+          delete user["superiorId"]
+        response.data = user
+        UserModel.allUsers.push(user)
+      callback(response)
+    , "json")
 
   @updateUser: (data, callback)->
     $.post("/admin/updateuser", data, (response)->
-      users = UserModel.parseUsers(response.data)
-      response.data = users
-      UserModel.allUsers = users
+      if response.state == 1
+        users = UserModel.parseUsers(response.data)
+        response.data = users
+        UserModel.allUsers = users
       callback(response)
     ,"json")
 
   @removeUser: (data, callback)->
     $.post("/admin/removeuser", data, (response)->
-       users = UserModel.parseUsers(response.data)
-       response.data = users
-       UserModel.allUsers = users
-       callback(response)
-    , "json")
+      if response.state == 1
+        users = UserModel.parseUsers(response.data)
+        response.data = users
+        UserModel.allUsers = users
+      callback(response)
+    ,"json")
 
   @getAllUsers: (callback)->
     $.get("/admin/getallusers",(response)->
-      users = UserModel.parseUsers(response.data)
-      response.data = users
-      UserModel.allUsers = users
+      if response.state == 1
+        users = UserModel.parseUsers(response.data)
+        response.data = users
+        UserModel.allUsers = users
       callback(response)
     , "json")
 

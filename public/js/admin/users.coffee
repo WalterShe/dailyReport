@@ -31,6 +31,7 @@ UserViewModel = ->
       data = {userName: $.trim(self.userName()), password:$.trim(self.password()),
       departmentId:self.selectedDepartment()?["id"], superiorId:self.selectedSuperior()?["id"]}
       UserModel.createUser(data, (response)->
+        return if response.state == 0
         newUser = response.data
         self.superiors.push(newUser)
         treeList.show(UserModel.getLocalAllUsers()))
@@ -78,6 +79,7 @@ UserViewModel = ->
     self.oldUserName = self.userName()
     return self.hasUser(false) unless self.validUserName()
     UserModel.hasUser(self.userName(), (response)->
+      return if response.state == 0
       self.hasUser(response.data))
 
   self
@@ -92,11 +94,13 @@ init = ->
     uservm.departments(response.data))
 
   UserModel.getAllUsers((response)->
+    return if response.state == 0
     users = response.data
     treeList.show(users))
 
   $("#usersTree").on("delete", (event)->
     UserModel.removeUser({userId:event["itemId"]}, (response)->
+      return if response.state == 0
       treeList.show(response["data"])))
 
   $("#userDepartment").change( ->
@@ -188,6 +192,7 @@ init = ->
       data = {userId:uservm.updateUser()["id"] ,userName: $.trim(uservm.userName1()), password:$.trim(uservm.password1()),
       departmentId:uservm.selectedDepartment1()?["id"], superiorId:uservm.selectedSuperior1()?["id"]}
       UserModel.updateUser(data, (response)->
+        return if response.state == 0
         setSuperiorsByDepartmentId(uservm.selectedDepartment["id"])
         cancelUpdate()
         treeList.show(UserModel.getLocalAllUsers()))

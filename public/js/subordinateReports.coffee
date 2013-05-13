@@ -1,6 +1,7 @@
 treeList = new TreeList2("#userTree")
 
-ReportModel.getSubordinateUserAndDepartment("28", (response)->
+ReportModel.getSubordinateUserAndDepartment((response)->
+  return if response.state == 0
   treeData = response.data
   treeList.renderTree("#userTree", treeData))
 

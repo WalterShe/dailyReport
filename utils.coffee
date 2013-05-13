@@ -11,7 +11,7 @@ exports.authenticateUser = (req,res)->
 
 #如果用户登陆了，返回true，否则返回false
 exports.isLoginUser = (req)->
-  req.session.userId and true
+  req.session?.userId and true
 
 
 #如果用户是管理员，返回true，否则返回false ，并且转向登陆界面
@@ -33,9 +33,9 @@ exports.showDBError = (callback, client=null, message='数据库错误')->
   client.quit() if client
   callback(new Response(0,message))
 
-exports.creatClient = ()->
+exports.createClient = ->
   client = redis.createClient()
   client.on("error", (err)->
-     console.log(err))
-
+    console.log(err)
+    client.end())
   client
