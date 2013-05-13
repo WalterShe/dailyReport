@@ -1,9 +1,9 @@
-redis = require("redis")
+
 {Response} = require('../vo/response')
 utils = require("../utils")
 
 exports.createUser = (userName, password, departmentId, superiorId, callback) ->
-  client = redis.createClient();
+  client = utils.createClient();
   client.incr("next_user_id", (err, reply)->
     return utils.showDBError(callback, client) if err
 
@@ -25,7 +25,7 @@ exports.createUser = (userName, password, departmentId, superiorId, callback) ->
   )
 
 exports.updateUser = (userId, userName, password, departmentId, superiorId, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
 
   replycallback =  (err, reply)->
     return utils.showDBError(callback, client) if err
@@ -46,7 +46,7 @@ exports.updateUser = (userId, userName, password, departmentId, superiorId, call
 
 
 exports.getAllUsers = (callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hgetall("users", (err, reply)->
     return utils.showDBError(callback, client) if err
     client.quit()
@@ -54,14 +54,14 @@ exports.getAllUsers = (callback) ->
     callback(new Response(1, "success",users)))
 
 exports.getAllUsersWithPassword = (callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hgetall("users", (err, users)->
     return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",users)))
 
 exports.removeUser = (userId, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hdel("users", "#{userId}:user_name", "#{userId}:password", "#{userId}:department_id", "#{userId}:superior_id", (err, reply)->
     return utils.showDBError(callback, client) if err
     client.hgetall("users", (err, reply)->
@@ -88,7 +88,7 @@ getUsersWithoutPassword = (users)->
 
 # 查看某个用户（userId）是否有下属
 exports.hasSubordinate = (userId, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hgetall("users", (err, users)->
     return utils.showDBError(callback, client) if err
     result = false
@@ -102,28 +102,28 @@ exports.hasSubordinate = (userId, callback) ->
 
 # 获取所有管理员Id
 exports.getAdminIds = (callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.smembers("administrators", (err, ids)->
     return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",ids)))
 
 exports.setAdmin = (userId, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.sadd("administrators", userId, (err, reply)->
     return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",reply)))
 
 exports.deleteAdmin = (userId, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.srem("administrators", userId, (err, reply)->
     return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1, "success",reply)))
 
 exports.hasUser = (userName, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hgetall("users", (err, users)->
     return utils.showDBError(callback, client) if err
     result = false

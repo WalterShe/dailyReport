@@ -91,7 +91,11 @@
 
   exports.getAllUsersWithPassword = function(callback) {
     var client;
+
     client = redis.createClient();
+      client.on("error", function (err) {
+          console.log("Error " + err);
+      });
     return client.hgetall("users", function(err, users) {
       if (err) {
         return utils.showDBError(callback, client);

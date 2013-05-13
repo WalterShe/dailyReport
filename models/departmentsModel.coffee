@@ -1,9 +1,9 @@
-redis = require("redis")
+
 {Response} = require('../vo/response')
 utils = require("../utils")
 
 exports.createDepartment = (departmentName, parentId, callback) ->
-  client = redis.createClient();
+  client = utils.createClient()
 
   client.incr("next_department_id", (err, reply)->
     return utils.showDBError(callback, client) if err
@@ -24,7 +24,7 @@ exports.createDepartment = (departmentName, parentId, callback) ->
 
 #删除部门
 exports.removeDepartment = (departmentId, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hdel("departments", "#{departmentId}:name", "#{departmentId}:pid", (err, reply)->
     return utils.showDBError(callback, client) if err
     client.hgetall("departments", (err, reply)->
@@ -47,7 +47,7 @@ exports.removeDepartment = (departmentId, callback) ->
 
 #更新部门
 exports.updateDepartment = (departmentId, departmentName, parentId, callback)->
-  client = redis.createClient()
+  client = utils.createClient()
 
   replycallback =  (err, reply)->
     return utils.showDBError(callback, client) if err
@@ -61,7 +61,7 @@ exports.updateDepartment = (departmentId, departmentName, parentId, callback)->
     client.hset("departments", "#{departmentId}:name", departmentName, replycallback)
 
 exports.getAllDepartments = (callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hgetall("departments", (err, reply)->
     return utils.showDBError(callback, client) if err
     client.quit()

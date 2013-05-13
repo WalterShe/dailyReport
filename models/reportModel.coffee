@@ -1,10 +1,10 @@
-redis = require("redis")
+
 {Response} = require('../vo/response')
 userModel = require('./usersModel')
 utils = require("../utils")
 
 exports.createReport = (userId, content, dateStr, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.incr("next_report_id", (err, reportId)->
     return utils.showDBError(callback, client) if err
     score = getDateNumber(dateStr)
@@ -23,7 +23,7 @@ getDateNumber = (dateStr)->
   parseInt("#{year}#{months}#{date}")
 
 exports.getReports = (userId, page, numOfPage, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   start =  numOfPage * (page-1)
   start = 0 if start < 0
   end = (numOfPage * page) - 1
@@ -48,14 +48,14 @@ exports.getReports = (userId, page, numOfPage, callback) ->
         callback(new Response(1,'success',response)) )))
 
 exports.getReportNum = (userId, callback) ->
-  client = redis.createClient()
+  client = utils.createClient()
   client.zcount("userid:#{userId}:reportIds", "-inf", "+inf", (err, count)->
     return utils.showDBError(callback, client) if err
     client.quit()
     callback(new Response(1,'success',count)) )
 
 exports.deleteReport = (userId, reportId, callback)->
-  client = redis.createClient()
+  client = utils.createClient()
   client.zrem("userid:#{userId}:reportIds", reportId, (err, reply)->
     return utils.showDBError(callback, client) if err
     client.hdel("userid:#{userId}:reports", "#{reportId}:date", "#{reportId}:content", (err, reply)->
@@ -64,7 +64,7 @@ exports.deleteReport = (userId, reportId, callback)->
       callback(new Response(1,'success',reply))))
 
 exports.getSubordinateUserAndDepartment = (userId, callback)->
-  client = redis.createClient()
+  client = utils.createClient()
   client.hgetall("users", (err, users)->
     return utils.showDBError(callback, client) if err
     [userObjs, userArray] = parseUsers(users)
