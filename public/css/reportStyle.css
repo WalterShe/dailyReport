@@ -43,6 +43,9 @@ header {
 header.navbar a.brand {
   padding-left: 40px;
 }
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
 * {
   color: #555;
 }

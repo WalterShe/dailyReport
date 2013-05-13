@@ -115,6 +115,9 @@ body.admin-admingroup #adminlist li.itemOver {
   background-color: #78b608;
   border-radius: 5px 5px 5px 5px;
 }
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
 * {
   color: #555;
 }

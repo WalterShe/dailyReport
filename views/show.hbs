@@ -4,7 +4,7 @@
     <title>写日报</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/reportStyle.css' />
-    <link rel='stylesheet' href='/css/jquery-ui-1.10.3.custom.min.css' />
+    <link rel='stylesheet' href='/css/pepper-grinder/jquery-ui-1.10.3.custom.min.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
     <script type="text/javascript" src='/js/jquery-ui-1.10.3.custom.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
@@ -27,6 +27,9 @@
         {{/if}}
     </ul>
 </header>
+<div id="dialog-confirm" title="删除日报" style="display:none">
+    <p>确认要删除该日报吗？</p>
+</div>
 <section class="container">
     <div class="title"> <i class="icon-book"></i><h1>日报内容</h1></div>
     <article id="reportList" >

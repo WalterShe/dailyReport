@@ -30,7 +30,7 @@
   };
 
   init = function() {
-    var adminvm, getAdmins, getUsersByDepartmentId;
+    var adminvm, confirm, deleteAdmin, getAdmins, getUsersByDepartmentId;
     adminvm = new AdminGroupViewModel();
     ko.applyBindings(adminvm);
     DepartmemtModel.getAllDepartments(function(response) {
@@ -112,6 +112,9 @@
     $("#adminlist").on("click", "a.delete", function(event) {
       var userId;
       userId = $(this).attr("userid");
+      return confirm(userId);
+    });
+    deleteAdmin = function(userId) {
       return UserModel.deleteAdministrator(userId, function(response) {
         var admin, admins, _i, _len;
         if (response.state === 0) {
@@ -125,7 +128,24 @@
           }
         }
       });
-    });
+    };
+    confirm = function(userId) {
+      return $("#dialog-confirm").dialog({
+        dialogClass: "no-close",
+        resizable: false,
+        height: 160,
+        modal: true,
+        buttons: {
+          "删除": function() {
+            deleteAdmin(userId);
+            return $(this).dialog("close");
+          },
+          Cancel: function() {
+            return $(this).dialog("close");
+          }
+        }
+      });
+    };
     $("#adminlist").on("mouseenter", "li", function(event) {
       return $(this).addClass('itemOver');
     });

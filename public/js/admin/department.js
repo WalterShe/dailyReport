@@ -42,7 +42,7 @@
   };
 
   init = function() {
-    var cancelUpdateDepartment, departmentvm, findDepartment, findParentDepartment;
+    var cancelUpdateDepartment, confirm, deleteDepartment, departmentvm, findDepartment, findParentDepartment;
     departmentvm = new DepartmentViewModel();
     ko.applyBindings(departmentvm);
     $("#departmentTree").on("update", function(event) {
@@ -102,8 +102,13 @@
       });
     });
     $("#departmentTree").on("delete", function(event) {
+      var departmentId;
+      departmentId = event["itemId"];
+      return confirm(departmentId);
+    });
+    deleteDepartment = function(departmentId) {
       return DepartmemtModel.removeDepartment({
-        departmentId: event["itemId"]
+        departmentId: departmentId
       }, function(response) {
         if (response.state === 0) {
           return;
@@ -111,7 +116,24 @@
         departmentvm.departments(response.data);
         return treeList.show(response["data"]);
       });
-    });
+    };
+    confirm = function(departmentId) {
+      return $("#dialog-confirm").dialog({
+        dialogClass: "no-close",
+        resizable: false,
+        height: 160,
+        modal: true,
+        buttons: {
+          "删除": function() {
+            deleteDepartment(departmentId);
+            return $(this).dialog("close");
+          },
+          Cancel: function() {
+            return $(this).dialog("close");
+          }
+        }
+      });
+    };
     return DepartmemtModel.getAllDepartments(function(response) {
       if (response.state === 0) {
         return;

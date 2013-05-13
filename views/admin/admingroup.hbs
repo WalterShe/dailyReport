@@ -5,7 +5,7 @@
     <title>管理员设置-日报后台管理系统</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/adminStyle.css' />
-    <link rel='stylesheet' href='/css/jquery-ui-1.10.3.custom.min.css' />
+    <link rel='stylesheet' href='/css/pepper-grinder/jquery-ui-1.10.3.custom.min.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
     <script type="text/javascript" src='/js/jquery-ui-1.10.3.custom.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
@@ -20,6 +20,9 @@
         <li ><a href="/logout">退出</a></li>
     </ul>
 </header>
+<div id="dialog-confirm" title="删除管理员" style="display:none">
+    <p>确认要删除该管理员吗？</p>
+</div>
 <section class="container">
   <div id="newAdministrator">
     <div class="title"><i class=" icon-user"></i><h2>添加管理员</h2> </div>

@@ -77,11 +77,27 @@ init = ->
 
   $("#adminlist").on("click", "a.delete", (event)->
     userId = $(@).attr("userid")
+    confirm(userId))
+
+  deleteAdmin = (userId)->
     UserModel.deleteAdministrator(userId, (response)->
       return if response.state == 0
       admins = adminvm.admins()
       for admin in admins
-        return adminvm.admins.remove(admin) if admin["id"] == userId))
+        return adminvm.admins.remove(admin) if admin["id"] == userId)
+
+  confirm = (userId)->
+    $("#dialog-confirm").dialog({
+      dialogClass: "no-close",
+      resizable: false,
+      height:160,
+      modal: true,
+      buttons: {
+        "删除": ->
+          deleteAdmin(userId)
+          $(@).dialog("close")
+        Cancel: ->
+          $(this).dialog("close")}})
 
   $("#adminlist").on("mouseenter", "li", (event)->
      $(@).addClass('itemOver'))

@@ -75,11 +75,27 @@ init = ->
 
 
   $("#departmentTree").on("delete", (event)->
-    DepartmemtModel.removeDepartment({departmentId:event["itemId"]}, (response)->
+    departmentId = event["itemId"]
+    confirm(departmentId))
+
+  deleteDepartment = (departmentId)->
+    DepartmemtModel.removeDepartment({departmentId:departmentId}, (response)->
       return if response.state == 0
       departmentvm.departments(response.data)
       treeList.show(response["data"]))
-    )
+
+  confirm = (departmentId)->
+    $("#dialog-confirm").dialog({
+      dialogClass: "no-close",
+      resizable: false,
+      height:160,
+      modal: true,
+      buttons: {
+        "删除": ->
+          deleteDepartment(departmentId)
+          $(@).dialog("close")
+        Cancel: ->
+          $(this).dialog("close")}})
 
   DepartmemtModel.getAllDepartments((response)->
     return if response.state == 0

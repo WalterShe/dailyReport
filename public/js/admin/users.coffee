@@ -99,9 +99,13 @@ init = ->
     treeList.show(users))
 
   $("#usersTree").on("delete", (event)->
-    UserModel.removeUser({userId:event["itemId"]}, (response)->
+    userId = event["itemId"]
+    confirm(userId))
+
+  deleteUser = (userId)->
+    UserModel.removeUser({userId:userId}, (response)->
       return if response.state == 0
-      treeList.show(response["data"])))
+      treeList.show(response["data"]))
 
   $("#userDepartment").change( ->
     departmentId = uservm.selectedDepartment()?['id']
@@ -198,5 +202,19 @@ init = ->
         treeList.show(UserModel.getLocalAllUsers()))
     else
       console.log "valid fail")
+
+  confirm = (userId)->
+    $("#dialog-confirm").dialog({
+      dialogClass: "no-close",
+      resizable: false,
+      height:160,
+      modal: true,
+      buttons: {
+        "删除": ->
+          deleteUser(userId)
+          $(@).dialog("close")
+        Cancel: ->
+          $(this).dialog("close")}})
+
 
 init()

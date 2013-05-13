@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <title>用户管理-日报后台管理</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/css/pepper-grinder/jquery-ui-1.10.3.custom.min.css' />
     <link rel='stylesheet' href='/css/adminStyle.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
+    <script type="text/javascript" src='/js/jquery-ui-1.10.3.custom.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
 </head>
 <body class="admin-users">
@@ -18,6 +20,9 @@
         <li ><a href="/logout">退出</a></li>
     </ul>
 </header>
+<div id="dialog-confirm" title="删除用户" style="display:none">
+    <p>确认要删除该用户吗？</p>
+</div>
 <section id="users" class="container">
   <div id="newUser"  data-bind="visible: !updateUser()">
     <div class="title"><i class="icon-plus-sign"></i><h2>创建新用户</h2> </div>

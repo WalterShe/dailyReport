@@ -107,7 +107,7 @@
   };
 
   init = function() {
-    var cancelUpdate, finduser, getDepartmentByUserId, getUsersAndSuperiosByDepartmentId, getUsersByDepartmentId, isEditing, setSuperiors, setSuperiorsByDepartmentId, uservm;
+    var cancelUpdate, confirm, deleteUser, finduser, getDepartmentByUserId, getUsersAndSuperiosByDepartmentId, getUsersByDepartmentId, isEditing, setSuperiors, setSuperiorsByDepartmentId, uservm;
     uservm = new UserViewModel();
     ko.applyBindings(uservm);
     DepartmemtModel.getAllDepartments(function(response) {
@@ -122,15 +122,20 @@
       return treeList.show(users);
     });
     $("#usersTree").on("delete", function(event) {
+      var userId;
+      userId = event["itemId"];
+      return confirm(userId);
+    });
+    deleteUser = function(userId) {
       return UserModel.removeUser({
-        userId: event["itemId"]
+        userId: userId
       }, function(response) {
         if (response.state === 0) {
           return;
         }
         return treeList.show(response["data"]);
       });
-    });
+    };
     $("#userDepartment").change(function() {
       var departmentId, _ref;
       departmentId = (_ref = uservm.selectedDepartment()) != null ? _ref['id'] : void 0;
@@ -244,7 +249,7 @@
       treeList.showEditingItem();
       return uservm.updateUser(null);
     };
-    return $("#updateBtn").click(function() {
+    $("#updateBtn").click(function() {
       var data, _ref, _ref1;
       if (uservm.valid1()) {
         data = {
@@ -266,6 +271,23 @@
         return console.log("valid fail");
       }
     });
+    return confirm = function(userId) {
+      return $("#dialog-confirm").dialog({
+        dialogClass: "no-close",
+        resizable: false,
+        height: 160,
+        modal: true,
+        buttons: {
+          "删除": function() {
+            deleteUser(userId);
+            return $(this).dialog("close");
+          },
+          Cancel: function() {
+            return $(this).dialog("close");
+          }
+        }
+      });
+    };
   };
 
   init();

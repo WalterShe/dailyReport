@@ -5,7 +5,7 @@
     <title>部门信息-日报后台管理系统</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/adminStyle.css' />
-    <link rel='stylesheet' href='/css/jquery-ui-1.10.3.custom.min.css' />
+    <link rel='stylesheet' href='/css/pepper-grinder/jquery-ui-1.10.3.custom.min.css' />
     <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
     <script type="text/javascript" src='/js/jquery-ui-1.10.3.custom.min.js'></script>
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
@@ -20,6 +20,9 @@
         <li ><a href="/logout">退出</a></li>
     </ul>
 </header>
+<div id="dialog-confirm" title="删除部门" style="display:none">
+    <p>确认要删除该部门吗？</p>
+</div>
 <section id="department" class="container">
     <div id="newDepartment" data-bind="css:{update: updateDepartment()}">
         <div class="title"  data-bind="visible: !updateDepartment()"><i class="icon-plus-sign"></i><h2>创建新部门</h2> </div>
