@@ -16,17 +16,21 @@ class TreeListBase
     @treeNodes = {}
 
     self = @
-    $(@containerNode).on("click", "li i.icon-plus-sign", (event)->
+    $(@containerNode).on("click", "li i.icon-circle-arrow-right", (event)->
       event.stopImmediatePropagation()
-      $(@).addClass('icon-minus-sign').removeClass('icon-plus-sign')
+      $(@).addClass('icon-circle-arrow-down').removeClass('icon-circle-arrow-right')
       name = $(@).parent().parent().attr("id")
-      console.log self.treeNodes[name]
       $("##{name}").append(self.treeNodes[name])
-      delete self.treeNodes[name])
+      delete self.treeNodes[name]
 
-    $(@containerNode).on("click", "li i.icon-minus-sign", (event)->
+      if self.editingItem
+        $("#{self.containerNode} span.update, #{self.containerNode} span.delete").hide()
+      else
+        $("#{self.containerNode} span.update, #{self.containerNode} span.delete").show())
+
+    $(@containerNode).on("click", "li i.icon-circle-arrow-down", (event)->
       event.stopImmediatePropagation()
-      $(@).addClass('icon-plus-sign').removeClass('icon-minus-sign')
+      $(@).addClass('icon-circle-arrow-right').removeClass('icon-circle-arrow-down')
       name = $(@).parent().parent().attr("id")
       self.treeNodes[name] = $(@).parent().next().detach())
 
@@ -80,6 +84,8 @@ class TreeList extends TreeListBase
   constructor: (@containerNode, @dataSource=null)->
     super(@containerNode, @dataSource=null)
 
+    @iconName = "book"
+
     $(@containerNode).on("click", "span.update", (event)=>
       t = $(event.target)
       t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
@@ -97,14 +103,19 @@ class TreeList extends TreeListBase
       deleteEvent["itemId"] = t.parent().attr('id')
       $(@containerNode).trigger(deleteEvent))
 
+  show: (@dataSource, @iconName)->
+    console.log @iconName
+    super(@dataSource)
+
+
   # render a tree
   renderTree: (node, data)->
     $(node).append("<ul></ul>")
     newnode = "#{node} ul:first"
     for value in data
-      linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
+      linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-#{@iconName}' /><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
       if value.children
-        linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
+        linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-circle-arrow-down' /><i class='icon-#{@iconName}' /><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
 
       $(newnode).append(linode)
       newnode2 = "#{newnode} ##{value.id}node"
@@ -136,9 +147,9 @@ class TreeList2 extends TreeListBase
     newnode = "#{node} ul:first"
     for value in data
       value.node ?= 0
-      linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='page'><span class='nodename'>#{value.label}</span><span class='review btn btn-warning'>查看</span></div></div></li>"
+      linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='page'><i class='icon-user'></i><span class='nodename'>#{value.label}</span><span class='review btn btn-warning'>查看</span></div></div></li>"
       if value.node == 1
-        linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='node'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span></div></div></li>"
+        linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='node'><i class='icon-circle-arrow-down' /><i class='icon-book'></i><span class='nodename'>#{value.label}</span></div></div></li>"
 
       $(newnode).append(linode)
       newnode2 = "#{newnode} ##{value.id}node#{value.node}"

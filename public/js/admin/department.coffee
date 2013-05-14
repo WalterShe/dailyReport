@@ -35,7 +35,7 @@ DepartmentViewModel = ->
       DepartmemtModel.createNewDepartment(data, (response)->
         return if response.state == 0
         self.departments.push(response.data)
-        treeList.show(self.departments()) )
+        treeList.show(self.departments(), "book") )
 
   self
 
@@ -81,7 +81,7 @@ init = ->
       return if response.state == 0
       cancelUpdateDepartment()
       departmentvm.departments(response["data"])
-      treeList.show(response["data"])))
+      treeList.show(response["data"], "book")))
 
 
   $("#departmentTree").on("delete", (event)->
@@ -92,7 +92,7 @@ init = ->
     DepartmemtModel.removeDepartment({departmentId:departmentId}, (response)->
       return if response.state == 0
       departmentvm.departments(response.data)
-      treeList.show(response["data"]))
+      treeList.show(response["data"], "book"))
 
   confirm = (departmentId)->
     $("#dialog-confirm").dialog({
@@ -110,6 +110,6 @@ init = ->
   DepartmemtModel.getAllDepartments((response)->
     return if response.state == 0
     departmentvm.departments(response.data)
-    treeList.show(response["data"]))
+    treeList.show(response["data"], "book"))
 
 init()

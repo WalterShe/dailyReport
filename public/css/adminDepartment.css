@@ -15,6 +15,9 @@
   overflow: auto;
   color: #555;
 }
+#department #departmentTree {
+  padding: 10px 16px 10px 0;
+}
 #department #newDepartment .submitBtn {
   margin-top: 20px;
 }

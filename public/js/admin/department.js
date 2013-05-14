@@ -44,7 +44,7 @@
             return;
           }
           self.departments.push(response.data);
-          return treeList.show(self.departments());
+          return treeList.show(self.departments(), "book");
         });
       }
     };
@@ -108,7 +108,7 @@
         }
         cancelUpdateDepartment();
         departmentvm.departments(response["data"]);
-        return treeList.show(response["data"]);
+        return treeList.show(response["data"], "book");
       });
     });
     $("#departmentTree").on("delete", function(event) {
@@ -124,7 +124,7 @@
           return;
         }
         departmentvm.departments(response.data);
-        return treeList.show(response["data"]);
+        return treeList.show(response["data"], "book");
       });
     };
     confirm = function(departmentId) {
@@ -149,7 +149,7 @@
         return;
       }
       departmentvm.departments(response.data);
-      return treeList.show(response["data"]);
+      return treeList.show(response["data"], "book");
     });
   };
 

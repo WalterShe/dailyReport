@@ -34,7 +34,7 @@ UserViewModel = ->
         return if response.state == 0
         newUser = response.data
         self.superiors.push(newUser)
-        treeList.show(UserModel.getLocalAllUsers()))
+        treeList.show(UserModel.getLocalAllUsers(), "user"))
     else
       console.log("creation fail.")
 
@@ -96,7 +96,7 @@ init = ->
   UserModel.getAllUsers((response)->
     return if response.state == 0
     users = response.data
-    treeList.show(users))
+    treeList.show(users, "user"))
 
   $("#usersTree").on("delete", (event)->
     userId = event["itemId"]
@@ -105,7 +105,7 @@ init = ->
   deleteUser = (userId)->
     UserModel.removeUser({userId:userId}, (response)->
       return if response.state == 0
-      treeList.show(response["data"]))
+      treeList.show(response["data"], "user"))
 
   $("#userDepartment").change( ->
     departmentId = uservm.selectedDepartment()?['id']
@@ -199,7 +199,7 @@ init = ->
         return if response.state == 0
         setSuperiorsByDepartmentId(uservm.selectedDepartment["id"])
         cancelUpdate()
-        treeList.show(UserModel.getLocalAllUsers()))
+        treeList.show(UserModel.getLocalAllUsers(), "user"))
     else
       console.log "valid fail")
 

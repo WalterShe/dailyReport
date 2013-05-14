@@ -1,3 +1,6 @@
+.treeList ul {
+  list-style: none;
+}
 .treeList li div {
   padding: 6px 0 10px 5px;
 }

@@ -15,6 +15,9 @@ body.admin-users #users #usersTree {
   height: 430px;
   overflow: auto;
 }
+body.admin-users #users #usersTree {
+  padding: 10px 16px 10px 0;
+}
 body.admin-users #users #updateUser {
   background-color: #FAA732;
   border: 1px solid #c58433;

@@ -46,7 +46,7 @@
           }
           newUser = response.data;
           self.superiors.push(newUser);
-          return treeList.show(UserModel.getLocalAllUsers());
+          return treeList.show(UserModel.getLocalAllUsers(), "user");
         });
       } else {
         return console.log("creation fail.");
@@ -119,7 +119,7 @@
         return;
       }
       users = response.data;
-      return treeList.show(users);
+      return treeList.show(users, "user");
     });
     $("#usersTree").on("delete", function(event) {
       var userId;
@@ -133,7 +133,7 @@
         if (response.state === 0) {
           return;
         }
-        return treeList.show(response["data"]);
+        return treeList.show(response["data"], "user");
       });
     };
     $("#userDepartment").change(function() {
@@ -265,7 +265,7 @@
           }
           setSuperiorsByDepartmentId(uservm.selectedDepartment["id"]);
           cancelUpdate();
-          return treeList.show(UserModel.getLocalAllUsers());
+          return treeList.show(UserModel.getLocalAllUsers(), "user");
         });
       } else {
         return console.log("valid fail");

@@ -24,19 +24,23 @@
       });
       this.treeNodes = {};
       self = this;
-      $(this.containerNode).on("click", "li i.icon-plus-sign", function(event) {
+      $(this.containerNode).on("click", "li i.icon-circle-arrow-right", function(event) {
         var name;
         event.stopImmediatePropagation();
-        $(this).addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        $(this).addClass('icon-circle-arrow-down').removeClass('icon-circle-arrow-right');
         name = $(this).parent().parent().attr("id");
-        console.log(self.treeNodes[name]);
         $("#" + name).append(self.treeNodes[name]);
-        return delete self.treeNodes[name];
+        delete self.treeNodes[name];
+        if (self.editingItem) {
+          return $("" + self.containerNode + " span.update, " + self.containerNode + " span.delete").hide();
+        } else {
+          return $("" + self.containerNode + " span.update, " + self.containerNode + " span.delete").show();
+        }
       });
-      $(this.containerNode).on("click", "li i.icon-minus-sign", function(event) {
+      $(this.containerNode).on("click", "li i.icon-circle-arrow-down", function(event) {
         var name;
         event.stopImmediatePropagation();
-        $(this).addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        $(this).addClass('icon-circle-arrow-right').removeClass('icon-circle-arrow-down');
         name = $(this).parent().parent().attr("id");
         return self.treeNodes[name] = $(this).parent().next().detach();
       });
@@ -133,6 +137,7 @@
       this.containerNode = containerNode;
       this.dataSource = dataSource != null ? dataSource : null;
       TreeList.__super__.constructor.call(this, this.containerNode, this.dataSource = null);
+      this.iconName = "book";
       $(this.containerNode).on("click", "span.update", function(event) {
         var t, updateEvent;
         t = $(event.target);
@@ -155,15 +160,22 @@
       });
     }
 
+    TreeList.prototype.show = function(dataSource, iconName) {
+      this.dataSource = dataSource;
+      this.iconName = iconName;
+      console.log(this.iconName);
+      return TreeList.__super__.show.call(this, this.dataSource);
+    };
+
     TreeList.prototype.renderTree = function(node, data) {
       var linode, newnode, newnode2, value, _i, _len;
       $(node).append("<ul></ul>");
       newnode = "" + node + " ul:first";
       for (_i = 0, _len = data.length; _i < _len; _i++) {
         value = data[_i];
-        linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>";
+        linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><i class='icon-" + this.iconName + "' /><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>";
         if (value.children) {
-          linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><i class='icon-minus-sign' /><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>";
+          linode = "<li id='" + value.id + "node'><div id='" + value.id + "'><i class='icon-circle-arrow-down' /><i class='icon-" + this.iconName + "' /><span class='nodename'>" + value.label + "</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>";
         }
         $(newnode).append(linode);
         newnode2 = "" + newnode + " #" + value.id + "node";
@@ -213,9 +225,9 @@
         if ((_ref = value.node) == null) {
           value.node = 0;
         }
-        linode = "<li id='" + value.id + "node" + value.node + "'><div id='" + value.id + "' class='page'><span class='nodename'>" + value.label + "</span><span class='review btn btn-warning'>查看</span></div></div></li>";
+        linode = "<li id='" + value.id + "node" + value.node + "'><div id='" + value.id + "' class='page'><i class='icon-user'></i><span class='nodename'>" + value.label + "</span><span class='review btn btn-warning'>查看</span></div></div></li>";
         if (value.node === 1) {
-          linode = "<li id='" + value.id + "node" + value.node + "'><div id='" + value.id + "' class='node'><i class='icon-minus-sign' /><span class='nodename'>" + value.label + "</span></div></div></li>";
+          linode = "<li id='" + value.id + "node" + value.node + "'><div id='" + value.id + "' class='node'><i class='icon-circle-arrow-down' /><i class='icon-book'></i><span class='nodename'>" + value.label + "</span></div></div></li>";
         }
         $(newnode).append(linode);
         newnode2 = "" + newnode + " #" + value.id + "node" + value.node;
