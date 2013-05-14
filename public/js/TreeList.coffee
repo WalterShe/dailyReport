@@ -1,6 +1,6 @@
 
-#树形列表----------------------------------------------------------------------------------
-class TreeList
+#树形列表基类 ----------------------------------------------------------------------------------
+class TreeListBase
 
   constructor: (@containerNode, @dataSource=null)->
     @editingItem = null
@@ -12,7 +12,7 @@ class TreeList
 
     $(@containerNode).on("mouseleave", "li div", (event)->
       $(@).removeClass('treeListItemOver') unless $(this) == @editingItem)
-
+    ###
     $(@containerNode).on("click", "span.update", (event)=>
        t = $(event.target)
        t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
@@ -30,8 +30,9 @@ class TreeList
       deleteEvent = jQuery.Event("delete")
       deleteEvent["itemId"] = t.parent().attr('id')
       $(@containerNode).trigger(deleteEvent))
-
+    ###
     @treeNodes = {}
+
     self = @
     $(@containerNode).on("click", "li i.icon-plus-sign", (event)->
       event.stopImmediatePropagation()
@@ -69,7 +70,7 @@ class TreeList
 
   # render a tree
   renderTree: (node, data)->
-    $(node).append("<ul></ul>")
+    ###$(node).append("<ul></ul>")
     newnode = "#{node} ul:first"
     for value in data
       linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
@@ -79,7 +80,7 @@ class TreeList
       $(newnode).append(linode)
       newnode2 = "#{newnode} ##{value.id}node"
       if value.children
-        @renderTree(newnode2, value.children)
+        @renderTree(newnode2, value.children)  ###
     null
 
   # render a department tree
@@ -103,4 +104,76 @@ class TreeList
 
     treeData
 
+#树形列表 ----------------------------------------------------------------------------------
+class TreeList extends TreeListBase
+  constructor: (@containerNode, @dataSource=null)->
+    super(@containerNode, @dataSource=null)
+
+    $(@containerNode).on("click", "span.update", (event)=>
+      t = $(event.target)
+      t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
+      t.hide();
+      if @editingItem
+        @editingItem.parent().removeClass('treeListItemSelected')
+        @editingItem.show()
+      @editingItem = t
+      updateEvent = jQuery.Event("update")
+      updateEvent["itemId"] = t.parent().attr('id')
+      $(@containerNode).trigger(updateEvent))
+
+    $(@containerNode).on("click", "span.delete", (event)=>
+      t = $(event.target)
+      deleteEvent = jQuery.Event("delete")
+      deleteEvent["itemId"] = t.parent().attr('id')
+      $(@containerNode).trigger(deleteEvent))
+
+  # render a tree
+  renderTree: (node, data)->
+    $(node).append("<ul></ul>")
+    newnode = "#{node} ul:first"
+    for value in data
+      linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
+      if value.children
+        linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
+
+      $(newnode).append(linode)
+      newnode2 = "#{newnode} ##{value.id}node"
+      if value.children
+        @renderTree(newnode2, value.children)
+    null
+
 window.TreeList = TreeList
+
+#树形列表2 ----------------------------------------------------------------------------------
+class TreeList2 extends TreeListBase
+  constructor: (@containerNode, @dataSource=null)->
+    super(@containerNode, @dataSource=null)
+
+    $(@containerNode).on("click", "span.review", (event)=>
+      t = $(event.target)
+      t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
+      if @editingItem
+        @editingItem.parent().removeClass('treeListItemSelected')
+        @editingItem.show()
+      @editingItem = t
+      updateEvent = jQuery.Event("review")
+      updateEvent["itemId"] = t.parent().attr('id')
+      $(@containerNode).trigger(updateEvent))
+
+  # render a tree
+  renderTree: (node, data)->
+    $(node).append("<ul></ul>")
+    newnode = "#{node} ul:first"
+    for value in data
+      value.node ?= 0
+      linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='page'><span class='nodename'>#{value.label}</span><span class='review btn btn-warning'>查看</span></div></div></li>"
+      if value.node == 1
+        linode = "<li id='#{value.id}node#{value.node}'><div id='#{value.id}' class='node'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span></div></div></li>"
+
+      $(newnode).append(linode)
+      newnode2 = "#{newnode} ##{value.id}node#{value.node}"
+      if value.children
+        @renderTree(newnode2, value.children)
+    null
+
+window.TreeList2 = TreeList2
