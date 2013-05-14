@@ -12,16 +12,26 @@
     self.validDepartmentName = ko.computed(function() {
       var dname;
       dname = $.trim(self.departmentName());
-      return dname.length >= 1 && dname.indexOf(":") === -1;
+      return dname.length >= 1;
+    });
+    self.selectedParentDepartment = ko.observable(null);
+    self.validDepartmentRelation = ko.computed(function() {
+      var dname, _ref;
+      dname = $.trim(self.departmentName());
+      return ((_ref = self.selectedParentDepartment()) != null ? _ref["name"] : void 0) !== dname;
+    });
+    self.validUpdateDepartmentRelation = ko.computed(function() {
+      var dname, _ref;
+      dname = $.trim(self.updateDepartmentName());
+      return ((_ref = self.selectedParentDepartment()) != null ? _ref["name"] : void 0) !== dname;
     });
     self.validUpdateDepartmentName = ko.computed(function() {
       var dname;
       dname = $.trim(self.updateDepartmentName());
-      return dname.length >= 1 && dname.indexOf(":") === -1;
+      return dname.length >= 1;
     });
     self.updateDepartment = ko.observable(null);
     self.departments = ko.observableArray(null);
-    self.selectedParentDepartment = ko.observable(null);
     self.submit = function() {
       var data, _ref;
       if (self.validDepartmentName()) {

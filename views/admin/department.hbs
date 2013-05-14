@@ -25,7 +25,7 @@
 </div>
 <section id="department" class="container">
     <div id="newDepartment" data-bind="css:{update: updateDepartment()}">
-        <div class="title"  data-bind="visible: !updateDepartment()"><i class="icon-plus-sign"></i><h2>创建新部门</h2> </div>
+        <div class="title"  data-bind="visible: !updateDepartment()"><i class="icon-globe"></i><h2>创建新部门</h2> </div>
         <div class="title"  data-bind="visible: updateDepartment()"><i class=" icon-edit"></i><h2>编辑部门</h2> </div>
         <div data-bind="visible: !updateDepartment()">
         <label for="departmentName">部门名称:<span data-bind="css:{errorTip: !validDepartmentName()}, visible: !validDepartmentName()">不能为空</span></label>
@@ -38,10 +38,10 @@
         <select id="parentDepartment"
                 data-bind="options: departments, optionsText:'name',value:selectedParentDepartment, optionsCaption: '没有上级部门'"></select>
         <div data-bind="visible: !updateDepartment()"><input id="createBtn" type="button" value="创建" class="btn btn-primary"
-                    data-bind="click:submit, enable: validDepartmentName()" required="false"/></div>
+                    data-bind="click:submit, enable: validDepartmentName() && validDepartmentRelation()" required="false"/></div>
 
         <div data-bind="visible: updateDepartment()"><input id="updateBtn" type="button" value="更新" class="btn btn-primary"
-                    data-bind="enable: validUpdateDepartmentName()" required="false"/>
+                    data-bind="enable: validUpdateDepartmentName() && validUpdateDepartmentRelation()" required="false"/>
             <input id="cancelUpdateBtn" type="button" value="取消" class="btn btn-primary"
                    data-bind="enable: validUpdateDepartmentName()" required="false"/></div>
     </div>

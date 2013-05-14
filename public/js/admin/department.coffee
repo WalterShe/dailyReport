@@ -7,18 +7,28 @@ DepartmentViewModel = ->
   self.updateDepartmentName = ko.observable('')
   self.validDepartmentName = ko.computed(->
     dname = $.trim(self.departmentName())
-    dname.length >= 1 and dname.indexOf(":") == -1)
+    dname.length >= 1)
+
+  self.selectedParentDepartment = ko.observable(null)
+
+  self.validDepartmentRelation = ko.computed(->
+    dname = $.trim(self.departmentName())
+    self.selectedParentDepartment()?["name"] != dname)
+
+  self.validUpdateDepartmentRelation = ko.computed(->
+    dname = $.trim(self.updateDepartmentName())
+    self.selectedParentDepartment()?["name"] != dname)
 
   self.validUpdateDepartmentName = ko.computed(->
     dname = $.trim(self.updateDepartmentName())
-    dname.length >= 1 and dname.indexOf(":") == -1)
+    dname.length >= 1)
 
   self.updateDepartment = ko.observable(null)
 
   #self.departments = ko.observableArray([{name:'无', id:null},{name:'PHP', id:1},{name:'Tec Center', id:2, pid:1},{name:'ios',id:3,pid:1},{name:'Product', id:4}])
   self.departments = ko.observableArray(null);
 
-  self.selectedParentDepartment = ko.observable(null)
+
   self.submit = ->
     if self.validDepartmentName()
       data = {departmentName: $.trim(self.departmentName()), pid: self.selectedParentDepartment()?["id"]}
