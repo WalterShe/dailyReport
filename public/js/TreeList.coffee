@@ -12,25 +12,7 @@ class TreeListBase
 
     $(@containerNode).on("mouseleave", "li div", (event)->
       $(@).removeClass('treeListItemOver') unless $(this) == @editingItem)
-    ###
-    $(@containerNode).on("click", "span.update", (event)=>
-       t = $(event.target)
-       t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
-       t.hide();
-       if @editingItem
-         @editingItem.parent().removeClass('treeListItemSelected')
-         @editingItem.show()
-       @editingItem = t
-       updateEvent = jQuery.Event("update")
-       updateEvent["itemId"] = t.parent().attr('id')
-       $(@containerNode).trigger(updateEvent))
 
-    $(@containerNode).on("click", "span.delete", (event)=>
-      t = $(event.target)
-      deleteEvent = jQuery.Event("delete")
-      deleteEvent["itemId"] = t.parent().attr('id')
-      $(@containerNode).trigger(deleteEvent))
-    ###
     @treeNodes = {}
 
     self = @
@@ -61,7 +43,7 @@ class TreeListBase
   showEditingItem: ->
     return unless  @editingItem
     @editingItem.parent().removeClass('treeListItemSelected')
-    @editingItem.show()
+    $("#{@containerNode} span.update, #{@containerNode} span.delete").show()
     @editingItem = null
 
   getEditingItemId: ->
@@ -70,18 +52,7 @@ class TreeListBase
 
   # render a tree
   renderTree: (node, data)->
-    ###$(node).append("<ul></ul>")
-    newnode = "#{node} ul:first"
-    for value in data
-      linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
-      if value.children
-        linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
-
-      $(newnode).append(linode)
-      newnode2 = "#{newnode} ##{value.id}node"
-      if value.children
-        @renderTree(newnode2, value.children)  ###
-    null
+    throw new Error("renderTree method must implement in child class.")
 
   # render a department tree
   getDepartTreeData: ->
@@ -112,10 +83,9 @@ class TreeList extends TreeListBase
     $(@containerNode).on("click", "span.update", (event)=>
       t = $(event.target)
       t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
-      t.hide();
+      $("#{@containerNode} span.update, #{@containerNode} span.delete").hide()
       if @editingItem
         @editingItem.parent().removeClass('treeListItemSelected')
-        @editingItem.show()
       @editingItem = t
       updateEvent = jQuery.Event("update")
       updateEvent["itemId"] = t.parent().attr('id')

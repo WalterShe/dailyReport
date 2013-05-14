@@ -22,26 +22,6 @@
           return $(this).removeClass('treeListItemOver');
         }
       });
-      /*
-      $(@containerNode).on("click", "span.update", (event)=>
-         t = $(event.target)
-         t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected')
-         t.hide();
-         if @editingItem
-           @editingItem.parent().removeClass('treeListItemSelected')
-           @editingItem.show()
-         @editingItem = t
-         updateEvent = jQuery.Event("update")
-         updateEvent["itemId"] = t.parent().attr('id')
-         $(@containerNode).trigger(updateEvent))
-      
-      $(@containerNode).on("click", "span.delete", (event)=>
-        t = $(event.target)
-        deleteEvent = jQuery.Event("delete")
-        deleteEvent["itemId"] = t.parent().attr('id')
-        $(@containerNode).trigger(deleteEvent))
-      */
-
       this.treeNodes = {};
       self = this;
       $(this.containerNode).on("click", "li i.icon-plus-sign", function(event) {
@@ -83,7 +63,7 @@
         return;
       }
       this.editingItem.parent().removeClass('treeListItemSelected');
-      this.editingItem.show();
+      $("" + this.containerNode + " span.update, " + this.containerNode + " span.delete").show();
       return this.editingItem = null;
     };
 
@@ -95,19 +75,7 @@
     };
 
     TreeListBase.prototype.renderTree = function(node, data) {
-      /*$(node).append("<ul></ul>")
-      newnode = "#{node} ul:first"
-      for value in data
-        linode = "<li id='#{value.id}node'><div id='#{value.id}'><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
-        if value.children
-          linode = "<li id='#{value.id}node'><div id='#{value.id}'><i class='icon-minus-sign' /><span class='nodename'>#{value.label}</span><span class='delete btn btn-danger'>删除</span><span class='update btn btn-warning'>编辑</span></div></li>"
-      
-        $(newnode).append(linode)
-        newnode2 = "#{newnode} ##{value.id}node"
-        if value.children
-          @renderTree(newnode2, value.children)
-      */
-      return null;
+      throw new Error("renderTree method must implement in child class.");
     };
 
     TreeListBase.prototype.getDepartTreeData = function() {
@@ -169,10 +137,9 @@
         var t, updateEvent;
         t = $(event.target);
         t.parent().removeClass('treeListItemOver').addClass('treeListItemSelected');
-        t.hide();
+        $("" + _this.containerNode + " span.update, " + _this.containerNode + " span.delete").hide();
         if (_this.editingItem) {
           _this.editingItem.parent().removeClass('treeListItemSelected');
-          _this.editingItem.show();
         }
         _this.editingItem = t;
         updateEvent = jQuery.Event("update");
