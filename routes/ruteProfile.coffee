@@ -8,6 +8,8 @@ exports.createRutes = (app)->
   app.get('/', report.index);
   app.get('/write', report.writeIndex);
   app.post('/write', report.write);
+  app.get('/password', user.passwordIndex);
+  app.post('/password', user.changePassword);
   app.post('/delete', report.delete);
   app.get('/show', report.showIndex);
   app.post('/getsubordinateuseranddepartment', report.getSubordinateUserAndDepartment);

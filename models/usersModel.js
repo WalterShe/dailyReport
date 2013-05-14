@@ -220,4 +220,25 @@
     });
   };
 
+  exports.changePassword = function(userId, newPassword, oldPassword, callback) {
+    var client;
+    client = utils.createClient();
+    return client.hget("users", "" + userId + ":password", function(err, password) {
+      if (err) {
+        return utils.showDBError(callback, client);
+      }
+      if (oldPassword === password) {
+        return client.hset("users", "" + userId + ":password", newPassword, function(err, password) {
+          if (err) {
+            return utils.showDBError(callback, client);
+          }
+          client.quit();
+          return callback(new Response(1, "success", 1));
+        });
+      } else {
+        return callback(new Response(1, "success", 0));
+      }
+    });
+  };
+
 }).call(this);

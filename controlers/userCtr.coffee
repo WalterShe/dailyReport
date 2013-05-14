@@ -50,6 +50,22 @@ exports.logout = (req, res) ->
   req.session.destroy()
   res.redirect("/login")
 
+exports.passwordIndex = (req, res) ->
+  return unless utils.authenticateUser(req,res)
+  userId = req.session.userId
+  userModel.hasSubordinate(userId, (result)->
+    data = {hasSubordinate: result, isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
+    res.render("password", data))
+
+exports.changePassword = (req, res) ->
+  userId = req.session.userId
+  oldPassword = crypto.createHash("sha1").update(req.body.oldPassword).digest('hex')
+  newPassword = crypto.createHash("sha1").update(req.body.newPassword).digest('hex')
+
+  userModel.changePassword(userId, newPassword, oldPassword, (response)->
+    res.send(response))
+
+
 exports.createUser = (req, res) ->
   userName = req.body.userName
   password = req.body.password
@@ -65,7 +81,7 @@ exports.createUser = (req, res) ->
 
   userModel.hasUser(userName, (response)->
     return res.send(response) if response.state == 0 or response.data
-    hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
+    hashedPassword = crypto.createHash("sha1").update(password).digest('hex')
     userModel.createUser(userName, hashedPassword, departmentId, superiorId, (response)->
       res.send(response)))
 

@@ -141,6 +141,14 @@
       }, "json");
     };
 
+    UserModel.changePassword = function(data, callback) {
+      return $.post("/password", data, function(response) {
+        if (response.state === 1) {
+          return callback(response);
+        }
+      }, "json");
+    };
+
     UserModel.removeUser = function(data, callback) {
       return $.post("/admin/removeuser", data, function(response) {
         var users;

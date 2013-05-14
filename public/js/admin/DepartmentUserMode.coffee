@@ -102,6 +102,12 @@ class UserModel
       callback(response)
     ,"json")
 
+  @changePassword: (data, callback)->
+    $.post("/password", data, (response)->
+      if response.state == 1
+        callback(response)
+    ,"json")
+
   @removeUser: (data, callback)->
     $.post("/admin/removeuser", data, (response)->
       if response.state == 1

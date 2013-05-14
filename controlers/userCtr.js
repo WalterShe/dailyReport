@@ -81,6 +81,33 @@
     return res.redirect("/login");
   };
 
+  exports.passwordIndex = function(req, res) {
+    var userId;
+    if (!utils.authenticateUser(req, res)) {
+      return;
+    }
+    userId = req.session.userId;
+    return userModel.hasSubordinate(userId, function(result) {
+      var data;
+      data = {
+        hasSubordinate: result,
+        isLoginUser: utils.isLoginUser(req),
+        isAdmin: utils.isAdmin(req)
+      };
+      return res.render("password", data);
+    });
+  };
+
+  exports.changePassword = function(req, res) {
+    var newPassword, oldPassword, userId;
+    userId = req.session.userId;
+    oldPassword = crypto.createHash("sha1").update(req.body.oldPassword).digest('hex');
+    newPassword = crypto.createHash("sha1").update(req.body.newPassword).digest('hex');
+    return userModel.changePassword(userId, newPassword, oldPassword, function(response) {
+      return res.send(response);
+    });
+  };
+
   exports.createUser = function(req, res) {
     var departmentId, errorMessage, password, superiorId, userName;
     userName = req.body.userName;

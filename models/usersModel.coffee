@@ -135,3 +135,16 @@ exports.hasUser = (userName, callback) ->
         break
 
     callback(new Response(1, "success",result)))
+
+exports.changePassword = (userId, newPassword, oldPassword, callback) ->
+  client = utils.createClient()
+  client.hget("users", "#{userId}:password", (err, password)->
+    return utils.showDBError(callback, client) if err
+    if oldPassword == password
+      client.hset("users", "#{userId}:password", newPassword, (err, password)->
+        return utils.showDBError(callback, client) if err
+        client.quit()
+        callback(new Response(1, "success", 1)))
+    else
+      callback(new Response(1, "success", 0)))
+
