@@ -77,6 +77,9 @@
   };
 
   exports.logout = function(req, res) {
+    if (!utils.authenticateUser(req, res)) {
+      return;
+    }
     req.session.destroy();
     return res.redirect("/login");
   };
@@ -100,6 +103,9 @@
 
   exports.changePassword = function(req, res) {
     var newPassword, oldPassword, userId;
+    if (!utils.authenticateUser(req, res)) {
+      return;
+    }
     userId = req.session.userId;
     oldPassword = crypto.createHash("sha1").update(req.body.oldPassword).digest('hex');
     newPassword = crypto.createHash("sha1").update(req.body.newPassword).digest('hex');
@@ -110,6 +116,9 @@
 
   exports.createUser = function(req, res) {
     var departmentId, errorMessage, password, superiorId, userName;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     userName = req.body.userName;
     password = req.body.password;
     departmentId = req.body.departmentId;
@@ -135,6 +144,9 @@
 
   exports.removeUser = function(req, res) {
     var userId;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     userId = req.body.userId;
     return userModel.removeUser(userId, function(response) {
       return res.send(response);
@@ -143,6 +155,9 @@
 
   exports.updateUser = function(req, res) {
     var departmentId, hashedPassword, password, superiorId, userId, userName;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     userId = req.body.userId;
     userName = req.body.userName;
     password = req.body.password;
@@ -169,6 +184,9 @@
   };
 
   exports.getAdmins = function(req, res) {
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     return userModel.getAdminIds(function(response) {
       return res.send(response);
     });
@@ -176,6 +194,9 @@
 
   exports.setAdmin = function(req, res) {
     var userId;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     userId = req.body.userId;
     return userModel.setAdmin(userId, function(response) {
       return res.send(response);
@@ -184,6 +205,9 @@
 
   exports.deleteAdmin = function(req, res) {
     var userId;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     userId = req.body.userId;
     return userModel.deleteAdmin(userId, function(response) {
       return res.send(response);

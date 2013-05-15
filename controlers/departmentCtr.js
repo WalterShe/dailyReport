@@ -12,6 +12,9 @@
 
   exports.createDepartment = function(req, res) {
     var departmentName, errorMessage, parentId;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     departmentName = req.body.departmentName;
     parentId = req.body.pid;
     try {
@@ -27,6 +30,9 @@
 
   exports.removeDepartment = function(req, res) {
     var departmentId;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     departmentId = req.body.departmentId;
     return departmentModel.removeDepartment(departmentId, function(response) {
       return res.send(response);
@@ -35,6 +41,9 @@
 
   exports.updateDepartment = function(req, res) {
     var departmentId, departmentName, errorMessage, parentId;
+    if (!utils.authenticateAdmin(req, res)) {
+      return;
+    }
     departmentId = req.body.departmentId;
     departmentName = req.body.departmentName;
     parentId = req.body.pid;

@@ -47,6 +47,7 @@ exports.login = (req, res) ->
           return res.redirect("/show")))
 
 exports.logout = (req, res) ->
+  return unless utils.authenticateUser(req,res)
   req.session.destroy()
   res.redirect("/login")
 
@@ -58,6 +59,8 @@ exports.passwordIndex = (req, res) ->
     res.render("password", data))
 
 exports.changePassword = (req, res) ->
+  return unless utils.authenticateUser(req,res)
+
   userId = req.session.userId
   oldPassword = crypto.createHash("sha1").update(req.body.oldPassword).digest('hex')
   newPassword = crypto.createHash("sha1").update(req.body.newPassword).digest('hex')
@@ -67,6 +70,8 @@ exports.changePassword = (req, res) ->
 
 
 exports.createUser = (req, res) ->
+  return unless utils.authenticateAdmin(req,res)
+
   userName = req.body.userName
   password = req.body.password
   departmentId = req.body.departmentId;
@@ -86,11 +91,13 @@ exports.createUser = (req, res) ->
       res.send(response)))
 
 exports.removeUser = (req, res) ->
+  return unless utils.authenticateAdmin(req,res)
   userId = req.body.userId
   userModel.removeUser(userId, (response)->
       res.send(response))
 
 exports.updateUser = (req, res) ->
+  return unless utils.authenticateAdmin(req,res)
   userId = req.body.userId
   userName = req.body.userName
   password = req.body.password
@@ -111,15 +118,18 @@ exports.getAllUsers = (req, res) ->
     res.send(response))
 
 exports.getAdmins = (req, res) ->
+  return unless utils.authenticateAdmin(req,res)
   userModel.getAdminIds((response)->
     res.send(response))
 
 exports.setAdmin = (req, res) ->
+  return unless utils.authenticateAdmin(req,res)
   userId = req.body.userId
   userModel.setAdmin(userId, (response)->
     res.send(response))
 
 exports.deleteAdmin = (req, res) ->
+  return unless utils.authenticateAdmin(req,res)
   userId = req.body.userId
   userModel.deleteAdmin(userId, (response)->
     res.send(response))
