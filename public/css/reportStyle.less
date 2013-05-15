@@ -17,6 +17,7 @@ div.title {
   }
 }
 
+//创建日报页面
 #reportCreation {
   background-color: #fbeed5;
   border: 1px solid #E5E5E5;
@@ -37,40 +38,68 @@ div.title {
   }
 }
 
-#userList {
-  float:left;
-  margin-left:15px;
-  //background-color: #ff0;
-  #userTree {
-    margin:0 20px 0 0;
-    background-color: #fbeed5;
-    border: 1px solid #E5E5E5;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    padding: 10px 16px 10px 0;
-    width: 300px;
-    height:430px;
-    overflow: auto;
-  }
+html, body {
+  height:100%;
+  width:100%;
 }
 
-#reports {
-  float:left;
-  //background-color: #f00;
+//查看下属日报页面
+body.subordinate {
+  .navbar {
+    margin-bottom: 0;}
+
+
+
+  #userList {
+    float:left;
+    margin-top: 0px;
+    border-right: 1px solid #E5E5E5;
+    padding: 10px 16px 10px 0;
+    height:91%;
+    width: 310px;
+
+    div.title {
+      padding-left:15px;
+    }
+
+    #userTree {
+      margin:0 10px 0 0;
+      padding:0;
+      width: 300px;
+    }
+  }
+
+  #reports {
+    float:left;
+    padding-left: 30px;
+    //background-color: #f00;
+    min-width:400px;
+    width:65%;
+  }
+
+
 }
+
+//查看我的日报页面
 #reportList {
   li.report {
-    background-color: #eeeeee;
-    border: 1px solid #E5E5E5;
-    border-radius: 5px 5px 5px 5px;
-    padding: 5px;
+    //background-color: #eeeeee;
+    border-bottom: 1px solid #E5E5E5;
+    //border-radius: 5px 5px 5px 5px;
+    padding: 10px;
     margin-bottom:15px;
     float:left;
     width:100%;
-    .date {
+    .date span{
       font-size: 18px;
       font-weight: bold;
       color: #1a700b;
+      padding-left:5px;
+    }
+
+    .content{
+      margin:0;
+      padding:0;
     }
 
     .reply, .delete {
@@ -85,7 +114,7 @@ div.title {
   }
 }
 
-
+// 登陆页面
 #loginDiv {
   background-color: #fbeed5;
   border: 1px solid #E5E5E5;
@@ -101,6 +130,7 @@ div.title {
   }
 }
 
+//修改密码页面
 body.passoword {
   section {
     background-color: #fbeed5;

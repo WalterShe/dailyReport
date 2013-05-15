@@ -10,7 +10,7 @@
     <script type="text/javascript" src='/js/bootstrap.min.js'></script>
 
 </head>
-<body class="myreports">
+<body class="subordinate">
 <header class="navbar">
     <a class="brand" href="/" title="home page">Daily Report</a>
     <ul class="nav">
@@ -35,8 +35,9 @@
     <article id="reportList" >
         <ul class="unstyled" data-bind="foreach: reports">
             <li class="report">
-                <p class="date" data-bind="text: date"></p><div data-bind="html: content"></div>
-                <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p>
+                <p class="date"><i class="icon-calendar"></i><span data-bind="text: date"></span></p>
+                <div data-bind="html: content"></div>
+                <!-- <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p> -->
             </li>
         </ul>
         <div class="pagination" data-bind="if: pageNumArray().length > 1">

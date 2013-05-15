@@ -74,37 +74,52 @@ div.title h1 {
 #reportCreation #reportSubmitBtn {
   margin-top: 20px;
 }
-#userList {
-  float: left;
-  margin-left: 15px;
+html,
+body {
+  height: 100%;
+  width: 100%;
 }
-#userList #userTree {
-  margin: 0 20px 0 0;
-  background-color: #fbeed5;
-  border: 1px solid #E5E5E5;
-  border-radius: 5px 5px 5px 5px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+body.subordinate .navbar {
+  margin-bottom: 0;
+}
+body.subordinate #userList {
+  float: left;
+  margin-top: 0px;
+  border-right: 1px solid #E5E5E5;
   padding: 10px 16px 10px 0;
-  width: 300px;
-  height: 430px;
-  overflow: auto;
+  height: 91%;
+  width: 310px;
 }
-#reports {
+body.subordinate #userList div.title {
+  padding-left: 15px;
+}
+body.subordinate #userList #userTree {
+  margin: 0 10px 0 0;
+  padding: 0;
+  width: 300px;
+}
+body.subordinate #reports {
   float: left;
+  padding-left: 30px;
+  min-width: 400px;
+  width: 65%;
 }
 #reportList li.report {
-  background-color: #eeeeee;
-  border: 1px solid #E5E5E5;
-  border-radius: 5px 5px 5px 5px;
-  padding: 5px;
+  border-bottom: 1px solid #E5E5E5;
+  padding: 10px;
   margin-bottom: 15px;
   float: left;
   width: 100%;
 }
-#reportList li.report .date {
+#reportList li.report .date span {
   font-size: 18px;
   font-weight: bold;
   color: #1a700b;
+  padding-left: 5px;
+}
+#reportList li.report .content {
+  margin: 0;
+  padding: 0;
 }
 #reportList li.report .reply,
 #reportList li.report .delete {
