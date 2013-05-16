@@ -101,8 +101,10 @@ body.subordinate #userList #userTree {
 body.subordinate #reports {
   float: left;
   padding-left: 30px;
-  min-width: 400px;
   width: 65%;
+}
+body.subordinate #reports li.report {
+  border-bottom: 1px solid #E5E5E5;
 }
 #reportList li.report {
   border-bottom: 1px solid #E5E5E5;
@@ -128,6 +130,7 @@ body.subordinate #reports {
 }
 #reportList div.pagination {
   float: left;
+  margin: 5px 0;
 }
 #loginDiv {
   background-color: #fbeed5;

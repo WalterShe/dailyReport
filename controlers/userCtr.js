@@ -21,6 +21,7 @@
     userName = req.body.userName;
     password = req.body.password;
     hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
+    console.log("login");
     return userModel.getAllUsersWithPassword(function(response) {
       var hasThisUser, id, key, property, userId, users, value, _ref, _ref1;
       if (response.state === 0) {
@@ -69,9 +70,10 @@
           id = ids[_i];
           if (id === userId) {
             req.session.isAdmin = 1;
-            return res.redirect("/show");
+            break;
           }
         }
+        return res.redirect("/show");
       });
     });
   };

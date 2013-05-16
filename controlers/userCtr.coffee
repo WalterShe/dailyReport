@@ -11,7 +11,7 @@ exports.login = (req, res) ->
   userName = req.body.userName
   password = req.body.password
   hashedPassword = crypto.createHash("sha1").update(password).digest('hex')
-
+  console.log "login"
   userModel.getAllUsersWithPassword((response)->
     return res.send(response) if response.state == 0
     users = response.data
@@ -39,12 +39,13 @@ exports.login = (req, res) ->
 
     userModel.getAdminIds((response)->
       return res.redirect("/show") if response.state == 0
-
       ids = response.data
+      #console.log ids
       for id in ids
         if id == userId
           req.session.isAdmin = 1
-          return res.redirect("/show")))
+          break
+      return res.redirect("/show")))
 
 exports.logout = (req, res) ->
   return unless utils.authenticateUser(req,res)
