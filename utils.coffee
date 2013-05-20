@@ -1,5 +1,6 @@
 redis = require("redis")
 {Response} = require('./vo/response')
+dbconfig = require('./config').db
 
 
 #如果用户登陆了，返回true，否则返回false，并且转向登陆界面
@@ -34,8 +35,13 @@ exports.showDBError = (callback, client=null, message='数据库错误')->
   callback(new Response(0,message))
 
 exports.createClient = ->
-  client = redis.createClient()
+  client = redis.createClient(dbconfig.port, dbconfig.host)
+  if dbconfig.pass
+    client.auth(dbconfig.pass, (err)->
+      throw err if err)
+
   client.on("error", (err)->
     console.log(err)
     client.end())
+
   client

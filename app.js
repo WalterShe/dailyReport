@@ -8,7 +8,8 @@ var express = require('express')
   , routeProfile = require('./routes/ruteProfile')
   , path = require('path')
   , redis = require("redis")
-  , RedisStore = require('connect-redis')(express);
+  , RedisStore = require('connect-redis')(express)
+  , sessiondbconfig = require('./config').sessiondb;
 
 var app = express();
 var redisClient = redis.createClient();
@@ -26,12 +27,7 @@ app.use(express.compress());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-//app.use(express.session({ store: new RedisStore({host:'127.0.0.1', port:6379, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
-app.use(express.session({ store: new RedisStore({client:redisClient, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
-/**app.use(function(req, res, next){
-    console.log("I'm Walter She.");
-    next();
-}); */
+app.use(express.session({ store: new RedisStore({host:sessiondbconfig.host, port:sessiondbconfig.port, pass:sessiondbconfig.pass, db:sessiondbconfig.db, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
