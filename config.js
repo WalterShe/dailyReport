@@ -15,4 +15,8 @@
     pass: null
   };
 
+  exports.app = {
+    port: 3000
+  };
+
 }).call(this);

@@ -9,6 +9,7 @@ var express = require('express')
   , path = require('path')
   , redis = require("redis")
   , RedisStore = require('connect-redis')(express)
+  , appport = require('./config').app.port
   , sessiondbconfig = require('./config').sessiondb;
 
 var app = express();
@@ -18,7 +19,7 @@ redisClient.on("error", function(err) {
 });
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', appport || process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
 app.use(express.favicon());

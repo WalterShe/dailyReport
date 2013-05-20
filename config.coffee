@@ -10,3 +10,7 @@ exports.sessiondb =
   port: 6379
   db:  1  #Database index to use
   pass:null
+
+exports.app =
+  port: 3000
+
