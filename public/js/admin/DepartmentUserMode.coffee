@@ -78,6 +78,10 @@ class UserModel
       callback(response)
     , "json")
 
+  @login: (data, callback)->
+    $.post("/login", data, (response)->
+      callback(response)
+    , "json")
 
   @createUser: (data, callback)->
     $.post("/admin/createuser", data, (response)->

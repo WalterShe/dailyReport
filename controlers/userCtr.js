@@ -16,12 +16,15 @@
     return res.render("login");
   };
 
+  exports.loginIndexMobile = function(req, res) {
+    return res.render("mobile/login");
+  };
+
   exports.login = function(req, res) {
     var hashedPassword, password, userName;
     userName = req.body.userName;
     password = req.body.password;
     hashedPassword = crypto.createHash("sha1").update(password).digest('hex');
-    console.log("login");
     return userModel.getAllUsersWithPassword(function(response) {
       var hasThisUser, id, key, property, userId, users, value, _ref, _ref1;
       if (response.state === 0) {
@@ -38,10 +41,7 @@
         }
       }
       if (!userId) {
-        return res.render("login", {
-          hasError: true,
-          message: "用户名:" + userName + "不存在"
-        });
+        return res.send(new Response(1, "用户名:" + userName + "不存在", 0));
       }
       hasThisUser = false;
       for (key in users) {
@@ -54,16 +54,13 @@
         }
       }
       if (!hasThisUser) {
-        return res.render("login", {
-          hasError: true,
-          message: "密码错误"
-        });
+        return res.send(new Response(1, "密码错误", 0));
       }
       req.session.userId = userId;
       return userModel.getAdminIds(function(response) {
         var ids, _i, _len;
         if (response.state === 0) {
-          return res.redirect("/show");
+          return res.send(new Response(1, "success", 1));
         }
         ids = response.data;
         for (_i = 0, _len = ids.length; _i < _len; _i++) {
@@ -73,7 +70,7 @@
             break;
           }
         }
-        return res.redirect("/show");
+        return res.send(new Response(1, "success", 1));
       });
     });
   };
@@ -126,8 +123,8 @@
     departmentId = req.body.departmentId;
     superiorId = req.body.superiorId;
     try {
-      check(userName, "字符长度为6-25，不能含有:符号").len(6, 25).notContains(":");
-      check(password, "字符长度为7-25，不能含有:符号").len(7, 25).notContains(":");
+      check(userName, "字符长度为2-25").len(2, 25);
+      check(password, "字符长度为7-25").len(7, 25);
     } catch (error) {
       errorMessage = error.message;
       return res.send(new Response(0, errorMessage));

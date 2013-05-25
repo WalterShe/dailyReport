@@ -37,3 +37,6 @@ exports.createRutes = (app)->
   app.post('/admin/setadmin', user.setAdmin);
   app.post('/admin/deleteadmin', user.deleteAdmin);
   app.post('/admin/getadmins', user.getAdmins);
+
+
+  app.get('/m/login', user.loginIndexMobile);

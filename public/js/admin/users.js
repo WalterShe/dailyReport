@@ -59,7 +59,7 @@
     self.validUserName1 = ko.computed(function() {
       var un;
       un = $.trim(self.userName1());
-      return un.length >= 6 && un.length <= 25;
+      return un.length >= 2 && un.length <= 25;
     });
     self.validPassword1 = ko.computed(function() {
       var pw;

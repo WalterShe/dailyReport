@@ -111,6 +111,12 @@
       }, "json");
     };
 
+    UserModel.login = function(data, callback) {
+      return $.post("/login", data, function(response) {
+        return callback(response);
+      }, "json");
+    };
+
     UserModel.createUser = function(data, callback) {
       return $.post("/admin/createuser", data, function(response) {
         var user;

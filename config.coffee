@@ -12,5 +12,5 @@ exports.sessiondb =
   pass:null
 
 exports.app =
-  port: 80
+  port: 3000
 

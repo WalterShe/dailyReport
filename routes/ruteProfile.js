@@ -39,7 +39,8 @@
     app.post('/admin/updatedepartment', department.updateDepartment);
     app.post('/admin/setadmin', user.setAdmin);
     app.post('/admin/deleteadmin', user.deleteAdmin);
-    return app.post('/admin/getadmins', user.getAdmins);
+    app.post('/admin/getadmins', user.getAdmins);
+    return app.get('/m/login', user.loginIndexMobile);
   };
 
 }).call(this);

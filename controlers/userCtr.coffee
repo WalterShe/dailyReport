@@ -7,11 +7,13 @@ userModel = require('../models/usersModel')
 exports.loginIndex = (req, res) ->
     res.render("login")
 
+exports.loginIndexMobile = (req, res) ->
+  res.render("mobile/login")
+
 exports.login = (req, res) ->
   userName = req.body.userName
   password = req.body.password
   hashedPassword = crypto.createHash("sha1").update(password).digest('hex')
-  console.log "login"
   userModel.getAllUsersWithPassword((response)->
     return res.send(response) if response.state == 0
     users = response.data
@@ -23,7 +25,8 @@ exports.login = (req, res) ->
         userId = id
         break
 
-    return res.render("login",{hasError:true, message:"用户名:#{userName}不存在"}) unless userId
+    return res.send(new Response(1, "用户名:#{userName}不存在", 0)) unless userId
+    #return res.render("login",{hasError:true, message:"用户名:#{userName}不存在"}) unless userId
 
     hasThisUser = false
     for key, value of users
@@ -32,20 +35,21 @@ exports.login = (req, res) ->
         userId = id
         hasThisUser = true
         break
-    return res.render("login",{hasError:true, message:"密码错误"}) unless hasThisUser
-
+    #return res.render("login",{hasError:true, message:"密码错误"}) unless hasThisUser
+    return res.send(new Response(1, "密码错误", 0)) unless hasThisUser
     #console.log "userName:#{userName}, userId:#{userId}"
     req.session.userId = userId
 
     userModel.getAdminIds((response)->
-      return res.redirect("/show") if response.state == 0
+      return res.send(new Response(1, "success", 1)) if response.state == 0
       ids = response.data
-      #console.log ids
+
       for id in ids
         if id == userId
           req.session.isAdmin = 1
           break
-      return res.redirect("/show")))
+      res.send(new Response(1, "success", 1))))
+      #return res.redirect("/show")))
 
 exports.logout = (req, res) ->
   return unless utils.authenticateUser(req,res)
@@ -79,8 +83,8 @@ exports.createUser = (req, res) ->
   superiorId = req.body.superiorId;
 
   try
-    check(userName, "字符长度为6-25，不能含有:符号").len(6,25).notContains(":")
-    check(password, "字符长度为7-25，不能含有:符号").len(7,25).notContains(":")
+    check(userName, "字符长度为2-25").len(2,25)
+    check(password, "字符长度为7-25").len(7,25)
   catch  error
     errorMessage = error.message
     return res.send(new Response(0, errorMessage))

@@ -45,7 +45,7 @@ UserViewModel = ->
   self.repassword1 = ko.observable('')
   self.validUserName1 = ko.computed(->
     un = $.trim(self.userName1())
-    un.length >= 6 and un.length<=25)
+    un.length >= 2 and un.length<=25)
 
   self.validPassword1 = ko.computed(->
     pw = $.trim(self.password1())
