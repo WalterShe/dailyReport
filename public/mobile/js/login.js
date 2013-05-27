@@ -48,7 +48,7 @@
             });
           }
           if (response.data === 1) {
-            return $.mobile.changePage("show");
+            return $.mobile.changePage("write");
           }
         });
       } else {

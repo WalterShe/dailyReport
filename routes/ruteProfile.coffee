@@ -40,3 +40,8 @@ exports.createRutes = (app)->
 
 
   app.get('/m/login', user.loginIndexMobile);
+  app.get('/m/show', report.showIndexMobile);
+  app.get('/m/write', report.writeIndexMobile);
+  app.get('/m/showsubordinate', report.subordinateIndexMobile);
+  app.get('/m/setting', report.settingMobile);
+  app.get('/m/logout', user.logoutMobile);

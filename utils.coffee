@@ -10,6 +10,13 @@ exports.authenticateUser = (req,res)->
 
   result
 
+#如果用户登陆了，返回true，否则返回false，并且转向登陆界面
+exports.authenticateUserMobile = (req,res)->
+  result = @isLoginUser(req)
+  res.redirect('/m/login') unless result
+
+  result
+
 #如果用户登陆了，返回true，否则返回false
 exports.isLoginUser = (req)->
   req.session?.userId and true

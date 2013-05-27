@@ -83,6 +83,14 @@
     return res.redirect("/login");
   };
 
+  exports.logoutMobile = function(req, res) {
+    if (!utils.authenticateUserMobile(req, res)) {
+      return;
+    }
+    req.session.destroy();
+    return res.redirect("/m/login");
+  };
+
   exports.passwordIndex = function(req, res) {
     var userId;
     if (!utils.authenticateUser(req, res)) {

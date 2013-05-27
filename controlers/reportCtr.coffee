@@ -14,6 +14,15 @@ exports.writeIndex = (req, res) ->
   userId = req.session.userId
   showPage(req, res, userId, "write")
 
+exports.settingMobile = (req, res) ->
+  return unless utils.authenticateUserMobile(req,res)
+  res.render("mobile/settings")
+
+exports.writeIndexMobile = (req, res) ->
+  return unless utils.authenticateUserMobile(req,res)
+  userId = req.session.userId
+  showPage(req, res, userId, "mobile/write")
+
 exports.write = (req, res) ->
   return unless utils.authenticateUser(req,res)
   userId = req.session.userId
@@ -38,6 +47,11 @@ exports.showIndex = (req, res) ->
   userId = req.session.userId
   showPage(req, res, userId, "show")
 
+exports.showIndexMobile = (req, res) ->
+  return unless utils.authenticateUserMobile(req,res)
+  userId = req.session.userId
+  showPage(req, res, userId, "mobile/show")
+
 showPage = (req, res, userId, pageTitle) ->
   userModel.hasSubordinate(userId, (result)->
     data = {hasSubordinate: result, isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
@@ -50,6 +64,16 @@ exports.showsubordinateIndex = (req, res) ->
     if result
       data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
       res.render("showsubordinate", data)
+    else
+      res.send(new Response(0,"您目前没有下属,不需要访问该页面！")) )
+
+exports.subordinateIndexMobile = (req, res) ->
+  return unless utils.authenticateUserMobile(req,res)
+  userId = req.session.userId
+  userModel.hasSubordinate(userId, (result)->
+    if result
+      data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
+      res.render("mobile/showsubordinate", data)
     else
       res.send(new Response(0,"您目前没有下属,不需要访问该页面！")) )
 

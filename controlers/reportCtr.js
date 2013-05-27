@@ -30,6 +30,22 @@
     return showPage(req, res, userId, "write");
   };
 
+  exports.settingMobile = function(req, res) {
+    if (!utils.authenticateUserMobile(req, res)) {
+      return;
+    }
+    return res.render("mobile/settings");
+  };
+
+  exports.writeIndexMobile = function(req, res) {
+    var userId;
+    if (!utils.authenticateUserMobile(req, res)) {
+      return;
+    }
+    userId = req.session.userId;
+    return showPage(req, res, userId, "mobile/write");
+  };
+
   exports.write = function(req, res) {
     var content, date, dateStr, months, userId, year, _ref;
     if (!utils.authenticateUser(req, res)) {
@@ -62,6 +78,15 @@
     return showPage(req, res, userId, "show");
   };
 
+  exports.showIndexMobile = function(req, res) {
+    var userId;
+    if (!utils.authenticateUserMobile(req, res)) {
+      return;
+    }
+    userId = req.session.userId;
+    return showPage(req, res, userId, "mobile/show");
+  };
+
   showPage = function(req, res, userId, pageTitle) {
     return userModel.hasSubordinate(userId, function(result) {
       var data;
@@ -88,6 +113,26 @@
           isAdmin: utils.isAdmin(req)
         };
         return res.render("showsubordinate", data);
+      } else {
+        return res.send(new Response(0, "您目前没有下属,不需要访问该页面！"));
+      }
+    });
+  };
+
+  exports.subordinateIndexMobile = function(req, res) {
+    var userId;
+    if (!utils.authenticateUserMobile(req, res)) {
+      return;
+    }
+    userId = req.session.userId;
+    return userModel.hasSubordinate(userId, function(result) {
+      var data;
+      if (result) {
+        data = {
+          isLoginUser: utils.isLoginUser(req),
+          isAdmin: utils.isAdmin(req)
+        };
+        return res.render("mobile/showsubordinate", data);
       } else {
         return res.send(new Response(0, "您目前没有下属,不需要访问该页面！"));
       }

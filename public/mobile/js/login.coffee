@@ -34,7 +34,7 @@ LoginViewModel = ->
           self.errorTip(response.message)
           $.mobile.changePage("#errorPage", { role: "dialog" })
         if response.data == 1
-          $.mobile.changePage("show"))
+          $.mobile.changePage("write"))
     else
       unless self.validUserName()
         return result = "用户名长度为2-25个字符"

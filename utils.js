@@ -17,6 +17,15 @@
     return result;
   };
 
+  exports.authenticateUserMobile = function(req, res) {
+    var result;
+    result = this.isLoginUser(req);
+    if (!result) {
+      res.redirect('/m/login');
+    }
+    return result;
+  };
+
   exports.isLoginUser = function(req) {
     var _ref;
     return ((_ref = req.session) != null ? _ref.userId : void 0) && true;
