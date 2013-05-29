@@ -21,7 +21,14 @@ exports.settingMobile = (req, res) ->
 exports.writeIndexMobile = (req, res) ->
   return unless utils.authenticateUserMobile(req,res)
   userId = req.session.userId
-  showPage(req, res, userId, "mobile/write")
+  showPage(req, res, userId, "mobile/write", {"currentDateStr": getDateStr(new Date())})
+
+getDateStr = (date)->
+  today = new Date()
+  year = date.getFullYear()
+  month = date.getMonth() + 1
+  date = date.getDate()
+  return "#{year}-#{month}-#{date}"
 
 exports.write = (req, res) ->
   return unless utils.authenticateUser(req,res)
@@ -52,9 +59,12 @@ exports.showIndexMobile = (req, res) ->
   userId = req.session.userId
   showPage(req, res, userId, "mobile/show")
 
-showPage = (req, res, userId, pageTitle) ->
+showPage = (req, res, userId, pageTitle, data=null) ->
   userModel.hasSubordinate(userId, (result)->
-    data = {hasSubordinate: result, isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
+    data = {} unless data
+    data["hasSubordinate"] = result
+    data["isLoginUser"] = utils.isLoginUser(req)
+    data["isAdmin"] = utils.isAdmin(req)
     res.render(pageTitle, data))
 
 exports.showsubordinateIndex = (req, res) ->

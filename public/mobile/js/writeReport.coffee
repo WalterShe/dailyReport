@@ -1,6 +1,6 @@
 # 初始化 ---------------------------------------------------------------
-$(document).bind("pageinit", ->
-
+$(document).bind("pageshow", (e)->
+  console.log "write page."
   # 将本机时间当前日期设置为日期文本框的默认值
   getDateStr = (date)->
     today = new Date()
@@ -11,7 +11,6 @@ $(document).bind("pageinit", ->
 
   dateStr =  getDateStr(new Date())
   $("#dateTxt").val(dateStr)
-
   # end 将本机时间当前日期设置为日期文本框的默认值
 
   validator = new Validator()

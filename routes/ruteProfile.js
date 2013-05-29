@@ -40,6 +40,7 @@
     app.post('/admin/setadmin', user.setAdmin);
     app.post('/admin/deleteadmin', user.deleteAdmin);
     app.post('/admin/getadmins', user.getAdmins);
+    app.get('/m', user.indexMobile);
     app.get('/m/login', user.loginIndexMobile);
     app.get('/m/show', report.showIndexMobile);
     app.get('/m/write', report.writeIndexMobile);

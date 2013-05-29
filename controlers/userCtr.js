@@ -16,8 +16,20 @@
     return res.render("login");
   };
 
+  exports.indexMobile = function(req, res) {
+    if (utils.isLoginUser(req)) {
+      return res.redirect('/m/write');
+    } else {
+      return res.redirect('/m/login');
+    }
+  };
+
   exports.loginIndexMobile = function(req, res) {
-    return res.render("mobile/login");
+    if (utils.isLoginUser(req)) {
+      return res.redirect('/m/write');
+    } else {
+      return res.render("mobile/login");
+    }
   };
 
   exports.login = function(req, res) {

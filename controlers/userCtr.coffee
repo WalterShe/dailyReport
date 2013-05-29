@@ -7,8 +7,17 @@ userModel = require('../models/usersModel')
 exports.loginIndex = (req, res) ->
     res.render("login")
 
+exports.indexMobile = (req, res) ->
+  if utils.isLoginUser(req)
+    res.redirect('/m/write')
+  else
+    res.redirect('/m/login')
+
 exports.loginIndexMobile = (req, res) ->
-  res.render("mobile/login")
+  if utils.isLoginUser(req)
+    res.redirect('/m/write')
+  else
+    res.render("mobile/login")
 
 exports.login = (req, res) ->
   userName = req.body.userName
