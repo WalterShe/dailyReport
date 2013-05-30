@@ -1,6 +1,7 @@
 loginPageShowed = false
 writePageShowed = false
 showPageShowed = false
+subordinatePageShowed = false
 
 init = ->
   if window.mobileInitFinished
@@ -82,6 +83,27 @@ init = ->
       getReports()
       console.log "next button clicked.#{currentPage}")
   )
+
+  $("body").on("pageshow","#subordinatePage",(e)->
+    #console.log "subordinate page show"
+    treeData = []
+    $("#subordinatePage a.headerBack").css("display", "none")
+    $("#subordinatePage h1").empty()
+    $("#subordinatePage h1").append("下属日报")
+    getSubordinateUserAndDepartment()
+
+    return if subordinatePageShowed
+    subordinatePageShowed = true
+    $("#subordinatePage a.headerBack").click(->
+      treeData.pop()
+      renderSubordinate(treeData[treeData.length-1], "#subordinatePage div.subordinate")
+      if treeData.length == 1
+        $("#subordinatePage a.headerBack").css("display", "none")
+        $("#subordinatePage h1").empty()
+        $("#subordinatePage h1").append("下属日报")
+      )
+    )
+
 
 # Login ----------------------------------------------------------------
 isValidLoginUser = ->
@@ -179,5 +201,53 @@ setPageState = ->
     $("div.pageination").show()
     $("div.pagePre").show()
     $("div.pageNext").show()
+
+# subordinate -----------------------------------------------------------------
+subordinateUserAndDepartments = null
+getSubordinateUserAndDepartment = ->
+  Model.getSubordinateUserAndDepartment((response)->
+    return if response.state == 0
+    subordinateUserAndDepartments = response.data
+    renderSubordinate(subordinateUserAndDepartments, "#subordinatePage div.subordinate", true)
+    console.log subordinateUserAndDepartments)
+
+
+treeData = []
+
+renderSubordinate = (data, nodeContainer, pushStack=false)->
+  $(nodeContainer).empty()
+  $(nodeContainer).append("<ul class='root' data-role='listview' data-inset='true' data-filter='true'></ul>")
+  treeNodeData = []
+  node = "#{nodeContainer} ul.root"
+  for nodeData in data
+    treeNodeData.push(nodeData)
+    if nodeData.children
+      $(node).append("<li id='#{nodeData.id}-node' node='1' onclick='clickNode(event)'><a href='#'>#{nodeData.label}</a></li>")
+    else
+      $(node).append("<li id='#{nodeData.id}-node' onclick='showUserReport(event)'><a href='#'>#{nodeData.label}</a></li>")
+  treeData.push(treeNodeData) if pushStack
+  $("#{nodeContainer} ul.root").listview()
+
+
+window.clickNode = (event)->
+  [id, _] = $(event.currentTarget).attr("id").split("-")
+  isNode = $(event.currentTarget).attr("node") and true
+  $("#subordinatePage a.headerBack").css("display", "inline")
+  $("#subordinatePage h1").empty()
+  getChildNodeById(subordinateUserAndDepartments, id)
+
+getChildNodeById = (dataSource, id)->
+  for nodeData in dataSource
+    if nodeData.id == id
+      $("#subordinatePage h1").append(nodeData.label)
+      renderSubordinate(nodeData.children, "#subordinatePage div.subordinate", true)
+      return
+    if nodeData.children
+      getChildNodeById(nodeData.children, id)
+
+window.showUserReport = (event)->
+  [id, _] = $(event.currentTarget).attr("id").split("-")
+  console.log id
+
 
 window.init = init
