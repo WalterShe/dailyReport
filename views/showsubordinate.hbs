@@ -40,10 +40,12 @@
                 <!-- <p class="btn btn-link reply" data-bind="attr: {reportId: id}">reply</p> -->
             </li>
         </ul>
-        <div class="pagination" data-bind="if: pageNumArray().length > 1">
-            <ul data-bind="foreach: pageNumArray">
-                <li data-bind="css: {active: ($index()+1) == $parent.currentPage()}"><span data-bind="text: $index()+1, visible: ($index()+1)==$parent.currentPage()"></span><a href="#" data-bind="text: $index()+1, attr: { href: '/show/'+($index()+1)}, visible: ($index()+1)!=$parent.currentPage()"></a></li>
-            </ul>
+        <div class="pagination" data-bind="if: pageNum() > 1">
+            <button class="btn btn-mini pagePre" title="上一页"
+                    data-bind="visible: currentPage()>1">&lt;&lt;</button>
+            <span data-bind="text: currentPage() + '/' + pageNum()"></span>
+            <button class="btn btn-mini pageNext" title="下一页"
+                    data-bind="visible: currentPage() < pageNum()">&gt;&gt;</button>
         </div>
     </article>
 </section>

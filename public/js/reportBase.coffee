@@ -4,10 +4,11 @@ ShowReportsViewModel = ->
   self = @
   self.reports = ko.observableArray([])
   self.reportNum = ko.observable(0)
-  self.pageNumArray = ko.computed(->
+  self.userId = ko.observable(null)
+  self.pageNum = ko.computed(->
     pageNum = Math.ceil(self.reportNum() / NUMOFPAGE)
     pageNum = 1 if pageNum == 0
-    [1..pageNum])
+    pageNum)
 
   self.currentPage = ko.observable(1)
 
@@ -19,7 +20,7 @@ ShowReportsViewModel = ->
 NUMOFPAGE = 4
 
 getReports = (userId=null)->
-  data = {page:1, numOfPage:NUMOFPAGE, userId:userId}
+  data = {page:reportvm.currentPage(), numOfPage:NUMOFPAGE, userId:userId}
   ReportModel.getReports(data, (response)->
     return if response.state == 0
     reportvm.reports(response.data))
@@ -29,6 +30,12 @@ getReportNum = (userId=null)->
     return if response.state == 0
     reportvm.reportNum(response.data))
 
+window.initPageState = ->
+  reportvm.reports([])
+  reportvm.reportNum(0)
+  reportvm.userId(null)
+
+
 reportvm = new ShowReportsViewModel()
 ko.applyBindings(reportvm)
 
@@ -37,15 +44,14 @@ window.getReportNum = getReportNum
 window.reportvm = reportvm
 
 #翻页组件---------------------------------------
-$("div.pagination").on("click", "li a", ->
-  page = $(this).text()
-  page = parseInt(page)
-  gotoPage(page)
+$("div.pagination").on("click", "button.pageNext", ->
+  gotoPage(reportvm.currentPage()+1)
+  false)
+
+$("div.pagination").on("click", "button.pagePre", ->
+  gotoPage(reportvm.currentPage()-1)
   false)
 
 window.gotoPage = (page)->
   reportvm.currentPage(page)
-  data = {page:page, numOfPage:NUMOFPAGE}
-  ReportModel.getReports(data, (response)->
-    return if response.state == 0
-    reportvm.reports(response.data))
+  getReports(reportvm.userId())

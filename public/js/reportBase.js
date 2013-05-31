@@ -7,17 +7,14 @@
     self = this;
     self.reports = ko.observableArray([]);
     self.reportNum = ko.observable(0);
-    self.pageNumArray = ko.computed(function() {
-      var pageNum, _i, _results;
+    self.userId = ko.observable(null);
+    self.pageNum = ko.computed(function() {
+      var pageNum;
       pageNum = Math.ceil(self.reportNum() / NUMOFPAGE);
       if (pageNum === 0) {
         pageNum = 1;
       }
-      return (function() {
-        _results = [];
-        for (var _i = 1; 1 <= pageNum ? _i <= pageNum : _i >= pageNum; 1 <= pageNum ? _i++ : _i--){ _results.push(_i); }
-        return _results;
-      }).apply(this);
+      return pageNum;
     });
     self.currentPage = ko.observable(1);
     return self;
@@ -31,7 +28,7 @@
       userId = null;
     }
     data = {
-      page: 1,
+      page: reportvm.currentPage(),
       numOfPage: NUMOFPAGE,
       userId: userId
     };
@@ -55,6 +52,12 @@
     });
   };
 
+  window.initPageState = function() {
+    reportvm.reports([]);
+    reportvm.reportNum(0);
+    return reportvm.userId(null);
+  };
+
   reportvm = new ShowReportsViewModel();
 
   ko.applyBindings(reportvm);
@@ -65,27 +68,19 @@
 
   window.reportvm = reportvm;
 
-  $("div.pagination").on("click", "li a", function() {
-    var page;
-    page = $(this).text();
-    page = parseInt(page);
-    gotoPage(page);
+  $("div.pagination").on("click", "button.pageNext", function() {
+    gotoPage(reportvm.currentPage() + 1);
+    return false;
+  });
+
+  $("div.pagination").on("click", "button.pagePre", function() {
+    gotoPage(reportvm.currentPage() - 1);
     return false;
   });
 
   window.gotoPage = function(page) {
-    var data;
     reportvm.currentPage(page);
-    data = {
-      page: page,
-      numOfPage: NUMOFPAGE
-    };
-    return ReportModel.getReports(data, function(response) {
-      if (response.state === 0) {
-        return;
-      }
-      return reportvm.reports(response.data);
-    });
+    return getReports(reportvm.userId());
   };
 
 }).call(this);

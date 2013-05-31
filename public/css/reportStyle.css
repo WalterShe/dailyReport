@@ -129,8 +129,15 @@ body.subordinate #reports li.report {
   padding: 0 20px 0 0;
 }
 #reportList div.pagination {
-  float: left;
+  float: right;
   margin: 5px 0;
+}
+#reportList div.pagination span {
+  margin: 0 15px;
+  font-size: 16px;
+}
+#reportList div.pagination button {
+  margin-top: -8px;
 }
 #loginDiv {
   background-color: #fbeed5;

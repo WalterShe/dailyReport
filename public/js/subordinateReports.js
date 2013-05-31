@@ -16,6 +16,8 @@
   $("#userTree").on("review", function(event) {
     var userId;
     userId = event["itemId"];
+    initPageState();
+    reportvm.userId(userId);
     getReports(userId);
     return getReportNum(userId);
   });
