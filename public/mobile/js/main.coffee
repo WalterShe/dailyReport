@@ -2,7 +2,8 @@ loginPageShowed = false
 writePageShowed = false
 showPageShowed = false
 subordinatePageShowed = false
-
+showPageListenerHandlerInited = false
+self = @
 init = ->
   if window.mobileInitFinished
     return
@@ -49,6 +50,35 @@ init = ->
         $.mobile.changePage("#writeErrorPage", { role: "dialog" }))
   )
 
+  initShowPageListenerHandler = ->
+    unless self.showPageListenerHandlerInited
+      self.showPageListenerHandlerInited = true
+      $("#reportList").on("taphold","li",(e)->
+        reportId = $(this).attr('reportId')
+        $("#deleteReportBtn").attr("reportId", reportId)
+        $("#deleteReportMenu").popup()
+        $("#deleteReportMenu").popup('open')
+        )
+
+      $("#deleteReportMenu").on("click","#deleteReportBtn",(e)->
+        reportId = $(this).attr('reportId')
+        deleteReport(reportId)
+        $("#deleteReportMenu").popup('close'))
+
+      $("#deleteReportMenu").on("click","#cancelDeleteReportBtn",(e)->
+        $("#deleteReportMenu").popup('close'))
+
+      $("body").on("click","div.pageination div.pagePre",(e)->
+        currentPage -= 1
+        setPageState()
+        getReports())
+
+      $("body").on("click","div.pageination div.pageNext",(e)->
+        console.log "pageNext"
+        currentPage += 1
+        setPageState()
+        getReports())
+
   $("body").on("pageshow","#showPage",(e)->
     #console.log "show page show"
     initPageInfo()
@@ -56,37 +86,12 @@ init = ->
     getReportNum()
     return if showPageShowed
     showPageShowed = true
-    $("#reportList").on("taphold","li",(e)->
-      reportId = $(this).attr('reportId')
-      $("#deleteReportBtn").attr("reportId", reportId)
-      $("#deleteReportMenu").popup()
-      $("#deleteReportMenu").popup('open')
-    )
-
-    $("#deleteReportMenu").on("click","#deleteReportBtn",(e)->
-      reportId = $(this).attr('reportId')
-      deleteReport(reportId)
-      $("#deleteReportMenu").popup('close'))
-
-    $("#deleteReportMenu").on("click","#cancelDeleteReportBtn",(e)->
-      $("#deleteReportMenu").popup('close'))
-
-    $("div.pagePre").on("click","button",(e)->
-      currentPage -= 1
-      setPageState()
-      getReports()
-      console.log "pre button clicked.#{currentPage}")
-
-    $("div.pageNext").on("click","button",(e)->
-      currentPage += 1
-      setPageState()
-      getReports()
-      console.log "next button clicked.#{currentPage}")
+    initShowPageListenerHandler()
   )
 
   $("body").on("pageshow","#subordinatePage",(e)->
     #console.log "subordinate page show"
-    treeData = []
+    self.treeData = []
     $("#subordinatePage a.headerBack").css("display", "none")
     $("#subordinatePage h1").empty()
     $("#subordinatePage h1").append("下属日报")
@@ -94,10 +99,13 @@ init = ->
 
     return if subordinatePageShowed
     subordinatePageShowed = true
+    initShowPageListenerHandler()
     $("#subordinatePage a.headerBack").click(->
-      treeData.pop()
-      renderSubordinate(treeData[treeData.length-1], "#subordinatePage div.subordinate")
-      if treeData.length == 1
+      self.treeData.pop()
+      renderSubordinate(self.treeData[self.treeData.length-1], "#subordinatePage div.subordinate")
+      $("#subordinatePage h1").empty()
+      $("#subordinatePage h1").append($(@).attr("nodeName"))
+      if self.treeData.length == 1
         $("#subordinatePage a.headerBack").css("display", "none")
         $("#subordinatePage h1").empty()
         $("#subordinatePage h1").append("下属日报")
@@ -138,7 +146,7 @@ isValidDate = ->
 
 # show -----------------------------------------------------------------
 # 每页显示的日报条数
-NUMOFPAGE = 2
+NUMOFPAGE = 6
 reports = []
 reportTotalNum = 0
 pageNum = 0
@@ -168,8 +176,6 @@ deleteReport = (reportId)->
   Model.deleteReport({reportId:reportId}, (response)->
     return if response.state == 0
     reportTotalNum -= 1
-    #reportvm.reportNum(reportvm.reportNum()-1)
-    #page = reportvm.currentPage()
     if (reports.length == 1 &&  currentPage > 1)  #非第一页并且只有一条日报(这条日报被删了，嘿嘿)
       currentPage -= 1
     setPageState()
@@ -212,7 +218,7 @@ getSubordinateUserAndDepartment = ->
     console.log subordinateUserAndDepartments)
 
 
-treeData = []
+self.treeData = []
 
 renderSubordinate = (data, nodeContainer, pushStack=false)->
   $(nodeContainer).empty()
@@ -222,17 +228,19 @@ renderSubordinate = (data, nodeContainer, pushStack=false)->
   for nodeData in data
     treeNodeData.push(nodeData)
     if nodeData.children
-      $(node).append("<li id='#{nodeData.id}-node' node='1' onclick='clickNode(event)'><a href='#'>#{nodeData.label}</a></li>")
+      $(node).append("<li id='#{nodeData.id}-node' nodeName='#{nodeData.label}' onclick='clickNode(event)'><a href='#'>#{nodeData.label}</a></li>")
     else
-      $(node).append("<li id='#{nodeData.id}-node' onclick='showUserReport(event)'><a href='#'>#{nodeData.label}</a></li>")
+      $(node).append("<li id='#{nodeData.id}-node' nodeName='#{nodeData.label}' onclick='showUserReport(event)'><a href='#'>#{nodeData.label}</a></li>")
   treeData.push(treeNodeData) if pushStack
   $("#{nodeContainer} ul.root").listview()
 
 
 window.clickNode = (event)->
   [id, _] = $(event.currentTarget).attr("id").split("-")
-  isNode = $(event.currentTarget).attr("node") and true
+  nodeName = $(event.currentTarget).attr("nodeName")
   $("#subordinatePage a.headerBack").css("display", "inline")
+  $("#subordinatePage a.headerBack").attr("nodeName", nodeName)
+  console.log $("#subordinatePage a.headerBack").attr("nodeName")
   $("#subordinatePage h1").empty()
   getChildNodeById(subordinateUserAndDepartments, id)
 
@@ -247,7 +255,27 @@ getChildNodeById = (dataSource, id)->
 
 window.showUserReport = (event)->
   [id, _] = $(event.currentTarget).attr("id").split("-")
-  console.log id
-
+  label = $(event.currentTarget).attr("nodeName")
+  $("#subordinatePage div.subordinate").empty()
+  $("#subordinatePage div.subordinate").append('<article id="reportList" >
+                                                           <ul></ul>
+                                                       </article>
+                                                       <div class="ui-grid-d pageination">
+                                                           <div class="ui-block-a" title="前一页" style="text-align: center;"><div class="pagePre" ><button data-icon="arrow-l" data-iconpos="notext" data-inline="true"></button></div></div>
+                                                           <div class="ui-block-b"></div>
+                                                           <div class="ui-block-c pagetip" style="text-align: center;padding-top: 15px;">1/1</div>
+                                                           <div class="ui-block-d"></div>
+                                                           <div class="ui-block-e" title="下一页" style="text-align: center;"><div class="pageNext" ><button data-icon="arrow-r" data-iconpos="notext" data-inline="true"></button></div></div>
+                                                       </div>')
+  $("#subordinatePage h1").empty()
+  $("#subordinatePage h1").append("#{label}的日报")
+  $("#subordinatePage a.headerBack").css("display", "inline")
+  $("#subordinatePage div.pagePre button").button()
+  $("#subordinatePage div.pageNext button").button()
+  treeData.push(label)
+  initPageInfo()
+  reportUserId = id
+  getReports()
+  getReportNum()
 
 window.init = init
