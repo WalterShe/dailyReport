@@ -6,6 +6,11 @@ class Model
       callback(response)
     , "json")
 
+  @logout: (callback)->
+    $.post("/m/logout", (response)->
+      callback(response)
+    , "json")
+
   @createReport: (data, callback)->
     $.post("/write", data, (response)->
       callback(response)

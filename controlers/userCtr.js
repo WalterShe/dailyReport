@@ -95,12 +95,16 @@
     return res.redirect("/login");
   };
 
+  exports.logoutMobileIndex = function(req, res) {
+    return res.render("mobile/logout");
+  };
+
   exports.logoutMobile = function(req, res) {
     if (!utils.authenticateUserMobile(req, res)) {
       return;
     }
     req.session.destroy();
-    return res.redirect("/m/login");
+    return res.send(new Response(1, "success"));
   };
 
   exports.passwordIndex = function(req, res) {

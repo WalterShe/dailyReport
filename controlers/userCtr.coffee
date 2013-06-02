@@ -65,10 +65,13 @@ exports.logout = (req, res) ->
   req.session.destroy()
   res.redirect("/login")
 
+exports.logoutMobileIndex = (req, res) ->
+  res.render("mobile/logout")
+
 exports.logoutMobile = (req, res) ->
   return unless utils.authenticateUserMobile(req,res)
   req.session.destroy()
-  res.redirect("/m/login")
+  res.send(new Response(1, "success"))
 
 exports.passwordIndex = (req, res) ->
   return unless utils.authenticateUser(req,res)

@@ -9,6 +9,15 @@ init = ->
     return
   window.mobileInitFinished = true
   console.log "mobile init."
+
+  $("body").on("pageshow","#logoutPage", (e)->
+    Model.logout((response)->
+      console.log response
+      return if response.state == 0
+      console.log "logout page."
+      $.mobile.changePage("/m/login"))
+  )
+
   $("body").on("pageshow","#loginPage", (e)->
     #console.log "login page show"
 

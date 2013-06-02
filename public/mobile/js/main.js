@@ -21,6 +21,16 @@
     }
     window.mobileInitFinished = true;
     console.log("mobile init.");
+    $("body").on("pageshow", "#logoutPage", function(e) {
+      return Model.logout(function(response) {
+        console.log(response);
+        if (response.state === 0) {
+          return;
+        }
+        console.log("logout page.");
+        return $.mobile.changePage("/m/login");
+      });
+    });
     $("body").on("pageshow", "#loginPage", function(e) {
       if (loginPageShowed) {
         return;

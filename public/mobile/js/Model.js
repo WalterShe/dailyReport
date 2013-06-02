@@ -12,6 +12,12 @@
       }, "json");
     };
 
+    Model.logout = function(callback) {
+      return $.post("/m/logout", function(response) {
+        return callback(response);
+      }, "json");
+    };
+
     Model.createReport = function(data, callback) {
       return $.post("/write", data, function(response) {
         return callback(response);
