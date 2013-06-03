@@ -46,7 +46,8 @@
     app.get('/m/write', report.writeIndexMobile);
     app.get('/m/showsubordinate', report.subordinateIndexMobile);
     app.get('/m/setting', report.settingMobile);
-    return app.get('/m/logout', user.logoutMobileIndex);
+    app.get('/m/logout', user.logoutMobileIndex);
+    return app.get('/m/password', user.passwordMobileIndex);
   };
 
 }).call(this);

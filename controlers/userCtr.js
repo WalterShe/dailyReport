@@ -126,6 +126,16 @@
     });
   };
 
+  exports.passwordMobileIndex = function(req, res) {
+    if (!utils.authenticateUser(req, res)) {
+      return;
+    }
+    return res.render("mobile/password", {
+      'title': "修改密码",
+      layout: "mobile/layout.hbs"
+    });
+  };
+
   exports.changePassword = function(req, res) {
     var newPassword, oldPassword, userId;
     if (!utils.authenticateUser(req, res)) {

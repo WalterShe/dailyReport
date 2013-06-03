@@ -77,6 +77,10 @@ exports.passwordIndex = (req, res) ->
     data = {hasSubordinate: result, isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
     res.render("password", data))
 
+exports.passwordMobileIndex = (req, res) ->
+  return unless utils.authenticateUser(req,res)
+  res.render("mobile/password", {'title':"修改密码", layout:"mobile/layout.hbs"})
+
 exports.changePassword = (req, res) ->
   return unless utils.authenticateUser(req,res)
 
