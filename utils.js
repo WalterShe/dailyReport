@@ -9,21 +9,22 @@
   dbconfig = require('./config').db;
 
   exports.authenticateUser = function(req, res) {
-    var result;
+    var path, result;
     result = this.isLoginUser(req);
+    path = "/login";
+    if (this.isMobileClient(req)) {
+      path = "/m/login";
+    }
     if (!result) {
-      res.redirect('/login');
+      res.redirect(path);
     }
     return result;
   };
 
-  exports.authenticateUserMobile = function(req, res) {
-    var result;
-    result = this.isLoginUser(req);
-    if (!result) {
-      res.redirect('/m/login');
-    }
-    return result;
+  exports.isMobileClient = function(req) {
+    var urlArray;
+    urlArray = req.path.split("/");
+    return urlArray[1] === "m";
   };
 
   exports.isLoginUser = function(req) {

@@ -99,18 +99,14 @@
   };
 
   exports.logoutMobileIndex = function(req, res) {
-    return res.render("mobile/logout", {
-      'title': "登出",
-      layout: "mobile/layout.hbs"
-    });
-  };
-
-  exports.logoutMobile = function(req, res) {
-    if (!utils.authenticateUserMobile(req, res)) {
+    if (!utils.authenticateUser(req, res)) {
       return;
     }
     req.session.destroy();
-    return res.send(new Response(1, "success"));
+    return res.render("mobile/login", {
+      'title': "登录",
+      layout: "mobile/layout.hbs"
+    });
   };
 
   exports.passwordIndex = function(req, res) {

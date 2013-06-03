@@ -66,12 +66,9 @@ exports.logout = (req, res) ->
   res.redirect("/login")
 
 exports.logoutMobileIndex = (req, res) ->
-  res.render("mobile/logout", {'title':"登出", layout:"mobile/layout.hbs"})
-
-exports.logoutMobile = (req, res) ->
-  return unless utils.authenticateUserMobile(req,res)
+  return unless utils.authenticateUser(req,res)
   req.session.destroy()
-  res.send(new Response(1, "success"))
+  res.render("mobile/login", {'title':"登录", layout:"mobile/layout.hbs"})
 
 exports.passwordIndex = (req, res) ->
   return unless utils.authenticateUser(req,res)

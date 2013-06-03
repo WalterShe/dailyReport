@@ -45,4 +45,3 @@ exports.createRutes = (app)->
   app.get('/m/showsubordinate', report.subordinateIndexMobile);
   app.get('/m/setting', report.settingMobile);
   app.get('/m/logout', user.logoutMobileIndex);
-  app.post('/m/logout', user.logoutMobile);

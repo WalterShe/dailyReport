@@ -15,11 +15,11 @@ exports.writeIndex = (req, res) ->
   showPage(req, res, userId, "write")
 
 exports.settingMobile = (req, res) ->
-  return unless utils.authenticateUserMobile(req,res)
+  return unless utils.authenticateUser(req,res)
   res.render("mobile/settings", {'title':"设置", layout:"mobile/layout.hbs"})
 
 exports.writeIndexMobile = (req, res) ->
-  return unless utils.authenticateUserMobile(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
   showPage(req, res, userId, "mobile/write", {'title':"写日报", layout:"mobile/layout.hbs", "currentDateStr": getDateStr(new Date())})
 
@@ -55,7 +55,7 @@ exports.showIndex = (req, res) ->
   showPage(req, res, userId, "show")
 
 exports.showIndexMobile = (req, res) ->
-  return unless utils.authenticateUserMobile(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
   showPage(req, res, userId, "mobile/show", {'title':"我的日报", layout:"mobile/layout.hbs"})
 
@@ -78,7 +78,7 @@ exports.showsubordinateIndex = (req, res) ->
       res.send(new Response(0,"您目前没有下属,不需要访问该页面！")) )
 
 exports.subordinateIndexMobile = (req, res) ->
-  return unless utils.authenticateUserMobile(req,res)
+  return unless utils.authenticateUser(req,res)
   userId = req.session.userId
   userModel.hasSubordinate(userId, (result)->
     if result

@@ -31,7 +31,7 @@
   };
 
   exports.settingMobile = function(req, res) {
-    if (!utils.authenticateUserMobile(req, res)) {
+    if (!utils.authenticateUser(req, res)) {
       return;
     }
     return res.render("mobile/settings", {
@@ -42,7 +42,7 @@
 
   exports.writeIndexMobile = function(req, res) {
     var userId;
-    if (!utils.authenticateUserMobile(req, res)) {
+    if (!utils.authenticateUser(req, res)) {
       return;
     }
     userId = req.session.userId;
@@ -96,7 +96,7 @@
 
   exports.showIndexMobile = function(req, res) {
     var userId;
-    if (!utils.authenticateUserMobile(req, res)) {
+    if (!utils.authenticateUser(req, res)) {
       return;
     }
     userId = req.session.userId;
@@ -143,7 +143,7 @@
 
   exports.subordinateIndexMobile = function(req, res) {
     var userId;
-    if (!utils.authenticateUserMobile(req, res)) {
+    if (!utils.authenticateUser(req, res)) {
       return;
     }
     userId = req.session.userId;
