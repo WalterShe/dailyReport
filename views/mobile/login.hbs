@@ -20,6 +20,17 @@
                 data-bind="click: submit" data-theme="b"/>
         </div>
     </div>
+    <script type="text/javascript">
+       //console.log("url: " + document.location.href)
+       url = document.location.href;
+       urlArray = url.split("/");
+       //console.log(urlArray) ;
+       if (urlArray[urlArray.length-1] != "login"){
+           //console.log("change page to login page.");
+           $.mobile.changePage("/m/login");
+       }
+
+    </script>
 </div>
 
 <div data-role="page" id="loginErrorPage">
