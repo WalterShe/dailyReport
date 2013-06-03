@@ -231,7 +231,7 @@ self.treeData = []
 
 renderSubordinate = (data, nodeContainer, pushStack=false)->
   $(nodeContainer).empty()
-  $(nodeContainer).append("<ul class='root' data-role='listview' data-inset='true' data-filter='true'></ul>")
+  $(nodeContainer).append("<ul class='root' data-role='listview' data-theme='b' data-inset='true' data-filter='true'></ul>")
   treeNodeData = []
   node = "#{nodeContainer} ul.root"
   for nodeData in data

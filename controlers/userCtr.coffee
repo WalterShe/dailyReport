@@ -17,7 +17,7 @@ exports.loginIndexMobile = (req, res) ->
   if utils.isLoginUser(req)
     res.redirect('/m/write')
   else
-    res.render("mobile/login")
+    res.render("mobile/login", {'title':"登录", layout:"mobile/layout.hbs"})
 
 exports.login = (req, res) ->
   userName = req.body.userName
@@ -66,7 +66,7 @@ exports.logout = (req, res) ->
   res.redirect("/login")
 
 exports.logoutMobileIndex = (req, res) ->
-  res.render("mobile/logout")
+  res.render("mobile/logout", {'title':"登出", layout:"mobile/layout.hbs"})
 
 exports.logoutMobile = (req, res) ->
   return unless utils.authenticateUserMobile(req,res)

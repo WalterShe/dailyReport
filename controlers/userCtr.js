@@ -28,7 +28,10 @@
     if (utils.isLoginUser(req)) {
       return res.redirect('/m/write');
     } else {
-      return res.render("mobile/login");
+      return res.render("mobile/login", {
+        'title': "登录",
+        layout: "mobile/layout.hbs"
+      });
     }
   };
 
@@ -96,7 +99,10 @@
   };
 
   exports.logoutMobileIndex = function(req, res) {
-    return res.render("mobile/logout");
+    return res.render("mobile/logout", {
+      'title': "登出",
+      layout: "mobile/layout.hbs"
+    });
   };
 
   exports.logoutMobile = function(req, res) {

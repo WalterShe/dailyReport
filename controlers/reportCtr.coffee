@@ -16,12 +16,12 @@ exports.writeIndex = (req, res) ->
 
 exports.settingMobile = (req, res) ->
   return unless utils.authenticateUserMobile(req,res)
-  res.render("mobile/settings")
+  res.render("mobile/settings", {'title':"设置", layout:"mobile/layout.hbs"})
 
 exports.writeIndexMobile = (req, res) ->
   return unless utils.authenticateUserMobile(req,res)
   userId = req.session.userId
-  showPage(req, res, userId, "mobile/write", {"currentDateStr": getDateStr(new Date())})
+  showPage(req, res, userId, "mobile/write", {'title':"写日报", layout:"mobile/layout.hbs", "currentDateStr": getDateStr(new Date())})
 
 getDateStr = (date)->
   today = new Date()
@@ -57,7 +57,7 @@ exports.showIndex = (req, res) ->
 exports.showIndexMobile = (req, res) ->
   return unless utils.authenticateUserMobile(req,res)
   userId = req.session.userId
-  showPage(req, res, userId, "mobile/show")
+  showPage(req, res, userId, "mobile/show", {'title':"我的日报", layout:"mobile/layout.hbs"})
 
 showPage = (req, res, userId, pageTitle, data=null) ->
   userModel.hasSubordinate(userId, (result)->
@@ -65,6 +65,8 @@ showPage = (req, res, userId, pageTitle, data=null) ->
     data["hasSubordinate"] = result
     data["isLoginUser"] = utils.isLoginUser(req)
     data["isAdmin"] = utils.isAdmin(req)
+    console.log pageTitle
+    console.log data
     res.render(pageTitle, data))
 
 exports.showsubordinateIndex = (req, res) ->
@@ -82,7 +84,7 @@ exports.subordinateIndexMobile = (req, res) ->
   userId = req.session.userId
   userModel.hasSubordinate(userId, (result)->
     if result
-      data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
+      data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req), 'title':"下属日报", layout:"mobile/layout.hbs"}
       res.render("mobile/showsubordinate", data)
     else
       res.send(new Response(0,"您目前没有下属,不需要访问该页面！")) )

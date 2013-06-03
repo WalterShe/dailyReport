@@ -34,7 +34,10 @@
     if (!utils.authenticateUserMobile(req, res)) {
       return;
     }
-    return res.render("mobile/settings");
+    return res.render("mobile/settings", {
+      'title': "设置",
+      layout: "mobile/layout.hbs"
+    });
   };
 
   exports.writeIndexMobile = function(req, res) {
@@ -44,6 +47,8 @@
     }
     userId = req.session.userId;
     return showPage(req, res, userId, "mobile/write", {
+      'title': "写日报",
+      layout: "mobile/layout.hbs",
       "currentDateStr": getDateStr(new Date())
     });
   };
@@ -95,7 +100,10 @@
       return;
     }
     userId = req.session.userId;
-    return showPage(req, res, userId, "mobile/show");
+    return showPage(req, res, userId, "mobile/show", {
+      'title': "我的日报",
+      layout: "mobile/layout.hbs"
+    });
   };
 
   showPage = function(req, res, userId, pageTitle, data) {
@@ -109,6 +117,8 @@
       data["hasSubordinate"] = result;
       data["isLoginUser"] = utils.isLoginUser(req);
       data["isAdmin"] = utils.isAdmin(req);
+      console.log(pageTitle);
+      console.log(data);
       return res.render(pageTitle, data);
     });
   };
@@ -144,7 +154,9 @@
       if (result) {
         data = {
           isLoginUser: utils.isLoginUser(req),
-          isAdmin: utils.isAdmin(req)
+          isAdmin: utils.isAdmin(req),
+          'title': "下属日报",
+          layout: "mobile/layout.hbs"
         };
         return res.render("mobile/showsubordinate", data);
       } else {

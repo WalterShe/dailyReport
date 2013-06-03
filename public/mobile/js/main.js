@@ -308,7 +308,7 @@
       pushStack = false;
     }
     $(nodeContainer).empty();
-    $(nodeContainer).append("<ul class='root' data-role='listview' data-inset='true' data-filter='true'></ul>");
+    $(nodeContainer).append("<ul class='root' data-role='listview' data-theme='b' data-inset='true' data-filter='true'></ul>");
     treeNodeData = [];
     node = "" + nodeContainer + " ul.root";
     for (_i = 0, _len = data.length; _i < _len; _i++) {
