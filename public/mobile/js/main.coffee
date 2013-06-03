@@ -161,6 +161,7 @@ reportTotalNum = 0
 pageNum = 0
 currentPage = 1
 reportUserId = null
+isFirstGetReports = true
 
 initPageInfo = ->
   reports = []
@@ -179,7 +180,11 @@ getReports = ()->
       reports.push(report)
       reportHTML = "<li class='report' reportId='#{report.id}'><p class='date'><i class='icon-calendar'></i><span>#{report.date}</span></p>
                   <div class='content'>#{report.content}</div></li>"
-      $("#reportList ul").append(reportHTML))
+      $("#reportList ul").append(reportHTML)
+      setTimeout(showPageination, 1000))
+
+showPageination = ->
+  $("div.pageination").css("opacity", 1)
 
 deleteReport = (reportId)->
   Model.deleteReport({reportId:reportId}, (response)->
@@ -194,7 +199,7 @@ getReportNum = ()->
   Model.getReportNum(reportUserId, (response)->
     if response.state == 1
       reportTotalNum = response.data
-    setPageState())
+      setPageState())
 
 setPageState = ->
   pageNum = Math.ceil(reportTotalNum / NUMOFPAGE)
@@ -223,8 +228,7 @@ getSubordinateUserAndDepartment = ->
   Model.getSubordinateUserAndDepartment((response)->
     return if response.state == 0
     subordinateUserAndDepartments = response.data
-    renderSubordinate(subordinateUserAndDepartments, "#subordinatePage div.subordinate", true)
-    console.log subordinateUserAndDepartments)
+    renderSubordinate(subordinateUserAndDepartments, "#subordinatePage div.subordinate", true))
 
 
 self.treeData = []
@@ -249,7 +253,6 @@ window.clickNode = (event)->
   nodeName = $(event.currentTarget).attr("nodeName")
   $("#subordinatePage a.headerBack").css("display", "inline")
   $("#subordinatePage a.headerBack").attr("nodeName", nodeName)
-  console.log $("#subordinatePage a.headerBack").attr("nodeName")
   $("#subordinatePage h1").empty()
   getChildNodeById(subordinateUserAndDepartments, id)
 
@@ -269,7 +272,7 @@ window.showUserReport = (event)->
   $("#subordinatePage div.subordinate").append('<article id="reportList" >
                                                            <ul></ul>
                                                        </article>
-                                                       <div class="ui-grid-d pageination">
+                                                       <div class="ui-grid-d pageination" >
                                                            <div class="ui-block-a" title="前一页" style="text-align: center;"><div class="pagePre" ><button data-icon="arrow-l" data-iconpos="notext" data-inline="true"></button></div></div>
                                                            <div class="ui-block-b"></div>
                                                            <div class="ui-block-c pagetip" style="text-align: center;padding-top: 15px;">1/1</div>

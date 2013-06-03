@@ -117,8 +117,6 @@
       data["hasSubordinate"] = result;
       data["isLoginUser"] = utils.isLoginUser(req);
       data["isAdmin"] = utils.isAdmin(req);
-      console.log(pageTitle);
-      console.log(data);
       return res.render(pageTitle, data);
     });
   };

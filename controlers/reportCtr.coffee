@@ -65,8 +65,6 @@ showPage = (req, res, userId, pageTitle, data=null) ->
     data["hasSubordinate"] = result
     data["isLoginUser"] = utils.isLoginUser(req)
     data["isAdmin"] = utils.isAdmin(req)
-    console.log pageTitle
-    console.log data
     res.render(pageTitle, data))
 
 exports.showsubordinateIndex = (req, res) ->

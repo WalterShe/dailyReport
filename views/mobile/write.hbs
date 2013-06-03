@@ -23,17 +23,17 @@
     </article>
 </div>
 
-<div data-role="footer" data-position="fixed">
-    <div data-role="navbar" data-iconpos="left">
-        <ul>
-            <li><a href="#" data-icon="edit" class="ui-btn-active">写日报</a></li>
-            <li><a href="/m/show" data-icon="bars">我的日报</a></li>
-            {{#if hasSubordinate}}
-            <li><a href="/m/showsubordinate" data-icon="grid">下属日报</a></li>
-            {{/if}}
-        </ul>
+    <div data-role="footer" data-position="fixed">
+        <div data-role="navbar" data-iconpos="left">
+            <ul>
+                <li><a href="#" data-icon="edit" class="ui-btn-active">写日报</a></li>
+                <li><a href="/m/show" data-icon="bars">我的日报</a></li>
+                {{#if hasSubordinate}}
+                <li><a href="/m/showsubordinate" data-icon="grid">下属日报</a></li>
+                {{/if}}
+            </ul>
+        </div>
     </div>
-</div>
     <div data-role="panel" id="mypanel">
         <ul data-role="listview" data-inset="true" data-theme="e">
             <li><a href="">修改密码</a></li>
