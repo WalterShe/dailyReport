@@ -50,6 +50,13 @@ body.subordinate #reports li.report {
   float: right;
   padding: 0 20px 0 0;
 }
-.pageination {
+div.pageination {
   opacity: 0;
+}
+div.pageination div.pagetip {
+  text-align: center;
+  padding-top: 15px;
+}
+div.pageination div.aligncenter {
+  text-align: center;
 }

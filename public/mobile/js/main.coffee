@@ -273,11 +273,11 @@ window.showUserReport = (event)->
                                                            <ul></ul>
                                                        </article>
                                                        <div class="ui-grid-d pageination" >
-                                                           <div class="ui-block-a" title="前一页" style="text-align: center;"><div class="pagePre" ><button data-icon="arrow-l" data-iconpos="notext" data-inline="true"></button></div></div>
+                                                           <div class="ui-block-a aligncenter" title="前一页"><div class="pagePre" ><button data-icon="arrow-l" data-iconpos="notext" data-inline="true"></button></div></div>
                                                            <div class="ui-block-b"></div>
-                                                           <div class="ui-block-c pagetip" style="text-align: center;padding-top: 15px;">1/1</div>
+                                                           <div class="ui-block-c pagetip">1/1</div>
                                                            <div class="ui-block-d"></div>
-                                                           <div class="ui-block-e" title="下一页" style="text-align: center;"><div class="pageNext" ><button data-icon="arrow-r" data-iconpos="notext" data-inline="true"></button></div></div>
+                                                           <div class="ui-block-e aligncenter" title="下一页"><div class="pageNext" ><button data-icon="arrow-r" data-iconpos="notext" data-inline="true"></button></div></div>
                                                        </div>')
   $("#subordinatePage h1").empty()
   $("#subordinatePage h1").append("#{label}的日报")
