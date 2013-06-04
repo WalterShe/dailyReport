@@ -79,7 +79,11 @@ exports.passwordIndex = (req, res) ->
 
 exports.passwordMobileIndex = (req, res) ->
   return unless utils.authenticateUser(req,res)
-  res.render("mobile/password", {'title':"修改密码", layout:"mobile/layout.hbs"})
+  userId = req.session.userId
+  userModel.hasSubordinate(userId, (result)->
+    data = {hasSubordinate: result,'title':"修改密码", layout:"mobile/layout.hbs"}
+    console.log data
+    res.render("mobile/password", data))
 
 exports.changePassword = (req, res) ->
   return unless utils.authenticateUser(req,res)
@@ -128,7 +132,7 @@ exports.updateUser = (req, res) ->
   superiorId = req.body.superiorId;
 
   try
-    check(userName, "字符长度为6-25，不能含有:符号").len(6,25).notContains(":")
+    check(userName, "字符长度为6-25").len(6,25)
     hashedPassword = null
     hashedPassword = crypto.createHash("sha1").update(password).digest('hex') if password
     userModel.updateUser(userId, userName, hashedPassword, departmentId, superiorId, (response)->

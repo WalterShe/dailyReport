@@ -50,6 +50,14 @@
       }, "json");
     };
 
+    Model.changePassword = function(data, callback) {
+      return $.post("/password", data, function(response) {
+        if (response.state === 1) {
+          return callback(response);
+        }
+      }, "json");
+    };
+
     return Model;
 
   })();

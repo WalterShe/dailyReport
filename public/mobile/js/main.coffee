@@ -1,9 +1,11 @@
 loginPageShowed = false
+passwordPageShowed = false
 writePageShowed = false
 showPageShowed = false
 subordinatePageShowed = false
 showPageListenerHandlerInited = false
 self = @
+
 init = ->
   if window.mobileInitFinished
     return
@@ -12,9 +14,9 @@ init = ->
 
   $("body").on("pageshow","#logoutPage", (e)->
     Model.logout((response)->
-      console.log response
+      #console.log response
       return if response.state == 0
-      console.log "logout page."
+      #console.log "logout page."
       $.mobile.changePage("/m/login"))
   )
 
@@ -35,6 +37,36 @@ init = ->
              $.mobile.changePage("write"))
       else
         $.mobile.changePage("#loginErrorPage", { role: "dialog" } )
+    )
+  )
+
+  $("body").on("pageshow","#passwordPage", (e)->
+    #console.log "password page show"
+
+    #防止事件多次注册，导致事件函数执行多遍
+    return if passwordPageShowed
+    passwordPageShowed = true
+
+    $("#passwordSubmitBtn").on("click", ->
+      [isvalid, errorMessage] = isValidPassword()
+      if isvalid
+        oldPassword = $.trim($("#oldPassword").val())
+        password = $.trim($("#password").val())
+        data = {newPassword: password, oldPassword: oldPassword}
+        Model.changePassword(data, (response)->
+          return if response.state == 0
+
+          if response.data == 1
+            $.trim($("#oldPassword").val(""))
+            $.trim($("#password").val(""))
+            $.trim($("#repassword").val(""))
+            showPasswordResultTip("恭喜，修改密码成功！")
+          else
+            $.trim($("#oldPassword").val(""))
+            showPasswordResultTip("老密码输入错误，请重新输入老密码！")
+          )
+      else
+        showPasswordResultTip(errorMessage)
     )
   )
 
@@ -127,6 +159,42 @@ isValidLoginUser = ->
   un = $.trim($("#userName").val())
   pw = $.trim($("#password").val())
   un.length >= 2 and un.length<=25 and pw.length >= 7 and pw.length<=25
+
+# change password ----------------------------------------------------------------
+showPasswordResultTip = (message)->
+  $("#passwordErrorPage p.content").empty()
+  $("#passwordErrorPage p.content").append(message)
+  $.mobile.changePage("#passwordErrorPage", { role: "dialog" } )
+
+isValidPassword = ->
+  result1 = true
+  result2 = ""
+
+  oldPassword = $.trim($("#oldPassword").val())
+  password = $.trim($("#password").val())
+  repassword = $.trim($("#repassword").val())
+
+  if oldPassword.length < 7 or oldPassword.length > 25
+    result1 = false
+    result2 = "密码长度是7-25个字符"
+    return [result1, result2]
+
+  if password.length < 7 or  password.length > 25
+    result1 = false
+    result2 = "密码长度是7-25个字符"
+    return [result1, result2]
+
+  if password == oldPassword
+    result1 = false
+    result2 = "新密码和老密码相同，请输入一个不同的新密码"
+    return [result1, result2]
+
+  if password != repassword
+    result1 = false
+    result2 = "两次输入的新密码不一致"
+    return [result1, result2]
+
+  return [result1, result2]
 
 # write -----------------------------------------------------------------
 getDateStr = (date)->

@@ -47,7 +47,7 @@
             return self.errorTip(response.message);
           }
           if (response.data === 1) {
-            return location.href = "/show";
+            return location.href = "/write";
           }
         });
       } else {

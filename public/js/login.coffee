@@ -37,7 +37,7 @@ LoginViewModel = ->
         if response.data == 0
           return self.errorTip(response.message)
         if response.data == 1
-          location.href = "/show")
+          location.href = "/write")
     else
       unless self.validUserName()
         return result = "用户名长度为2-25个字符"

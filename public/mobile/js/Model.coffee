@@ -37,4 +37,10 @@ class Model
       callback(response)
     , "json")
 
+  @changePassword: (data, callback)->
+    $.post("/password", data, (response)->
+      if response.state == 1
+        callback(response)
+    ,"json")
+
 window.Model = Model

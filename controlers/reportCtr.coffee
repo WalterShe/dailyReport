@@ -11,8 +11,7 @@ exports.index = (req, res) ->
 
 exports.writeIndex = (req, res) ->
   return unless utils.authenticateUser(req,res)
-  userId = req.session.userId
-  showPage(req, res, userId, "write")
+  showPage(req, res, "write")
 
 exports.settingMobile = (req, res) ->
   return unless utils.authenticateUser(req,res)
@@ -20,8 +19,7 @@ exports.settingMobile = (req, res) ->
 
 exports.writeIndexMobile = (req, res) ->
   return unless utils.authenticateUser(req,res)
-  userId = req.session.userId
-  showPage(req, res, userId, "mobile/write", {'title':"写日报", layout:"mobile/layout.hbs", "currentDateStr": getDateStr(new Date())})
+  showPage(req, res, "mobile/write", {'title':"写日报", layout:"mobile/layout.hbs", "currentDateStr": getDateStr(new Date())})
 
 getDateStr = (date)->
   today = new Date()
@@ -51,20 +49,21 @@ exports.write = (req, res) ->
 
 exports.showIndex = (req, res) ->
   return unless utils.authenticateUser(req,res)
-  userId = req.session.userId
-  showPage(req, res, userId, "show")
+  showPage(req, res, "show")
 
 exports.showIndexMobile = (req, res) ->
   return unless utils.authenticateUser(req,res)
-  userId = req.session.userId
-  showPage(req, res, userId, "mobile/show", {'title':"我的日报", layout:"mobile/layout.hbs"})
+  showPage(req, res, "mobile/show", {'title':"我的日报", layout:"mobile/layout.hbs"})
 
-showPage = (req, res, userId, pageTitle, data=null) ->
+showPage = (req, res, pageTitle, data=null) ->
+  userId = req.session.userId
+  data = {} unless data
+  data["hasSubordinate"] = false
+  data["isLoginUser"] = utils.isLoginUser(req)
+  data["isAdmin"] = utils.isAdmin(req)
   userModel.hasSubordinate(userId, (result)->
-    data = {} unless data
-    data["hasSubordinate"] = result
-    data["isLoginUser"] = utils.isLoginUser(req)
-    data["isAdmin"] = utils.isAdmin(req)
+    if result
+      data["hasSubordinate"] = true
     res.render(pageTitle, data))
 
 exports.showsubordinateIndex = (req, res) ->
@@ -72,20 +71,19 @@ exports.showsubordinateIndex = (req, res) ->
   userId = req.session.userId
   userModel.hasSubordinate(userId, (result)->
     if result
-      data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req)}
-      res.render("showsubordinate", data)
+      res.render("showsubordinate", {hasSubordinate:true, isLoginUser:utils.isLoginUser(req),isAdmin:utils.isAdmin(req)})
     else
-      res.send(new Response(0,"您目前没有下属,不需要访问该页面！")) )
+      res.send(new Response(0,'您还没有下属，不需要访问该页面')))
 
 exports.subordinateIndexMobile = (req, res) ->
   return unless utils.authenticateUser(req,res)
   userId = req.session.userId
   userModel.hasSubordinate(userId, (result)->
     if result
-      data = {isLoginUser:utils.isLoginUser(req), isAdmin:utils.isAdmin(req), 'title':"下属日报", layout:"mobile/layout.hbs"}
-      res.render("mobile/showsubordinate", data)
+      res.render("mobile/showsubordinate", {title:"下属日报", layout:"mobile/layout.hbs", hasSubordinate:true, isLoginUser:utils.isLoginUser(req),isAdmin:utils.isAdmin(req)})
     else
-      res.send(new Response(0,"您目前没有下属,不需要访问该页面！")) )
+      res.send(new Response(0,'您还没有下属，不需要访问该页面')))
+
 
 exports.getReports = (req, res) ->
   return unless utils.authenticateUser(req,res)

@@ -127,12 +127,20 @@
   };
 
   exports.passwordMobileIndex = function(req, res) {
+    var userId;
     if (!utils.authenticateUser(req, res)) {
       return;
     }
-    return res.render("mobile/password", {
-      'title': "修改密码",
-      layout: "mobile/layout.hbs"
+    userId = req.session.userId;
+    return userModel.hasSubordinate(userId, function(result) {
+      var data;
+      data = {
+        hasSubordinate: result,
+        'title': "修改密码",
+        layout: "mobile/layout.hbs"
+      };
+      console.log(data);
+      return res.render("mobile/password", data);
     });
   };
 
@@ -199,7 +207,7 @@
     departmentId = req.body.departmentId;
     superiorId = req.body.superiorId;
     try {
-      check(userName, "字符长度为6-25，不能含有:符号").len(6, 25).notContains(":");
+      check(userName, "字符长度为6-25").len(6, 25);
       hashedPassword = null;
       if (password) {
         hashedPassword = crypto.createHash("sha1").update(password).digest('hex');

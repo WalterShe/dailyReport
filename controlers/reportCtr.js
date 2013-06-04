@@ -22,12 +22,10 @@
   };
 
   exports.writeIndex = function(req, res) {
-    var userId;
     if (!utils.authenticateUser(req, res)) {
       return;
     }
-    userId = req.session.userId;
-    return showPage(req, res, userId, "write");
+    return showPage(req, res, "write");
   };
 
   exports.settingMobile = function(req, res) {
@@ -41,12 +39,10 @@
   };
 
   exports.writeIndexMobile = function(req, res) {
-    var userId;
     if (!utils.authenticateUser(req, res)) {
       return;
     }
-    userId = req.session.userId;
-    return showPage(req, res, userId, "mobile/write", {
+    return showPage(req, res, "mobile/write", {
       'title': "写日报",
       layout: "mobile/layout.hbs",
       "currentDateStr": getDateStr(new Date())
@@ -86,37 +82,38 @@
   };
 
   exports.showIndex = function(req, res) {
-    var userId;
     if (!utils.authenticateUser(req, res)) {
       return;
     }
-    userId = req.session.userId;
-    return showPage(req, res, userId, "show");
+    return showPage(req, res, "show");
   };
 
   exports.showIndexMobile = function(req, res) {
-    var userId;
     if (!utils.authenticateUser(req, res)) {
       return;
     }
-    userId = req.session.userId;
-    return showPage(req, res, userId, "mobile/show", {
+    return showPage(req, res, "mobile/show", {
       'title': "我的日报",
       layout: "mobile/layout.hbs"
     });
   };
 
-  showPage = function(req, res, userId, pageTitle, data) {
+  showPage = function(req, res, pageTitle, data) {
+    var userId;
     if (data == null) {
       data = null;
     }
+    userId = req.session.userId;
+    if (!data) {
+      data = {};
+    }
+    data["hasSubordinate"] = false;
+    data["isLoginUser"] = utils.isLoginUser(req);
+    data["isAdmin"] = utils.isAdmin(req);
     return userModel.hasSubordinate(userId, function(result) {
-      if (!data) {
-        data = {};
+      if (result) {
+        data["hasSubordinate"] = true;
       }
-      data["hasSubordinate"] = result;
-      data["isLoginUser"] = utils.isLoginUser(req);
-      data["isAdmin"] = utils.isAdmin(req);
       return res.render(pageTitle, data);
     });
   };
@@ -128,15 +125,14 @@
     }
     userId = req.session.userId;
     return userModel.hasSubordinate(userId, function(result) {
-      var data;
       if (result) {
-        data = {
+        return res.render("showsubordinate", {
+          hasSubordinate: true,
           isLoginUser: utils.isLoginUser(req),
           isAdmin: utils.isAdmin(req)
-        };
-        return res.render("showsubordinate", data);
+        });
       } else {
-        return res.send(new Response(0, "您目前没有下属,不需要访问该页面！"));
+        return res.send(new Response(0, '您还没有下属，不需要访问该页面'));
       }
     });
   };
@@ -148,17 +144,16 @@
     }
     userId = req.session.userId;
     return userModel.hasSubordinate(userId, function(result) {
-      var data;
       if (result) {
-        data = {
+        return res.render("mobile/showsubordinate", {
+          title: "下属日报",
+          layout: "mobile/layout.hbs",
+          hasSubordinate: true,
           isLoginUser: utils.isLoginUser(req),
-          isAdmin: utils.isAdmin(req),
-          'title': "下属日报",
-          layout: "mobile/layout.hbs"
-        };
-        return res.render("mobile/showsubordinate", data);
+          isAdmin: utils.isAdmin(req)
+        });
       } else {
-        return res.send(new Response(0, "您目前没有下属,不需要访问该页面！"));
+        return res.send(new Response(0, '您还没有下属，不需要访问该页面'));
       }
     });
   };
