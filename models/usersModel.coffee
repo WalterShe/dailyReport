@@ -1,5 +1,5 @@
 
-{Response} = require('../vo/response')
+{Response} = require('../vo/Response')
 utils = require("../utils")
 
 exports.createUser = (userName, password, departmentId, superiorId, callback) ->

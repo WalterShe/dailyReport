@@ -1,5 +1,5 @@
 
-{Response} = require('../vo/response')
+{Response} = require('../vo/Response')
 userModel = require('./usersModel')
 utils = require("../utils")
 

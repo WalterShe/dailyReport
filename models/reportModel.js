@@ -2,7 +2,7 @@
 (function() {
   var Response, getDateNumber, getDepartTreeData, parseDepartments, parseUsers, userModel, utils;
 
-  Response = require('../vo/response').Response;
+  Response = require('../vo/Response').Response;
 
   userModel = require('./usersModel');
 
