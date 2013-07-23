@@ -4,7 +4,7 @@
 
   redis = require("redis");
 
-  Response = require('./vo/response').Response;
+  Response = require('./vo/Response').Response;
 
   dbconfig = require('./config').db;
 
