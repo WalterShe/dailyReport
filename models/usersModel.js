@@ -2,7 +2,7 @@
 (function() {
   var Response, getUsersWithoutPassword, utils;
 
-  Response = require('../vo/response').Response;
+  Response = require('../vo/Response').Response;
 
   utils = require("../utils");
 
