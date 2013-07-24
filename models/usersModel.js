@@ -45,6 +45,27 @@
     });
   };
 
+  exports.createDefaultAdmin = function(userName, password, callback) {
+    var client;
+    client = utils.createClient();
+    return client.incr("next_user_id", function(err, nextUserId) {
+      var userId;
+      if (err) {
+        return utils.showDBError(callback, client);
+      }
+      userId = "" + nextUserId;
+      return client.hmset("users", "" + userId + ":user_name", userName, "" + userId + ":password", password, function(err, reply) {
+        return client.sadd("administrators", userId, function(err, reply) {
+          if (err) {
+            return utils.showDBError(callback, client);
+          }
+          client.quit();
+          return callback(new Response(1, "success", reply));
+        });
+      });
+    });
+  };
+
   exports.updateUser = function(userId, userName, password, departmentId, superiorId, callback) {
     var client, replycallback;
     client = utils.createClient();

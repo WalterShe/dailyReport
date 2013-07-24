@@ -3,8 +3,10 @@ user = require('../controlers/userCtr')
 department = require('../controlers/departmentCtr')
 admin = require('../controlers/adminCtr')
 report = require('../controlers/reportCtr')
+installer = require('../controlers/installCtr')
 
 exports.createRutes = (app)->
+  app.get('/install', installer.install)
   app.get('/', report.index);
   app.get('/write', report.writeIndex);
   app.post('/write', report.write);

@@ -24,6 +24,19 @@ exports.createUser = (userName, password, departmentId, superiorId, callback) ->
       client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, "#{userId}:department_id", departmentId, replycallback)
   )
 
+#创建初始管理员账户
+exports.createDefaultAdmin = (userName, password, callback) ->
+  client = utils.createClient()
+  client.incr("next_user_id", (err, nextUserId)->
+    return utils.showDBError(callback, client) if err
+
+    userId = "#{nextUserId}"
+    client.hmset("users", "#{userId}:user_name", userName, "#{userId}:password", password, (err, reply)->
+      client.sadd("administrators", userId, (err, reply)->
+        return utils.showDBError(callback, client) if err
+        client.quit()
+        callback(new Response(1, "success",reply)))))
+
 exports.updateUser = (userId, userName, password, departmentId, superiorId, callback) ->
   client = utils.createClient()
 
