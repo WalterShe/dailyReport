@@ -1,15 +1,15 @@
 {
   "name": "application-name",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
     "express": "3.1.1",
-    "hbs": ">=2.1.0",
-    "redis": ">=0.8.3",
-    "connect-redis": ">=1.4.5",
-    "validator": ">=1.0.0"
+    "hbs": "2.1.0",
+    "redis": "0.8.3",
+    "connect-redis": "1.4.5",
+    "validator": "1.0.0"
   }
 }
