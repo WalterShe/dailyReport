@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -8,12 +7,13 @@ var express = require('express')
   , routeProfile = require('./routes/ruteProfile')
   , path = require('path')
   , redis = require("redis")
+  , redisConfig = require('./config')
   , RedisStore = require('connect-redis')(express)
-  , appport = require('./config').app.port
-  , sessiondbconfig = require('./config').sessiondb;
+  , appport = redisConfig.app.port
+  , sessiondbconfig = redisConfig.sessiondb;
 
 var app = express();
-var redisClient = redis.createClient();
+var redisClient = redis.createClient(redisConfig.db.port,redisConfig.db.host);
 redisClient.on("error", function(err) {
    console.log(err);
 });
