@@ -12,7 +12,7 @@
 
   installer = require('../controlers/installCtr');
 
-  exports.createRutes = function(app) {
+  exports.createRoutes = function(app) {
     app.get('/install', installer.install);
     app.get('/', report.index);
     app.get('/write', report.writeIndex);

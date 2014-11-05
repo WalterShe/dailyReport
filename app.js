@@ -4,11 +4,13 @@
 
 var express = require('express')
   , http = require('http')
-  , routeProfile = require('./routes/ruteProfile')
+  , connect = require('connect')
+  , routeProfile = require('./routes/routeProfile')
   , path = require('path')
   , redis = require("redis")
   , redisConfig = require('./config')
-  , RedisStore = require('connect-redis')(express)
+  , session = require('express-session')
+  , redisStore = require('connect-redis')(session)
   , appport = redisConfig.app.port
   , sessiondbconfig = redisConfig.sessiondb;
 
@@ -22,22 +24,21 @@ redisClient.on("error", function(err) {
 app.set('port', appport || process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.compress());
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser());
-app.use(express.session({ store: new RedisStore({host:sessiondbconfig.host, port:sessiondbconfig.port, pass:sessiondbconfig.pass, db:sessiondbconfig.db, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
-app.use(app.router);
+app.use(require('morgan')('dev'));
+app.use(require('compression')());
+app.use(require('body-parser')());
+app.use(require('method-override')());
+app.use(require('cookie-parser')());
+app.use(session({ store: new redisStore({host:sessiondbconfig.host, port:sessiondbconfig.port, pass:sessiondbconfig.pass, db:sessiondbconfig.db, prefix:'sess', ttl:3600}), secret: 'iamwaltershe' }));
+//app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+  app.use(require('errorhandler')());
 }
 
-routeProfile.createRutes(app);
+routeProfile.createRoutes(app);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
