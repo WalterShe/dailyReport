@@ -4,8 +4,9 @@ department = require('../controlers/departmentCtr')
 admin = require('../controlers/adminCtr')
 report = require('../controlers/reportCtr')
 installer = require('../controlers/installCtr')
+blog =  require('../controlers/blogCtr')
 
-exports.createRutes = (app)->
+exports.createRoutes = (app)->
   app.get('/install', installer.install)
   app.get('/', report.index);
   app.get('/write', report.writeIndex);
@@ -47,4 +48,7 @@ exports.createRutes = (app)->
   app.get('/m/showsubordinate', report.subordinateIndexMobile);
   app.get('/m/setting', report.settingMobile);
   app.get('/m/logout', user.logoutMobileIndex);
-  app.get('/m/password', user.passwordMobileIndex)
+  app.get('/m/password', user.passwordMobileIndex);
+
+  app.get('/blog/index', blog.index);
+  app.get('/blog', blog.index)
