@@ -15,10 +15,10 @@ var express = require('express')
   , sessiondbconfig = redisConfig.sessiondb;
 
 var app = express();
-var redisClient = redis.createClient(redisConfig.db.port,redisConfig.db.host);
+/*var redisClient = redis.createClient(redisConfig.db.port,redisConfig.db.host);
 redisClient.on("error", function(err) {
    console.log(err);
-});
+});*/
 
 var mysql = require('mysql');
 var conn = mysql.createConnection({

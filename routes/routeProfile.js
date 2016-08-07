@@ -53,7 +53,9 @@
     app.get('/m/setting', report.settingMobile);
     app.get('/m/logout', user.logoutMobileIndex);
     app.get('/m/password', user.passwordMobileIndex);
+    app.post('/getblogs', blog.getblogs);
     app.get('/blog/index', blog.index);
+    app.post('/blog/addblog', blog.addBlog);
     return app.get('/blog', blog.index);
   };
 
