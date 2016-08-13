@@ -1,0 +1,29 @@
+@charset "utf-8";
+/* CSS Document */
+footer{margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;background:transparent}
+.text-center{text-align:center}
+.icons-weibo,.icons-twitter,.icons-blog,.icons-rss,.icons-weekly{width:32px;height:32px;background:url(http://static.dockerone.com/partner/icon.png) no-repeat}
+.icons-weibo{background-position:0 0}
+.icons-twitter{background-position:-32px 0}
+.icons-rss{background-position:-96px 0}
+.icons-weekly{background-position:-64px 0}
+.row1{max-width:750px;margin-left:auto;margin-right:auto;padding-right:10px;padding-left:10px;}
+.footer{left:0;bottom:0; overflow:hidden;width:100%;text-align:center;background:#332e36;border-top:1px solid #1d111e; padding-top:50px; margin-top:10px;}
+.subscribe-email{margin-bottom:40px}
+.subscribe-email h3{font-size:16px;color:#fff;margin-bottom:4px}
+.subscribe-email p{font-size:12px; color:#747f8c;}
+.subscribe-email .form-email{margin-top:20px;margin:20px auto 0}
+.subscribe-email .input-email{border-radius:3px;width:200px;padding:10px;margin-right:10px}
+.copyright{font-size:14px;line-height:30px;margin-bottom:20px;color: #747f8c;}
+@media screen and (min-width: 48.0625em){
+.copyright{float:left;margin-bottom:0;color: #747f8c;}}
+.copyright .info{font-size:12px;color: #747f8c;}
+.copyright p+p{font-size:12px;color: #747f8c;}@media screen and (min-width: 48.0625em){
+.footer-follow{float:right;margin-top:14px; height:150px;}}
+.footer-follow li{display:inline-block;margin-left:10px}
+.footer-follow a{display:inline-block;text-indent:-999em}.list{width:190px;margin:0 auto}
+.cf{ height:150px; margin-left:-25px;}
+.footer-follow{ height:150px;}
+.zz{ line-height:24px; }
+.zz a{color:#747f8c;}
+.zz a:hover{color:#747f8c;}

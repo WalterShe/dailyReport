@@ -11,18 +11,24 @@
 </head>
 <body class="myreports">
 <header class="navbar">
-    
+	<a class="brand" href="/" title="home page">Daily Report</a>
+    <ul class="nav">
+    <li ><a href="/blog/add.html">写日报</a></li>
+        <li class="active"><a href="/show">我的日报</a></li>
+       </ul>
 </header>
 
 <section class="container">
     <div class="title" > <i class="icon-book"></i><h1>日报内容</h1></div>
     <article >
         <ul class="unstyled"  id="blogList">
-            <li class="report" v-for="aa in blogs">
-                 [{{$index}}-{{{aa.name}}}] [{{blogname}}]
-                <p class="date"><i class="icon-calendar"></i><span></span></p>
+            <li class="report" v-for="blog in blogs">
+                 
+                <p class="date"><i class="icon-calendar"></i><span>
+                	{{blog.post_date}}
+                </span></p>
                 <div class="content">
-                   
+                   {{blog.post_content}}
                 </div>
 
                 <p class="btn btn-link delete" data-bind="attr: {reportId: id}">删除</p>

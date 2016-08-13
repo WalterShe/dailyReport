@@ -1,46 +1,278 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>{{blogname}}</title>
-     <link rel='stylesheet' href='/css/bootstrap.min.css' />
-    <link rel='stylesheet' href='/css/reportStyle.css' />
-    <link rel='stylesheet' href='/css/pepper-grinder/jquery-ui-1.10.3.custom.min.css' />
-    <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
-    <script type="text/javascript" src='/js/jquery-ui-1.10.3.custom.min.js'></script>
-    <script type="text/javascript" src='/js/bootstrap.min.js'></script>
-</head>
-<body class="myreports">
-<header class="navbar">
-	<a class="brand" href="/" title="home page">Daily Report</a>
-    <ul class="nav">
-    <li ><a href="/blog/add.html">写日报</a></li>
-        <li class="active"><a href="/show">我的日报</a></li>
-       </ul>
-</header>
+<html class="">
 
-<section class="container">
-    <div class="title" > <i class="icon-book"></i><h1>日报内容</h1></div>
-    <article >
-        <ul class="unstyled"  id="blogList">
-            <li class="report" v-for="blog in blogs">
-                 
-                <p class="date"><i class="icon-calendar"></i><span>
-                	{{blog.post_date}}
-                </span></p>
-                <div class="content">
-                   {{blog.post_content}}
-                </div>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-                <p class="btn btn-link delete" data-bind="attr: {reportId: id}">删除</p>
-            </li>
-        </ul>
-    </article>
-</section>
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+		<meta name="renderer" content="webkit">
+		<title>大军书摘</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta property="qc:admins" content="460401166337656177">
+		<!--<base href="http://dockone.io/">-->
+		<base href=".">
+		<!--[if IE]></base><![endif]-->
+		<link href="http://static.dockerone.com/favicon.ico?t=20150328" rel="shortcut icon" type="image/x-icon">
 
+		<link rel="stylesheet" type="text/css" href="/css/foot.css">
+
+		<link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="/css/icon.css">
+
+		<link href="/css/common.css" rel="stylesheet" type="text/css">
+		<link href="/css/link.css" rel="stylesheet" type="text/css">
+		<link href="/css/style.css" rel="stylesheet" type="text/css">
+ <script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
+		<script type="text/javascript">
+		</script>
+		<style type="text/css">
+			.fancybox-margin {
+				margin-right: 17px;
+			}
+		</style>
+		<link rel="stylesheet" id="coToolbarStyle" href="chrome-extension://cjabmdjcfcfdmffimndhafhblfmpjdpe/toolbar/styles/placeholder.css" type="text/css">
+	</head>
+
+	<body>
+		<div class="aw-top-menu-wrap">
+			<div class="container">
+				<!-- logo -->
+				<div class="aw-logo hidden-xs">
+					<a href="/css/DockOne.io.html"></a>
+				</div>
+				<!-- end logo -->
+				<!-- 搜索框 -->
+				<div class="aw-search-box  hidden-xs hidden-sm">
+					<form class="navbar-search" action="http://127.0.0.1：3000/search/" id="global_search_form" method="post">
+						<input class="form-control search-query" type="text" placeholder="搜索書摘" autocomplete="off" name="q" id="aw-search-query">
+						<span title="搜索" id="global_search_btns" onclick="$(&#39;#global_search_form&#39;).submit();">
+							<i class="icon icon-search"></i></span>
+						<div class="aw-dropdown">
+							<div class="mod-body">
+								<p class="title">输入关键字进行搜索</p>
+								<ul class="aw-dropdown-list hide"></ul>
+								<p class="search"><span>搜索:</span>
+									<a onclick="$(&#39;#global_search_form&#39;).submit();"></a>
+								</p>
+							</div>
+							<div class="mod-footer">
+								<a href="http://dockone.io/publish" onclick="$(&#39;#header_publish&#39;).click();" class="pull-right btn btn-mini btn-success publish">发起问题</a>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- end 搜索框 -->
+				<!-- 导航 -->
+				<div class="aw-top-nav navbar">
+					<div class="navbar-header">
+						<button class="navbar-toggle pull-left">
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<nav role="navigation" class="collapse navbar-collapse bs-navbar-collapse">
+						<ul class="nav navbar-nav">
+							<li><a href="" class="active"><i class="icon icon-ul"></i> 发现</a></li>
+							<li><a href="http://dockone.io/topic/"><i class="icon icon-topic"></i> 標籤</a></li>
+							<li><a href="http://dockone.io/help/"><i class="icon icon-bulb"></i> 帮助</a></li>
+						</ul>
+					</nav>
+				</div>
+				<!-- end 导航 -->
+				<!-- 用户栏 -->
+				<div class="aw-user-nav">
+					<!-- 登陆&注册栏 -->
+					<a class="login btn btn-normal btn-primary" href="http://dockone.io/login/">登录</a>
+					<a class="register btn btn-normal btn-success" href="http://dockone.io/account/register/">注册</a>
+					<!-- end 登陆&注册栏 -->
+				</div>
+				<!-- end 用户栏 -->
+				<!-- 发起 -->
+				<!-- end 发起 -->
+			</div>
+		</div>
+
+		<div class="aw-container-wrap">
+
+			<div class="container">
+				<div class="row">
+					<div class="aw-content-wrap clearfix">
+						<div class="col-sm-12 col-md-9 aw-main-content">
+							<!-- 新消息通知 -->
+							<div class="aw-mod aw-notification-box hide" id="index_notification">
+								<div class="mod-head common-head">
+									<h2>
+								<span class="pull-right"><a href="http://dockone.io/setting/privacy/#notifications" class="text-color-999"><i class="icon icon-setting"></i> 通知设置</a></span>
+								<i class="icon icon-bell"></i>新通知<em class="badge badge-important" name="notification_unread_num"></em>
+							</h2>
+								</div>
+								<div class="mod-body">
+									<ul id="notification_list"></ul>
+								</div>
+								<div class="mod-footer clearfix">
+									<a href="javascript:;" onclick="AWS.Message.read_notification(false, 0, false);" class="pull-left btn btn-mini btn-gray">我知道了</a>
+									<a href="http://dockone.io/notifications/" class="pull-right btn btn-mini btn-success">查看所有</a>
+								</div>
+							</div>
+							<!-- end 新消息通知 -->
+							<!-- tab切换 -->
+							<ul class="nav nav-tabs aw-nav-tabs active hidden-xs">
+								<li><a href="http://dockone.io/sort_type-hot__day-7" id="sort_control_hot">热门</a></li>
+								<li><a href="http://dockone.io/is_recommend-1">推荐</a></li>
+								<li class="active"><a href="">最新</a></li>
+
+								<h2 class="hidden-xs"><i class="icon icon-list"></i> 发现</h2>
+							</ul>
+							<!-- end tab切换 -->
+
+							<div class="aw-mod aw-explore-list"  id="blogList">
+								<div class="mod-body">
+									<div class="aw-common-list"  >
+										<div class="aw-item article" data-topic-id="" v-for="blog in blogs">
+											<a class="aw-user-name hidden-xs" data-id="10412" href="http://dockone.io/people/sak0" rel="nofollow"><img src="/css/12_avatar_max.jpg" alt=""></a>
+											<div class="aw-question-content">
+												<h4>
+													<a href="http://dockone.io/article/1622">{{blog.post_title}}</a>
+												</h4>
+
+												<p>
+													<a href="http://dockone.io/people/sak0" class="aw-user-name"></a>
+													<span class="text-color-999"> {{blog.post_date}}</span>
+													<span class="text-color-999 related-topic hide"> •  来自相关话题</span>
+												</p>
+
+												<!-- 文章内容调用 -->
+												<div class="markitup-box">
+													 {{blog.post_content}}
+												</div>
+												<a class="more" href="http://dockone.io/article/1622">查看更多</a>
+												<!-- end 文章内容调用 -->
+											</div>
+										</div>
+
+									</div>
+								</div>
+								<div class="mod-footer">
+									<div class="page-control">
+										<ul class="pagination pull-right">
+											<li class="active"><a href="javascript:;">1</a></li>
+											<li><a href="http://dockone.io/sort_type-new__day-0__is_recommend-0__page-2">2</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 侧边栏 -->
+						<div class="col-sm-12 col-md-3 aw-side-bar hidden-xs hidden-sm">
+							<div class="aw-mod aw-text-align-justify" id="ad">
+								<a href="https://www.shurenyun.com/" target="_blank"><img src="/css/sry.png"></a>
+							</div>
+
+							<div class="aw-mod aw-text-align-justify">
+								<div class="mod-head">
+									<a href="http://dockone.io/topic/channel-hot" class="pull-right">更多 &gt;</a>
+									<h3>热门话题</h3>
+								</div>
+								<div class="mod-body">
+									
+									<dl>
+										<dt class="pull-left aw-border-radius-5">
+					<a href="http://dockone.io/topic/%E6%95%B0%E4%BA%BA%E4%BA%91"><img alt="" src="/css/480687309a55ae75d73d27950486fc65_50_50.jpg"></a>
+				</dt>
+										<dd class="pull-left">
+											<p class="clearfix">
+												<span class="topic-tag">
+							<a href="http://dockone.io/topic/%E6%95%B0%E4%BA%BA%E4%BA%91" class="text" data-id="268">数人云</a>
+						</span>
+											</p>
+											<p><b>29</b> 个问题, <b>21</b> 人关注</p>
+										</dd>
+									</dl>
+									<dl>
+										<dt class="pull-left aw-border-radius-5">
+					<a href="http://dockone.io/topic/@Container"><img alt="" src="/css/topic-mid-img.png"></a>
+				</dt>
+										<dd class="pull-left">
+											<p class="clearfix">
+												<span class="topic-tag">
+							<a href="http://dockone.io/topic/@Container" class="text" data-id="286">@Container</a>
+						</span>
+											</p>
+											<p><b>27</b> 个问题, <b>16</b> 人关注</p>
+										</dd>
+									</dl>
+								</div>
+							</div>
+							<div class="aw-mod aw-text-align-justify">
+								<div class="mod-head">
+									<a href="http://dockone.io/people/" class="pull-right">更多 &gt;</a>
+									<h3>热门用户</h3>
+								</div>
+								<div class="mod-body">
+									<dl>
+										<dt class="pull-left aw-border-radius-5">
+				<a href="http://dockone.io/people/zhucegep"><img alt="" src="/css/79_avatar_mid.jpg"></a>
+			</dt>
+										<dd class="pull-left">
+											<a href="http://dockone.io/people/zhucegep" data-id="479" class="aw-user-name">苦逼少侠						</a>
+											<p class="signature"></p>
+											<p><b>22</b> 个问题, <b>32</b> 次赞同</p>
+										</dd>
+									</dl>
+								</div>
+							</div>
+							<script type="text/javascript" src="/css/ad.js"></script>
+						</div>
+						<!-- end 侧边栏 -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="footer">
+			<div class="subscribe-email row1 text-center">
+				<h3>motto.gift，閒人書摘</h3>
+				<p>關注書摘，打發時光</p>
+			</div>
+			<div class="row1">
+				<div class="copyright">
+					<p> 2016 <strong>SHUZHAI</strong>. All Rights Reserved.</p>
+					<p class="">SHUZHAI，新圈子，新思路，新视野。</p>
+					<p class="zz">本网站服务器由<a href="">云服务</a>提供。</p>
+				</div>
+
+				<div class="footer-follow">
+					<ul class="cf">
+						<li><a class="icons-weibo" href="http://weibo.com/dockerone" title="Weibo" target="_blank">Weibo</a></li>
+						<li style="position:relative"><a class="icons-twitter" onmouseover="mousemethod(&#39;block&#39;,&#39;img1&#39;)" onmouseout="mousemethod(&#39;none&#39;,&#39;img1&#39;)" title="Wechat" target="_blank" style="cursor:pointer;">Wechat</a><img src="/css/wechat.jpg" width="100" style="position:absolute; top:37px; left:-32px; display:none;"
+							id="img1"></li>
+						<li><a class="icons-weekly" href="http://weekly.dockerone.com/" title="周报" target="_blank">周报</a></li>
+						<li><a class="icons-rss" href="http://dockerone.com/feed" title="Feed" target="_blank">Feed</a></li>
+					</ul>
+				</div>
+
+			</div>
+
+		</footer>
+
+		<a class="aw-back-top hidden-xs" href="javascript:;" onclick="$.scrollTo(1, 600, {queue:true});"><i class="icon icon-up"></i></a>
+
+		<!-- DO NOT REMOVE -->
+		<div id="aw-ajax-box" class="aw-ajax-box"></div>
+		<div style="display:none;" id="__crond"><img src="/css/1471021666" width="1" height="1"></div>
+
+		<!-- Escape time: 0.043483018875122 -->
+		<!-- / DO NOT REMOVE -->
 <script type="text/javascript" src='/blog/js/vue.js'></script>
 <script type="text/javascript" src='/blog/js/BlogModel.js?v=123'></script>
 <script type="text/javascript" src='/blog/js/blog.js'></script>
+	</body>
+	<div id="coFrameDiv" style="height:0px;display:none;">
+		<iframe id="coToolbarFrame" src="/css/placeholder.html" style="height: 0px; width: 100%; display: none;"></iframe>
+	</div>
 
-
-</body>
 </html>
