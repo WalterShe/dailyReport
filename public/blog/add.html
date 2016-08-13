@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>{{blogname}}</title>
+		<link rel='stylesheet' href='/css/bootstrap.min.css' />
+		<link rel='stylesheet' href='/css/reportStyle.css' />
+		<link rel='stylesheet' href='/css/pepper-grinder/jquery-ui-1.10.3.custom.min.css' />
+		<script type="text/javascript" src='/js/jquery-1.9.1.min.js'></script>
+		<script type="text/javascript" src='/js/jquery-ui-1.10.3.custom.min.js'></script>
+		<script type="text/javascript" src='/js/bootstrap.min.js'></script>
+	</head>
+
+	<body class="myreports">
+		<header class="navbar">
+			<a class="brand" href="/" title="home page">Daily Report</a>
+			<ul class="nav">
+				<li><a href="/blog/add.html">写日报</a></li>
+				<li class="active"><a href="/show">我的日报</a></li>
+			</ul>
+		</header>
+
+		<section class="container">
+
+			<div class="title"> <i class="icon-file"></i>
+				<h1>新文章</h1></div>
+			<article id="addblog">
+				<label for="content">内容:</label>
+				<textarea id="content" rows="6" cols="30" required="required" v-model="postContent"
+					 placeholder="Here is your daily report...">
+				</textarea>
+				</div>
+				<div>
+					<input id="reportSubmitBtn" type="button" value="发布" class="btn btn-primary" v-on:click="addBlog()" />
+				</div>
+
+			</article>
+		</section>
+
+		<script type="text/javascript" src='/blog/js/vue.js'></script>
+		<script type="text/javascript" src='/blog/js/BlogModel.js?v=123'></script>
+		<script type="text/javascript" src='/blog/js/addBlog.js'></script>
+
+	</body>
+
+</html>

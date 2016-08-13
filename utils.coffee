@@ -1,6 +1,8 @@
 redis = require("redis")
 {Response} = require('./vo/Response')
 dbconfig = require('./config').db
+mysqlconf = require('./config').mysql
+mysql = require("mysql")
 
 
 #如果用户登陆了，返回true，否则返回false，并且转向登陆界面
@@ -52,5 +54,9 @@ exports.createClient = ->
     client.end())
 
   client
+exports.createMysql = ->
+  conn = mysql.createConnection(host:mysqlconf.host,user:mysqlconf.username,password:mysqlconf.pass, database:mysqlconf.db,port:mysqlconf.port)
+  conn.connect()
+  conn
 
 
